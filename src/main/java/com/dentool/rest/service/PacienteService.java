@@ -26,7 +26,7 @@ public class PacienteService {
 
 	public List<Paciente> findByApellido(String apellido) {
 		@SuppressWarnings("unchecked")
-		List<Paciente> lista = entityManager.createQuery("SELECT p FROM Paciente p WHERE p.apellido LIKE :apellido")
+		List<Paciente> lista = entityManager.createQuery("SELECT p FROM Paciente p WHERE p.apellidos LIKE :apellido")
 				.setParameter("apellido", "%" + apellido + "%").getResultList();
 		return lista;
 
