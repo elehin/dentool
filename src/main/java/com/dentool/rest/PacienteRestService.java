@@ -1,5 +1,7 @@
 package com.dentool.rest;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -22,7 +24,7 @@ public class PacienteRestService {
 	private PacienteService pacienteService;
 
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Consumes("application/json")
 	public Response create(Paciente paciente) {
 		pacienteService.create(paciente);
 		return Response.created(
@@ -39,6 +41,28 @@ public class PacienteRestService {
 			throw new WebApplicationException(Response.Status.NOT_FOUND);
 		}
 		return paciente;
+	}
+
+	@GET
+	@Path("/apellido/{apellido}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Paciente> lookupPacienteByApellido(@PathParam("apellido") String apellido) {
+		List<Paciente> lista = pacienteService.findByApellido(apellido);
+		if (lista == null) {
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}
+		return lista;
+	}
+
+	@GET
+	@Path("/telefono/{telefono}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Paciente> lookupPacienteByTelefono(@PathParam("telefono") String telefono) {
+		List<Paciente> lista = pacienteService.findByTelefono(telefono);
+		if (lista == null) {
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}
+		return lista;
 	}
 
 	@GET
