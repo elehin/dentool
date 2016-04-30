@@ -41,4 +41,11 @@ public class PacienteRestService {
 		return paciente;
 	}
 
+	@GET
+	@Path("/ping")
+	@Produces(MediaType.TEXT_HTML)
+	public String ping() {
+		return "Up & running";
+	}
+
 }
