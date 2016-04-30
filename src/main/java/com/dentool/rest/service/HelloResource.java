@@ -5,13 +5,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-@Path("/")
+@Path("/helloService")
 public class HelloResource {
 
 	@GET
 	@Produces(MediaType.TEXT_HTML)
-	public String ping(){
+	@Path("/ping")
+	public String ping() {
 		return "Hello World!";
 	}
-	
+
 }
