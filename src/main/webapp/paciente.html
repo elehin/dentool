@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<script src="https://code.jquery.com/jquery-2.2.3.min.js"
+	integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="
+	crossorigin="anonymous"></script>
+<title>Pacientes</title>
+</head>
+<body>
+	<div class="header">
+		<input type="text" id="searchKey" />
+		<button id="btnSearch">Search</button>
+		<button id="btnAdd">New Wine</button>
+	</div>
+
+
+	<div class="leftArea">
+		<ul id="wineList"></ul>
+	</div>
+
+	<form id="wineForm">
+
+		<div class="mainArea">
+
+			<label>Id:</label> <input id="wineId" name="id" type="text" disabled />
+
+			<label for="name">Name:</label> <input type="text" id="name"
+				name="name" required /> <label>Grapes:</label> <input type="text"
+				id="grapes" name="grapes" /> <label>Country:</label> <input
+				type="text" id="country" name="country" /> <label>Region:</label> <input
+				type="text" id="region" name="region" /> <label>Year:</label> <input
+				type="text" id="year" name="year" />
+
+			<button id="btnSave">Crear</button>
+
+		</div>
+
+		<div class="rightArea">
+
+			<img id="pic" height="300" /> <label>Notes:</label>
+			<textarea id="description" name="description"></textarea>
+		</div>
+
+	</form>
+</body>
+</html>

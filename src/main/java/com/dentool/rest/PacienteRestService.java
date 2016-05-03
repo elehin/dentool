@@ -51,7 +51,6 @@ public class PacienteRestService {
 		if (lista == null) {
 			throw new WebApplicationException(Response.Status.NOT_FOUND);
 		}
-		System.out.println("lookupPacienteByApellido()");
 		return Response.ok(lista).build();
 	}
 
