@@ -137,11 +137,17 @@
         <subsystem xmlns="urn:jboss:domain:datasources:4.0">
             <datasources>				
                 <datasource jndi-name="java:jboss/datasources/PostgreSQLDS" enabled="true" use-java-context="true" pool-name="PostgreSQLDS" use-ccm="true">
-                    <connection-url>jdbc:postgresql://localhost:5432/dentool</connection-url>
+                 <!--   <connection-url>jdbc:postgresql://localhost:5432/dentool</connection-url>
                     <driver>postgresql</driver>
                     <security>
                       <user-name>postgres</user-name>
                       <password>Aragorn2</password>
+                    </security>-->
+					<connection-url>jdbc:postgresql://${env.OPENSHIFT_POSTGRESQL_DB_HOST}:${env.OPENSHIFT_POSTGRESQL_DB_PORT}/${env.OPENSHIFT_APP_NAME}</connection-url>
+                    <driver>postgresql</driver>
+                    <security>
+                      <user-name>${env.OPENSHIFT_POSTGRESQL_DB_USERNAME}</user-name>
+                      <password>${env.OPENSHIFT_POSTGRESQL_DB_PASSWORD}</password>
                     </security>
                     <validation>
                         <check-valid-connection-sql>SELECT 1</check-valid-connection-sql>
@@ -154,10 +160,10 @@
                     </pool>
                 </datasource>
                 <drivers>
-                    <driver name="postgresql" module="org.postgresql.jdbc">
-						<datasource-class>org.postgresql.Driver</datasource-class>
-                        <xa-datasource-class>org.postgresql.xa.PGXADataSource</xa-datasource-class>
-                    </driver>
+                    <driver name="postgres" module="org.postgres">
+						<xa-datasource-class>org.postgresql.xa.PGXADataSource</xa-datasource-class>
+						<datasource-class>org.postgresql.ds.PGSimpleDataSource</datasource-class>
+					</driver>
                 </drivers>
             </datasources>
         </subsystem>
