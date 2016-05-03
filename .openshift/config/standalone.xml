@@ -160,10 +160,13 @@
                     </pool>
                 </datasource>
                 <drivers>
-                    <driver name="postgres" module="org.postgres">
+                   <!-- <driver name="postgres" module="org.postgres">
 						<xa-datasource-class>org.postgresql.xa.PGXADataSource</xa-datasource-class>
 						<datasource-class>org.postgresql.ds.PGSimpleDataSource</datasource-class>
-					</driver>
+					</driver>-->
+					 <driver name="postgresql" module="org.postgresql.jdbc">
+                        <xa-datasource-class>org.postgresql.xa.PGXADataSource</xa-datasource-class>
+                    </driver>
                 </drivers>
             </datasources>
         </subsystem>
