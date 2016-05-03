@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.dentool.utils.Utils;
+
 @Entity
 public class Paciente {
 
@@ -20,6 +22,8 @@ public class Paciente {
 	private String direccion;
 	private String alergias;
 	private Date fechaNacimiento;
+	private String nameNormalized;
+	private String apellidosNormalized;
 
 	public Long getId() {
 		return id;
@@ -34,11 +38,12 @@ public class Paciente {
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.name = name.trim();
+		this.setNameNormalized();
 	}
-	
+
 	@Override
-	public String toString(){
+	public String toString() {
 		return "Paciente: id " + this.id + " Nombre: " + this.name;
 	}
 
@@ -47,7 +52,8 @@ public class Paciente {
 	}
 
 	public void setApellidos(String apellidos) {
-		this.apellidos = apellidos;
+		this.apellidos = apellidos.trim();
+		this.setApellidosNormalized();
 	}
 
 	public String getTelefono() {
@@ -55,7 +61,7 @@ public class Paciente {
 	}
 
 	public void setTelefono(String telefono) {
-		this.telefono = telefono;
+		this.telefono = telefono.replace(" ", "");
 	}
 
 	public String getDireccion() {
@@ -82,4 +88,28 @@ public class Paciente {
 		this.fechaNacimiento = fechaNacimiento;
 	}
 
+	public String getNameNormalized() {
+		return nameNormalized;
+	}
+
+	private void setNameNormalized() {
+		this.nameNormalized = Utils.removeTildes(this.name.toLowerCase());
+	}
+
+	public String getApellidosNormalized() {
+		return apellidosNormalized;
+	}
+
+	private void setApellidosNormalized() {
+		this.apellidosNormalized = Utils.removeTildes(this.apellidos.toLowerCase());
+	}
+
+	public void update(Paciente origen) {
+		setName(origen.getName());
+		setApellidos(origen.getApellidos());
+		setTelefono(origen.getTelefono());
+		setDireccion(origen.getDireccion());
+		setAlergias(origen.getAlergias());
+		setFechaNacimiento(origen.getFechaNacimiento());
+	}
 }

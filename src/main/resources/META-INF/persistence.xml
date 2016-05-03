@@ -6,7 +6,7 @@
     <persistence-unit name="dentoolPersistenceUnit" transaction-type="JTA">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <jta-data-source>java:jboss/datasources/PostgreSQLDS</jta-data-source>
-        <class>com.todoapp.domain.Todo</class>
+        <class>com.dentool.model.Paciente</class>
         <properties>
             <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.hbm2ddl.auto" value="create" />

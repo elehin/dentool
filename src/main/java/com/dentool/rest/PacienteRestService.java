@@ -17,7 +17,7 @@ import javax.ws.rs.core.UriBuilder;
 import com.dentool.model.Paciente;
 import com.dentool.rest.service.PacienteService;
 
-@Path("/service")
+@Path("/service/paciente")
 public class PacienteRestService {
 
 	@Inject
@@ -35,34 +35,57 @@ public class PacienteRestService {
 	@GET
 	@Path("/{id:[0-9][0-9]*}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Paciente lookupPacienteById(@PathParam("id") long id) {
+	public Response lookupPacienteById(@PathParam("id") long id) {
 		Paciente paciente = pacienteService.find(id);
 		if (paciente == null) {
 			throw new WebApplicationException(Response.Status.NOT_FOUND);
 		}
-		return paciente;
+		return Response.ok(paciente).build();
 	}
 
 	@GET
 	@Path("/apellido/{apellido}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Paciente> lookupPacienteByApellido(@PathParam("apellido") String apellido) {
+	public Response lookupPacienteByApellido(@PathParam("apellido") String apellido) {
 		List<Paciente> lista = pacienteService.findByApellido(apellido);
 		if (lista == null) {
 			throw new WebApplicationException(Response.Status.NOT_FOUND);
 		}
-		return lista;
+		System.out.println("lookupPacienteByApellido()");
+		return Response.ok(lista).build();
 	}
 
 	@GET
 	@Path("/telefono/{telefono}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Paciente> lookupPacienteByTelefono(@PathParam("telefono") String telefono) {
+	public Response lookupPacienteByTelefono(@PathParam("telefono") String telefono) {
 		List<Paciente> lista = pacienteService.findByTelefono(telefono);
 		if (lista == null) {
 			throw new WebApplicationException(Response.Status.NOT_FOUND);
 		}
-		return lista;
+		return Response.ok(lista).build();
+	}
+
+	@GET
+	@Path("/nombre/{nombre}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response lookupPacienteByName(@PathParam("nombre") String nombre) {
+		List<Paciente> lista = pacienteService.findByName(nombre);
+		if (lista == null) {
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}
+		return Response.ok(lista).build();
+	}
+
+	@GET
+	@Path("/nombre/{nombre}/apellido/{apellido}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response lookupPacienteByFullName(@PathParam("nombre") String name, @PathParam("apellido") String apellido) {
+		List<Paciente> lista = pacienteService.findByFullName(name, apellido);
+		if (lista == null) {
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}
+		return Response.ok(lista).build();
 	}
 
 	@GET
@@ -72,4 +95,13 @@ public class PacienteRestService {
 		return "Up & running";
 	}
 
+	@POST
+	@Path("/update")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response updatePaciente(Paciente p) {
+		pacienteService.updatePaciente(p);
+		return Response.created(
+				UriBuilder.fromResource(PacienteRestService.class).path(String.valueOf(p.getId())).build())
+				.build();
+	}
 }
