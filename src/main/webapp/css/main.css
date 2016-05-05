@@ -1,0 +1,172 @@
+@CHARSET "ISO-8859-1";
+
+* {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 12px;
+}
+
+.tail-top-right {
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 17%;
+	height: 120px;
+	background: url('../images/top-right.png') repeat-x right top;
+	z-index: -2;
+	background-position-y: -20px;
+}
+
+.tail-top-left {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 30%;
+	height: 120px;
+	background: url('../images/top-left.png') 0% 0% repeat-x;
+	z-index: -1;
+	background-position-y: -20px;
+}
+
+.banner {
+	height: 120px;
+	background: url(../images/header.jpg) no-repeat left top;
+	background-position-y: 0px;
+	background-position-x: 100px;
+	margin-top: -8px
+}
+
+.header {
+	padding-top: 5px;
+}
+
+.leftArea {
+	/* position: absolute; */
+	/* left: 10px; */
+	/* top: 70px; */
+	/* bottom: 20px; */
+	width: 300px;
+	/* border: solid 1px #CCCCCC; */
+	padding: 5px;
+	/* overflow-y: scroll; */
+	float: left;
+}
+
+.mainArea {
+	/* position: absolute; */
+	/* 	top: 70px; */
+	/* 	bottom: 20px; */
+	/* 	left: 310px; */
+	/* overflow-y: scroll; */
+	width: 350px;
+	float: left;
+}
+
+.rightArea {
+	/* position: absolute; */
+	/* top: 70px; */
+	/* bottom: 20px; */
+	/* left: 650px; */
+	/* overflow-y: scroll; */
+	width: 150px;
+	float: left;
+}
+
+ul {
+	list-style-type: none;
+	padding-left: 0px;
+	margin-top: 0px;
+}
+
+li a {
+	text-decoration: none;
+	display: block;
+	color: #000000;
+	border-bottom: solid 1px #CCCCCC;
+	padding: 8px;
+}
+
+li a:hover {
+	background-color: #4B0A1E;
+	color: #BA8A92;
+}
+
+input, textarea {
+	border: 1px solid #ccc;
+	/* min-height: 30px; */
+	outline: none;
+	width: 240px;
+	padding: 8px;
+	margin: 10px;
+	margin-top: 1px;
+	font-size: larger;
+}
+
+.mainArea input {
+	margin-bottom: 15px;
+	margin-top: 5px;
+	width: 280px;
+}
+
+.notice {
+	background-color: green;
+	font: bolder 16px;
+}
+
+.info, .success, .warning, .error, .validation {
+	border: 1px solid;
+	margin: 10px 0px;
+	padding: 15px 10px 15px 50px;
+	background-repeat: no-repeat;
+	background-position: 10px center;
+}
+
+.info {
+	color: #00529B;
+	background-color: #BDE5F8;
+	background-image: url('info.png');
+}
+
+.success {
+	color: #4F8A10;
+	background-color: #DFF2BF;
+	background-image: url('../images/icons/Knob Valid Green.png');
+}
+
+.warning {
+	color: #9F6000;
+	background-color: #FEEFB3;
+	background-image: url('../images/icons/Knob Attention.png');
+}
+
+.error {
+	color: #D8000C;
+	background-color: #FFBABA;
+	background-image: url('../images/icons/Knob Cancel.png');
+}
+
+textarea {
+	margin-bottom: 15px;
+	margin-top: 5px;
+	height: 200px;
+	padding: 3px;
+	width: 90%;
+}
+
+label {
+	display: block;
+}
+
+button {
+	padding: 6px;
+}
+
+#searchKey {
+	width: 160px;
+}
+
+#logo {
+	margin: 10px;
+	border: 2px;
+	border-color: rgb(9, 8, 8);
+	border-style: solid;
+}

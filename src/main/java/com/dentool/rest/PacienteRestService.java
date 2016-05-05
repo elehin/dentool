@@ -17,7 +17,7 @@ import javax.ws.rs.core.UriBuilder;
 import com.dentool.model.Paciente;
 import com.dentool.rest.service.PacienteService;
 
-@Path("/service/paciente")
+@Path("/paciente")
 public class PacienteRestService {
 
 	@Inject

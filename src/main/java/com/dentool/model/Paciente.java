@@ -20,10 +20,11 @@ public class Paciente {
 	private String apellidos;
 	private String telefono;
 	private String direccion;
-	private String alergias;
+	private String notas;
 	private Date fechaNacimiento;
 	private String nameNormalized;
 	private String apellidosNormalized;
+	private boolean alergico = false;
 
 	public Long getId() {
 		return id;
@@ -72,12 +73,12 @@ public class Paciente {
 		this.direccion = direccion;
 	}
 
-	public String getAlergias() {
-		return alergias;
+	public String getNotas() {
+		return notas;
 	}
 
-	public void setAlergias(String alergias) {
-		this.alergias = alergias;
+	public void setNotas(String notas) {
+		this.notas = notas;
 	}
 
 	public Date getFechaNacimiento() {
@@ -109,7 +110,15 @@ public class Paciente {
 		setApellidos(origen.getApellidos());
 		setTelefono(origen.getTelefono());
 		setDireccion(origen.getDireccion());
-		setAlergias(origen.getAlergias());
+		setNotas(origen.getNotas());
 		setFechaNacimiento(origen.getFechaNacimiento());
+	}
+
+	public boolean isAlergico() {
+		return alergico;
+	}
+
+	public void setAlergico(boolean alergico) {
+		this.alergico = alergico;
 	}
 }

@@ -1,45 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="ISO-8859-1">
-<script src="https://code.jquery.com/jquery-2.2.3.min.js"
-	integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="
+<meta charset="UTF-8">
+<script src="https://code.jquery.com/jquery-1.12.3.min.js"
+	integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ="
 	crossorigin="anonymous"></script>
+<script src="js/paciente.js"></script>
 <title>Pacientes</title>
+<link rel="stylesheet" href="css/main.css" />
 </head>
 <body>
+	<div class="tail-top-right"></div>
+	<div class="tail-top-left"></div>
+	<div class="banner">
+		<img id="logo" src="images/logo.jpg" />
+	</div>
 	<div class="header">
 		<input type="text" id="searchKey" />
 		<button id="btnSearch">Search</button>
 		<button id="btnAdd">New Wine</button>
 	</div>
 
-
-	<div class="leftArea">
-		<ul id="wineList"></ul>
-	</div>
+	<div id="messagesDiv"></div>
 
 	<form id="wineForm">
 
-		<div class="mainArea">
-
-			<label>Id:</label> <input id="wineId" name="id" type="text" disabled />
-
-			<label for="name">Name:</label> <input type="text" id="name"
-				name="name" required /> <label>Grapes:</label> <input type="text"
-				id="grapes" name="grapes" /> <label>Country:</label> <input
-				type="text" id="country" name="country" /> <label>Region:</label> <input
-				type="text" id="region" name="region" /> <label>Year:</label> <input
-				type="text" id="year" name="year" />
+		<div id="leftArea" class="leftArea">
+			<label>Id:</label> <input id="pacienteId" name="id" type="text"
+				disabled /> <label for="name">Nombre:</label> <input type="text"
+				id="name" name="name" required /> <label>Apellidos:</label> <input
+				type="text" id="apellidos" name="apellidos" /> <label>Dirección:</label>
+			<input type="text" id="direccion" name="direccion" /> <label>Teléfono:</label>
+			<input type="text" id="telefono" name="telefono" /> <label>Fecha
+				Nacimiento:</label> <input type="date" id="fechaNacimiento"
+				name="fechaNacimiento" />
 
 			<button id="btnSave">Crear</button>
-
 		</div>
 
-		<div class="rightArea">
+		<div id="mainArea" class="mainArea">
+			<label for="alergico">Alérgico:</label> <input type="checkbox"
+				id="alergico" name="alergico" value="true"> <label
+				for="notas">Notas:</label>
+			<textarea id="notas" name="notas"></textarea>
+		</div>
 
-			<img id="pic" height="300" /> <label>Notes:</label>
-			<textarea id="description" name="description"></textarea>
+		<div id="rightArea" class="rightArea">
+			<ul id="wineList"></ul>
+			<p>Right area</p>
 		</div>
 
 	</form>

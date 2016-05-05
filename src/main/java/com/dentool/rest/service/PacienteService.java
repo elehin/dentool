@@ -64,7 +64,6 @@ public class PacienteService {
 		Paciente lp = find(p.getId());
 
 		lp.update(p);
-//		entityManager.merge(lp);
 
 		return p;
 	}

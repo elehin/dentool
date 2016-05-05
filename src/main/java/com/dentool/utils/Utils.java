@@ -29,8 +29,9 @@ public class Utils {
 		destino.setApellidos(origen.getApellidos());
 		destino.setTelefono(origen.getTelefono());
 		destino.setDireccion(origen.getDireccion());
-		destino.setAlergias(origen.getAlergias());
+		destino.setNotas(origen.getNotas());
 		destino.setFechaNacimiento(origen.getFechaNacimiento());
+		destino.setAlergico(origen.isAlergico());
 	}
 
 }
