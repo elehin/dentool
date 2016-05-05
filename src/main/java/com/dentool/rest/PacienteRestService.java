@@ -99,8 +99,8 @@ public class PacienteRestService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response updatePaciente(Paciente p) {
 		pacienteService.updatePaciente(p);
-		return Response.created(
-				UriBuilder.fromResource(PacienteRestService.class).path(String.valueOf(p.getId())).build())
+		return Response
+				.created(UriBuilder.fromResource(PacienteRestService.class).path(String.valueOf(p.getId())).build())
 				.build();
 	}
 }

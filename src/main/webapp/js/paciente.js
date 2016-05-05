@@ -21,6 +21,15 @@ $(document)
 						return false;
 					});
 
+					$("#btnAdd").click(function() {
+						currentPaciente = null;
+						$("#pacienteForm")[0].reset();
+						$("#mainArea").show();
+						$("#leftArea").show();
+						$("#rightArea").show();
+						return false;
+					});
+
 					if (currentPaciente != null
 							&& currentPaciente.alergico == true) {
 						showMessage(
@@ -35,18 +44,17 @@ $(document)
 				});
 
 function createPaciente() {
-	console.log('createPaciente');
 	$.ajax({
 		type : 'POST',
 		contentType : 'application/json',
 		url : rootURL,
 		// dataType : "json",
 		data : formToJSON(),
-		success : function(data, textStatus, jqXHR) {
+		success : function(rdata, textStatus, jqXHR) {
 			showMessage('Paciente creado con éxito', 'success');
 			$('#btnDelete').show();
-			$('#wineId').val(data.id);
-			currentPaciente = data;
+			$('#pacienteId').val(rdata.id);
+			findPacienteByUrl(jqXHR.getResponseHeader('Location'));
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			showMessage('Error al crear el paciente: ' + textStatus, 'error');
@@ -63,8 +71,32 @@ function findPaciente(id) {
 				// dataType : "json",
 				success : function(data) {
 					$('#btnDelete').show();
-					console.log('findById success: ' + data.name);
 					currentPaciente = data;
+					$("#mainArea").show();
+					$("#leftArea").show();
+					$("#rightArea").show();
+					renderDetails(currentPaciente);
+					console.log(currentPaciente.alergico);
+					console.log(currentPaciente.name);
+					if (currentPaciente.alergico == true) {
+						showMessage(
+								'Este paciente sufre algún tipo de alergia significativa',
+								'warning');
+					}
+				}
+			});
+}
+
+function findPacienteByUrl(url) {
+	console.log('findPacienteByUrl: ' + url);
+	$
+			.ajax({
+				type : 'GET',
+				url : url,
+				// dataType : "json",
+				success : function(data) {
+					currentPaciente = data;
+					$('#btnDelete').show();
 					$("#mainArea").show();
 					$("#leftArea").show();
 					$("#rightArea").show();
@@ -85,8 +117,8 @@ function renderDetails(paciente) {
 	$('#direccion').val(paciente.direccion);
 	$('#telefono').val(paciente.telefono);
 	$('#fechaNacimiento').val(paciente.fechaNacimiento);
-	$('#alergico').val(paciente.alergico);
 	$('#notas').val(paciente.notas);
+	$('#alergico').prop('checked', paciente.alergico);
 }
 
 // Helper function to serialize all the form fields into a JSON string

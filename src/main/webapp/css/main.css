@@ -170,3 +170,9 @@ button {
 	border-color: rgb(9, 8, 8);
 	border-style: solid;
 }
+
+.pageName {
+	font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+	font-size: 22px;
+	color: #e9502a;
+}
