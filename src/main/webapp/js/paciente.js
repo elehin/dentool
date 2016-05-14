@@ -2,8 +2,8 @@
  * 
  */
 
-// var rootURL = 'https://dentool-elehin.rhcloud.com/service/paciente/';
-var rootURL = 'http://localhost:8080/service/paciente/';
+var rootURL = 'https://dentool-elehin.rhcloud.com/service/paciente/';
+// var rootURL = 'http://localhost:8080/service/paciente/';
 
 var currentPaciente;
 var searchTable;
@@ -36,6 +36,7 @@ $(document)
 					$("#btnAdd").click(function() {
 						currentPaciente = null;
 						hideMessages();
+						$("#btnSave").attr('value', 'Crear');
 						$("#pacienteForm")[0].reset();
 						$("#mainArea").show();
 						$("#leftArea").show();
@@ -115,6 +116,7 @@ function findPaciente(id) {
 				// dataType : "json",
 				success : function(data) {
 					currentPaciente = data;
+					$("#btnSave").attr('value', 'Modificar');
 					$("#mainArea").show();
 					$("#leftArea").show();
 					$("#rightArea").show();
@@ -136,6 +138,7 @@ function findPacienteByUrl(url) {
 				// dataType : "json",
 				success : function(data) {
 					currentPaciente = data;
+					$("#btnSave").attr('value', 'Modificar');
 					$("#mainArea").show();
 					$("#leftArea").show();
 					$("#rightArea").show();
@@ -157,7 +160,7 @@ function findPacienteByApellidos(apellidos) {
 				// dataType : "json",
 				success : function(data) {
 					if (data.length == 1) {
-						console.log(data);
+						$("#btnSave").attr('value', 'Modificar');
 						currentPaciente = data[0];
 						$("#mainArea").show();
 						$("#leftArea").show();
