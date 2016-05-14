@@ -1,5 +1,7 @@
 package com.dentool.rest.service;
 
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -16,6 +18,9 @@ public class PacienteService {
 	private EntityManager entityManager;
 
 	public Paciente create(Paciente paciente) {
+		Date now = new Date(Calendar.getInstance().getTimeInMillis());
+		paciente.setAlta(now);
+		paciente.setLastChange(now);
 		entityManager.persist(paciente);
 		return paciente;
 	}
@@ -45,8 +50,15 @@ public class PacienteService {
 
 	public List<Paciente> findByTelefono(String telefono) {
 		@SuppressWarnings("unchecked")
-		List<Paciente> lista = entityManager.createQuery("SELECT p FROM Paciente p WHERE p.telefono LIKE :telefono")
-				.setParameter("telefono", "%" + telefono + "%").getResultList();
+		List<Paciente> lista = entityManager.createQuery("SELECT p FROM Paciente p WHERE p.telefono = :telefono")
+				.setParameter("telefono", telefono).getResultList();
+		return lista;
+	}
+
+	public List<Paciente> findByDni(String dni) {
+		@SuppressWarnings("unchecked")
+		List<Paciente> lista = entityManager.createQuery("SELECT p FROM Paciente p WHERE p.dni = :dni")
+				.setParameter("dni", dni).getResultList();
 		return lista;
 	}
 
@@ -62,7 +74,7 @@ public class PacienteService {
 
 	public Paciente updatePaciente(Paciente p) {
 		Paciente lp = find(p.getId());
-
+		
 		lp.update(p);
 
 		return p;

@@ -9,7 +9,7 @@
 	position: absolute;
 	right: 0;
 	top: 0;
-	width: 17%;
+	width: 30%;
 	height: 120px;
 	background: url('../images/top-right.png') repeat-x right top;
 	z-index: -2;
@@ -176,3 +176,4 @@ button {
 	font-size: 22px;
 	color: #e9502a;
 }
+

@@ -1,6 +1,7 @@
 package com.dentool.model;
 
 import java.sql.Date;
+import java.util.Calendar;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,9 +23,12 @@ public class Paciente {
 	private String direccion;
 	private String notas;
 	private Date fechaNacimiento;
+	private String dni;
 	private String nameNormalized;
 	private String apellidosNormalized;
 	private boolean alergico = false;
+	private Date alta;
+	private Date lastChange;
 
 	public Long getId() {
 		return id;
@@ -112,6 +116,10 @@ public class Paciente {
 		setDireccion(origen.getDireccion());
 		setNotas(origen.getNotas());
 		setFechaNacimiento(origen.getFechaNacimiento());
+		setAlergico(origen.isAlergico());
+		setDni(origen.getDni());
+		setAlta(origen.getAlta());
+		setLastChange(new Date(Calendar.getInstance().getTimeInMillis()));
 	}
 
 	public boolean isAlergico() {
@@ -120,5 +128,29 @@ public class Paciente {
 
 	public void setAlergico(boolean alergico) {
 		this.alergico = alergico;
+	}
+
+	public String getDni() {
+		return dni;
+	}
+
+	public void setDni(String dni) {
+		this.dni = dni;
+	}
+
+	public Date getAlta() {
+		return alta;
+	}
+
+	public void setAlta(Date alta) {
+		this.alta = alta;
+	}
+
+	public Date getLastChange() {
+		return lastChange;
+	}
+
+	public void setLastChange(Date lastChange) {
+		this.lastChange = lastChange;
 	}
 }

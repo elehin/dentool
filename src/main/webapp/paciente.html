@@ -6,8 +6,16 @@
 	integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ="
 	crossorigin="anonymous"></script>
 <script src="js/paciente.js"></script>
+<script type="text/javascript" src="js/jquery-ui.js"></script>
+<script type="text/javascript"
+	src="https://cdn.datatables.net/t/dt/dt-1.10.11,b-1.1.2,cr-1.3.1,se-1.1.2/datatables.min.js"></script>
+
 <title>Pacientes</title>
 <link rel="stylesheet" href="css/main.css" />
+<link href="js/jquery-ui.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css"
+	href="https://cdn.datatables.net/t/dt/dt-1.10.11,b-1.1.2,cr-1.3.1,se-1.1.2/datatables.min.css" />
+
 </head>
 <body>
 	<div class="tail-top-right"></div>
@@ -32,7 +40,8 @@
 				id="name" name="name" required /> <label>Apellidos:</label> <input
 				type="text" id="apellidos" name="apellidos" /> <label>Dirección:</label>
 			<input type="text" id="direccion" name="direccion" /> <label>Teléfono:</label>
-			<input type="text" id="telefono" name="telefono" /> <label>Fecha
+			<input type="text" id="telefono" name="telefono" /> <label for="dni">DNI:</label>
+			<input type="text" id="dni" name="dni" /> <label>Fecha
 				Nacimiento:</label> <input type="date" id="fechaNacimiento"
 				name="fechaNacimiento" />
 
@@ -52,5 +61,20 @@
 		</div>
 
 	</form>
+
+	<div id="searchDialog" title="Búsqueda de paciente">
+		<form id="searchPacienteForm">
+			<p>Más de un paciente coincide con las condiciones de búsqueda:</p>
+			<table id="pacientesSearchTable" class="stripe row-border">
+				<thead>
+						<th>id</th>
+						<th>Nombre</th>
+						<th>Modificado</th>
+				</thead>
+				<tbody id="pacientesSearchTableBody">
+				</tbody>
+			</table>
+		</form>
+	</div>
 </body>
 </html>

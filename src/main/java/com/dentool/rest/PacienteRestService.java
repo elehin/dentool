@@ -66,6 +66,17 @@ public class PacienteRestService {
 	}
 
 	@GET
+	@Path("/dni/{dni}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response lookupPacienteByDni(@PathParam("dni") String dni) {
+		List<Paciente> lista = pacienteService.findByDni(dni);
+		if (lista == null) {
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}
+		return Response.ok(lista).build();
+	}
+
+	@GET
 	@Path("/nombre/{nombre}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response lookupPacienteByName(@PathParam("nombre") String nombre) {
