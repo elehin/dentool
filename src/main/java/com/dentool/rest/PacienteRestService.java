@@ -99,6 +99,17 @@ public class PacienteRestService {
 	}
 
 	@GET
+	@Path("/lastChanges")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response lookupPacienteByLastChange() {
+		List<Paciente> lista = pacienteService.findLastModified();
+		if (lista == null) {
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}
+		return Response.ok(lista).build();
+	}
+
+	@GET
 	@Path("/ping")
 	@Produces(MediaType.TEXT_HTML)
 	public String ping() {

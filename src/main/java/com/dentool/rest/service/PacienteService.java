@@ -30,6 +30,14 @@ public class PacienteService {
 		return p;
 	}
 
+	public List<Paciente> findLastModified() {
+		@SuppressWarnings("unchecked")
+		List<Paciente> lista = entityManager.createQuery("SELECT p FROM Paciente p ORDER BY p.lastChange DESC, p.id DESC")
+				.setMaxResults(10).getResultList();
+
+		return lista;
+	}
+
 	public List<Paciente> findByApellido(String apellido) {
 		apellido = Utils.removeTildes(apellido.toLowerCase());
 		@SuppressWarnings("unchecked")
@@ -74,7 +82,7 @@ public class PacienteService {
 
 	public Paciente updatePaciente(Paciente p) {
 		Paciente lp = find(p.getId());
-		
+
 		lp.update(p);
 
 		return p;

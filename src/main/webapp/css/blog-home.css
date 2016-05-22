@@ -1,0 +1,78 @@
+/*!
+ * Start Bootstrap - Blog Home HTML Template (http://startbootstrap.com)
+ * Code licensed under the Apache License v2.0.
+ * For details, see http://www.apache.org/licenses/LICENSE-2.0.
+ */
+body {
+	padding-top: 70px;
+	/* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+}
+
+footer {
+	margin: 50px 0;
+}
+
+.page-header {
+	padding-bottom: 9px;
+	margin: 0px 0 20px;
+	border-bottom: 1px solid #eee;
+}
+
+.info, .success, .warning, .error, .validation {
+	border: 1px solid;
+	margin: 10px 0px;
+	padding: 15px 10px 15px 50px;
+	background-repeat: no-repeat;
+	background-position: 10px center;
+}
+
+.info {
+	color: #00529B;
+	background-color: #BDE5F8;
+	background-image: url('info.png');
+}
+
+.success {
+	color: #4F8A10;
+	background-color: #DFF2BF;
+	background-image: url('../images/icons/Knob Valid Green.png');
+}
+
+.warning {
+	color: #9F6000;
+	background-color: #FEEFB3;
+	background-image: url('../images/icons/Knob Attention.png');
+}
+
+.error {
+	color: #D8000C;
+	background-color: #FFBABA;
+	background-image: url('../images/icons/Knob Cancel.png');
+}
+
+.notice {
+	background-color: green;
+	font: bolder 16px;
+}
+
+.leftArea {
+	/* position: absolute; */
+	/* left: 10px; */
+	/* top: 70px; */
+	/* bottom: 20px; */
+	width: 50%;
+	/* border: solid 1px #CCCCCC; */
+	padding: 5px;
+	/* overflow-y: scroll; */
+	float: left;
+}
+
+.mainArea {
+	/* position: absolute; */
+	/* 	top: 70px; */
+	/* 	bottom: 20px; */
+	/* 	left: 310px; */
+	/* overflow-y: scroll; */
+	width: 50%;
+	float: left;
+}

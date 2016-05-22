@@ -2,224 +2,40 @@
  * 
  */
 
-var rootURL = 'https://dentool-elehin.rhcloud.com/service/paciente/';
-// var rootURL = 'http://localhost:8080/service/paciente/';
+// var rootURL = 'https://dentool-elehin.rhcloud.com/service/paciente/';
+var rootURL = 'http://localhost:8080/service/paciente/';
 
 var currentPaciente;
 var searchTable;
 var searchDialog;
 
-$(document)
-		.ready(
-				function() {
+$(document).ready(function() {
+	if (getUrlParameter("paciente") != '') {
+		findPaciente(getUrlParameter("paciente"));
+	}
 
-					$("#btnSave").click(function() {
-						if (!$('#pacienteId').val()) {
-							createPaciente();
-						} else {
-							updatePaciente();
-						}
-
-						return false;
-					});
-
-					$("#btnSearch").click(function() {
-						key = $("#searchKey").val();
-						if ($.isNumeric(key)) {
-							findPaciente(key);
-						} else {
-							findPacienteByApellidos(key);
-						}
-						return false;
-					});
-
-					$("#btnAdd").click(function() {
-						currentPaciente = null;
-						hideMessages();
-						$("#btnSave").attr('value', 'Crear');
-						$("#pacienteForm")[0].reset();
-						$("#mainArea").show();
-						$("#leftArea").show();
-						$("#rightArea").show();
-						return false;
-					});
-
-					// Inicialización del diálogo para nuevas citas
-					searchDialog = $("#searchDialog").dialog({
-						autoOpen : false,
-						modal : true,
-						draggable : true,
-						buttons : {
-							"Cerrar" : function() {
-								$("#searchDialog").dialog("close");
-							}
-						},
-						close : function() {
-							$("#searchPacienteForm")[0].reset();
-							searchTable.destroy();
-						}
-					});
-
-					if (currentPaciente != null
-							&& currentPaciente.alergico == true) {
-						showMessage(
-								'Este paciente sufre algún tipo de alergia significativa',
-								'warning');
-					} else if (currentPaciente == null) {
-						$("#mainArea").hide();
-						$("#leftArea").hide();
-						$("#rightArea").hide();
-					}
-
-				});
-
-function createPaciente() {
-	$.ajax({
-		type : 'POST',
-		contentType : 'application/json',
-		url : rootURL,
-		// dataType : "json",
-		data : formToJSON(),
-		success : function(rdata, textStatus, jqXHR) {
-			showMessage('Paciente creado con éxito', 'success');
-			$('#pacienteId').val(rdata.id);
-			findPacienteByUrl(jqXHR.getResponseHeader('Location'));
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-			showMessage('Error al crear el paciente: ' + textStatus, 'error');
-		}
+	$("#btnSave").click(function() {
+		updatePaciente();
+		return false;
 	});
-}
 
-function updatePaciente() {
-	$.ajax({
-		type : 'POST',
-		contentType : 'application/json',
-		url : rootURL + 'update',
-		data : formToJSON(),
-		success : function(rdata, textStatus, jqXHR) {
-			showMessage('Paciente actualizado', 'success');
-			findPacienteByUrl(jqXHR.getResponseHeader('Location'));
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-			showMessage('El paciente no se ha actualizado debido a un error: '
-					+ textStatus, 'error');
-		}
-	});
-}
+});
 
 function findPaciente(id) {
-	$
-			.ajax({
-				type : 'GET',
-				url : rootURL + id,
-				// dataType : "json",
-				success : function(data) {
-					currentPaciente = data;
-					$("#btnSave").attr('value', 'Modificar');
-					$("#mainArea").show();
-					$("#leftArea").show();
-					$("#rightArea").show();
-					renderDetails(currentPaciente);
-					if (currentPaciente.alergico == true) {
-						showMessage(
-								'Este paciente sufre algún tipo de alergia significativa',
-								'warning');
-					}
-				}
-			});
-}
-
-function findPacienteByUrl(url) {
-	$
-			.ajax({
-				type : 'GET',
-				url : url,
-				// dataType : "json",
-				success : function(data) {
-					currentPaciente = data;
-					$("#btnSave").attr('value', 'Modificar');
-					$("#mainArea").show();
-					$("#leftArea").show();
-					$("#rightArea").show();
-					renderDetails(currentPaciente);
-					if (currentPaciente.alergico == true) {
-						showMessage(
-								'Este paciente sufre algún tipo de alergia significativa',
-								'warning');
-					}
-				}
-			});
-}
-
-function findPacienteByApellidos(apellidos) {
-	$
-			.ajax({
-				type : 'GET',
-				url : rootURL + "apellido/" + apellidos,
-				// dataType : "json",
-				success : function(data) {
-					if (data.length == 1) {
-						$("#btnSave").attr('value', 'Modificar');
-						currentPaciente = data[0];
-						$("#mainArea").show();
-						$("#leftArea").show();
-						$("#rightArea").show();
-						renderDetails(currentPaciente);
-						if (currentPaciente.alergico == true) {
-							showMessage(
-									'Este paciente sufre algún tipo de alergia significativa',
-									'warning');
-						}
-					} else if (data.length > 1) {
-
-						populateTable(data);
-
-						$("#searchDialog").dialog("option", "width", 400);
-						$("#searchDialog").dialog("open");
-					}
-				}
-			});
-}
-
-function populateTable(dataset) {
-	var trHTML = '';
-	$('#pacientesSearchTableBody').empty();
-
-	$.each(dataset,
-			function(i, item) {
-				trHTML += '<tr><td>' + item.id + '</td><td>' + item.name + ' '
-						+ item.apellidos + '</td><td>' + item.lastChange
-						+ '</td></tr>';
-			});
-	$("#pacientesSearchTableBody").append(trHTML);
-
-	searchTable = $('#pacientesSearchTable').DataTable({
-		"retrieve" : false,
-		"order" : [ [ 2, "desc" ] ],
-		"pagingType" : "numbers",
-		"lengthChange" : false,
-		"info" : false,
-		"language" : {
-			"search" : "Buscar:",
+	$.ajax({
+		type : 'GET',
+		url : rootURL + id,
+		// dataType : "json",
+		success : function(data) {
+			currentPaciente = data;
+			$("#btnSave").attr('value', 'Modificar');
+			renderDetails(currentPaciente);
 		}
 	});
-
-	searchTable.on('click', 'tr', function() {
-		findPaciente(searchTable.row(this).data()[0]);
-		searchDialog.dialog("close");
-	});
-
-	/*
-	 * $('#pacientesSearchTableBody').on('click', 'tr', function() { if
-	 * ($(this).hasClass('selected')) { $(this).removeClass('selected'); } else {
-	 * searchTable.$('tr.selected').removeClass('selected');
-	 * $(this).addClass('selected'); } });
-	 */
 }
 
 function renderDetails(paciente) {
-	hideMessages();
+	showAlergicoMessage();
 	$('#pacienteId').val(paciente.id);
 	$('#name').val(paciente.name);
 	$('#apellidos').val(paciente.apellidos);
@@ -229,9 +45,38 @@ function renderDetails(paciente) {
 	$('#notas').val(paciente.notas);
 	$('#alergico').prop('checked', paciente.alergico);
 	$('#dni').val(paciente.dni);
+	$("#btnSave").attr('value', 'Modificar');
 }
 
-// Helper function to serialize all the form fields into a JSON string
+var getUrlParameter = function getUrlParameter(sParam) {
+	var sPageURL = decodeURIComponent(window.location.search.substring(1)), sURLVariables = sPageURL
+			.split('&'), sParameterName, i;
+
+	for (i = 0; i < sURLVariables.length; i++) {
+		sParameterName = sURLVariables[i].split('=');
+
+		if (sParameterName[0] === sParam) {
+			return sParameterName[1] === undefined ? true : sParameterName[1];
+		}
+	}
+};
+
+function updatePaciente() {
+	$.ajax({
+		type : 'POST',
+		contentType : 'application/json',
+		url : rootURL + 'update',
+		data : formToJSON('modificar'),
+		success : function(rdata, textStatus, jqXHR) {
+			showSuccessMessage();
+			findPacienteByUrl(jqXHR.getResponseHeader('Location'));
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			showErrorMessage(textStatus);
+		}
+	});
+}
+
 function formToJSON() {
 	return JSON.stringify({
 		"id" : $('#pacienteId').val(),
@@ -246,30 +91,39 @@ function formToJSON() {
 	});
 }
 
-function resize_to_fit() {
-	var fontsize = $('div#outer div').css('font-size');
-	$('div#outer div').css('fontSize', parseFloat(fontsize) - 1);
+function showSuccessMessage() {
+	$("#success-alert").alert();
+	window.setTimeout(function() {
+		$("#success-alert").fadeTo(2000, 500).slideUp(500, function() {
+			$("#success-alert").hide();
+		});
+	}, 0);
+}
 
-	if ($('div#outer div').height() >= $('div#outer').height()) {
-		resize_to_fit();
+function showErrorMessage(error) {
+	$("#error-alert").alert();
+	window.setTimeout(function() {
+		$("#error-alert").fadeTo(2000, 500).slideUp(500, function() {
+			$("#error-alert").hide();
+		});
+	}, 0);
+}
+
+function showAlergicoMessage() {
+	if (currentPaciente.alergico == true) {
+		$("#alergia-alert").show()
 	}
 }
 
-function showMessage(message, style) {
-
-	style = style || 'notice'; // <== default style if it's not set
-
-	// create message and show it
-	$('<div>').attr('class', style).html(message).fadeIn('fast').insertBefore(
-			$('#messagesDiv')) // <== wherever you want it to show
-	.animate({
-		opacity : 1.0
-	}, 4000) // <== wait 3 sec before fading out
-	.fadeOut('slow', function() {
-		$(this).remove();
-	});
-}
-
-function hideMessages() {
-	$(".warning.error.success.info.validation").hide();
+function findPacienteByUrl(url) {
+	$
+			.ajax({
+				type : 'GET',
+				url : url,
+				// dataType : "json",
+				success : function(data) {
+					currentPaciente = data;
+					renderDetails(currentPaciente);
+				}
+			});
 }

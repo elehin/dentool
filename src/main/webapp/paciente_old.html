@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="https://code.jquery.com/jquery-1.12.3.min.js"
+	integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ="
+	crossorigin="anonymous"></script>
+<script src="js/paciente.js"></script>
+<script type="text/javascript" src="js/jquery-ui.js"></script>
+<script type="text/javascript"
+	src="https://cdn.datatables.net/t/dt/dt-1.10.11,b-1.1.2,cr-1.3.1,se-1.1.2/datatables.min.js"></script>
+
+<title>Pacientes</title>
+<link rel="stylesheet" href="css/main.css" />
+<link href="js/jquery-ui.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css"
+	href="https://cdn.datatables.net/t/dt/dt-1.10.11,b-1.1.2,cr-1.3.1,se-1.1.2/datatables.min.css" />
+
+</head>
+<body>
+	<div class="tail-top-right"></div>
+	<div class="tail-top-left"></div>
+	<div class="banner">
+		<img id="logo" src="images/logo.jpg" />
+	</div>
+	<div class="header container">
+		<div class="left">
+			<h2 class="pageName" style="margin-bottom: 6px">Pacientes</h2>
+		</div>
+		<div class="right">
+			<input type="search" id="searchKey" placeholder="Search Text..." />
+			<button id="btnSearch">Buscar</button>
+		</div>
+		<div class="center">
+			<button id="btnAdd">Paciente Nuevo</button>
+		</div>
+	</div>
+
+
+	<div id="bodyDiv">
+		<div id="messagesDiv"></div>
+		<form id="pacienteForm">
+
+			<div id="leftArea" class="leftArea">
+				<label>Id:</label> <input id="pacienteId" name="id" type="text"
+					disabled /> <label for="name">Nombre:</label> <input type="text"
+					id="name" name="name" required /> <label>Apellidos:</label> <input
+					type="text" id="apellidos" name="apellidos" /> <label>Dirección:</label>
+				<input type="text" id="direccion" name="direccion" /> <label>Teléfono:</label>
+				<input type="text" id="telefono" name="telefono" /> <label
+					for="dni">DNI:</label> <input type="text" id="dni" name="dni" /> <label>Fecha
+					Nacimiento:</label> <input type="date" id="fechaNacimiento"
+					name="fechaNacimiento" />
+
+				<button id="btnSave">Crear</button>
+			</div>
+
+			<div id="mainArea" class="mainArea">
+				<label for="alergico">Alérgico:</label> <input type="checkbox"
+					id="alergico" name="alergico" value="true"> <label
+					for="notas">Notas:</label>
+				<textarea id="notas" name="notas"></textarea>
+			</div>
+
+			<div id="rightArea" class="rightArea">
+				<ul id="wineList"></ul>
+				<p>Right area</p>
+			</div>
+
+		</form>
+	</div>
+
+	<div id="searchDialog" title="Búsqueda de paciente">
+		<form id="searchPacienteForm">
+			<p>Más de un paciente coincide con las condiciones de búsqueda:</p>
+			<table id="pacientesSearchTable" class="stripe row-border">
+				<thead>
+					<th>id</th>
+					<th>Nombre</th>
+					<th>Modificado</th>
+				</thead>
+				<tbody id="pacientesSearchTableBody">
+				</tbody>
+			</table>
+		</form>
+	</div>
+</body>
+</html>
