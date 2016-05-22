@@ -2,8 +2,8 @@
  * 
  */
 
- var rootURL = 'https://dentool-elehin.rhcloud.com/service/paciente/';
-//var rootURL = 'http://localhost:8080/service/paciente/';
+var rootURL = 'https://dentool-elehin.rhcloud.com/service/paciente/';
+// var rootURL = 'http://localhost:8080/service/paciente/';
 
 var currentPaciente;
 var searchTable;
@@ -116,14 +116,13 @@ function showAlergicoMessage() {
 }
 
 function findPacienteByUrl(url) {
-	$
-			.ajax({
-				type : 'GET',
-				url : url,
-				// dataType : "json",
-				success : function(data) {
-					currentPaciente = data;
-					renderDetails(currentPaciente);
-				}
-			});
+	$.ajax({
+		type : 'GET',
+		url : url,
+		// dataType : "json",
+		success : function(data) {
+			currentPaciente = data;
+			renderDetails(currentPaciente);
+		}
+	});
 }

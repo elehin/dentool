@@ -1,7 +1,7 @@
  var rootURL = 'https://dentool-elehin.rhcloud.com/service/paciente/';
 //var rootURL = 'http://localhost:8080/service/paciente/';
 //var serverURL = 'http://localhost:8080/';
-var serverURL = 'https://dentool-elehin.rhcloud.com/';
+ var serverURL = 'https://dentool-elehin.rhcloud.com/';
 
 // ################### document.ready() ##################################
 $(document).ready(function() {
@@ -24,7 +24,7 @@ $(document).ready(function() {
 // ###################### Funciones #######################################
 function populateTable(dataset) {
 	var trHTML = '';
-	var lupa = '<button class="btn btn-info" role="button"><span class="glyphicon glyphicon-search"></span></button>';
+	var lupa = '<button class="btn btn-info padding-0-4" role="button"><span class="glyphicon glyphicon-search"></span></button>';
 	$('#ultimosPacientesBody').empty();
 
 	$.each(dataset, function(i, item) {
@@ -59,10 +59,16 @@ function populateTable(dataset) {
 function buscarPaciente() {
 	key = $("#searchKey").val();
 	if ($.isNumeric(key)) {
-		var url = serverURL + 'paciente.html?paciente=' + key;
-		window.location.replace(url);
+		if (key.length == 9) {
+			var url = serverURL + 'pacienteMultiple.html?key=' + key;
+			window.location.replace(url);
+		} else {
+			var url = serverURL + 'paciente.html?paciente=' + key;
+			window.location.replace(url);
+		}
 	} else {
-		findPacienteByApellidos(key);
+		var url = serverURL + 'pacienteMultiple.html?key=' + key;
+		window.location.replace(url);
 	}
 	return false;
 }
