@@ -2,8 +2,8 @@
  * 
  */
 
-// var rootURL = 'https://dentool-elehin.rhcloud.com/service/paciente/';
-var rootURL = 'http://localhost:8080/service/paciente/';
+ var rootURL = 'https://dentool-elehin.rhcloud.com/service/paciente/';
+//var rootURL = 'http://localhost:8080/service/paciente/';
 
 var currentPaciente;
 var searchTable;
