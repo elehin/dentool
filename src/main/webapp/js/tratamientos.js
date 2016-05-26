@@ -1,15 +1,15 @@
-var rootURL = 'https://dentool-elehin.rhcloud.com/service/paciente/';
-// var rootURL = 'http://localhost:8080/service/paciente/';
+var rootURL = 'https://dentool-elehin.rhcloud.com/service/tratamiento/';
+// var rootURL = 'http://localhost:8080/service/tratamiento/';
 // var serverURL = 'http://localhost:8080/';
 var serverURL = 'https://dentool-elehin.rhcloud.com/';
 
 // ################### document.ready() ##################################
 $(document).ready(function() {
 
-	getLastChangedPacientes();
+	getTratamientos();
 
 	$("#btnSearch").click(function() {
-		buscarPaciente();
+		buscarTratamiento();
 		return false;
 	});
 
@@ -25,58 +25,47 @@ $(document).ready(function() {
 function populateTable(dataset) {
 	var trHTML = '';
 	var lupa = '<button class="btn btn-info padding-0-4" role="button"><span class="glyphicon glyphicon-search"></span></button>';
-	$('#ultimosPacientesBody').empty();
+	$('#tableTratamientosBody').empty();
 
 	$.each(dataset, function(i, item) {
 		trHTML += '<tr><td>' + item.id + '</td><td>' + lupa + '</td><td>'
-				+ item.name + '</td><td>' + item.apellidos + '</td><td>'
-				+ item.telefono + '</td><td>' + item.lastChange + '</td></tr>';
+				+ item.nombre + '</td><td>' + item.precio + '</td></tr>';
 	});
-	$("#ultimosPacientesBody").append(trHTML);
+	$("#tableTratamientosBody").append(trHTML);
 
-	searchTable = $('#tableUltimosPacientes').DataTable({
+	searchTable = $('#tableTratamientos').DataTable({
 		"retrieve" : false,
-		"paging" : false,
+		"paging" : true,
 		"searching" : false,
-		"info" : false,
+		"info" : true,
 		"columnDefs" : [ {
 			"targets" : [ 0 ],
 			"visible" : false
 		} ],
-		"order" : [ [ 5, "desc" ], [ 0, "desc" ] ],
+		"order" : [ 3, "asc" ],
 		"language" : {
 			"search" : "Buscar:"
 		}
 	});
 
-	$('#tableUltimosPacientes tbody').on('click', 'button', function() {
+	$('#tableTratamientos tbody').on('click', 'button', function() {
 		var data = searchTable.row($(this).parents('tr')).data();
-		url = serverURL + 'paciente.html?paciente=' + data[0];
+		url = serverURL + 'tratamiento.html?tratamiento=' + data[0];
 		window.location.replace(url);
 	});
 }
 
-function buscarPaciente() {
+function buscarTratamiento() {
 	key = $("#searchKey").val();
-	if ($.isNumeric(key)) {
-		if (key.length == 9) {
-			var url = serverURL + 'pacienteMultiple.html?key=' + key;
-			window.location.replace(url);
-		} else {
-			var url = serverURL + 'paciente.html?paciente=' + key;
-			window.location.replace(url);
-		}
-	} else {
-		var url = serverURL + 'pacienteMultiple.html?key=' + key;
-		window.location.replace(url);
-	}
-	return false;
+
+	var url = serverURL + 'tratamientoMultiple.html?key=' + key;
+	window.location.replace(url);
 }
 
-function getLastChangedPacientes() {
+function getTratamientos() {
 	$.ajax({
 		type : 'GET',
-		url : rootURL + 'lastChanges',
+		url : rootURL,
 		// dataType : "json",
 		success : function(data) {
 			populateTable(data);

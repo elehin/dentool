@@ -1,5 +1,9 @@
-var rootURL = 'https://dentool-elehin.rhcloud.com/service/paciente/';
-// var rootURL = 'http://localhost:8080/service/paciente/';
+/**
+ * 
+ */
+
+var rootURL = 'https://dentool-elehin.rhcloud.com/service/tratamiento/';
+// var rootURL = 'http://localhost:8080/service/tratamiento/';
 // var serverURL = 'http://localhost:8080/';
 var serverURL = 'https://dentool-elehin.rhcloud.com/'
 
@@ -8,13 +12,13 @@ var currentPaciente;
 $(document).ready(function() {
 
 	$("#btnSave").click(function() {
-		createPaciente();
+		createTratamiento();
 		return false;
 	});
 
 });
 
-function createPaciente() {
+function createTratamiento() {
 	$.ajax({
 		type : 'POST',
 		contentType : 'application/json',
@@ -37,14 +41,8 @@ function createPaciente() {
 
 function formToJSON() {
 	return JSON.stringify({
-		"name" : $('#name').val(),
-		"apellidos" : $('#apellidos').val(),
-		"direccion" : $('#direccion').val(),
-		"telefono" : $('#telefono').val(),
-		"fechaNacimiento" : $('#fechaNacimiento').val(),
-		"notas" : $('#notas').val(),
-		"dni" : $('#dni').val(),
-		"alergico" : $('#alergico').prop('checked')
+		"nombre" : $('#name').val(),
+		"precio" : $('#precio').val()
 	});
 }
 
@@ -53,7 +51,7 @@ function showSuccessMessage(id) {
 	window.setTimeout(function() {
 		$("#success-alert").fadeTo(1000, 500).slideUp(500, function() {
 			$("#success-alert").hide();
-			url = serverURL + 'paciente.html?paciente=' + id;
+			url = serverURL + 'tratamiento.html?tratamiento=' + id;
 			window.location.replace(url);
 		});
 	}, 0);

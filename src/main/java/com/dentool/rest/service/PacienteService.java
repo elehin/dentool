@@ -32,8 +32,9 @@ public class PacienteService {
 
 	public List<Paciente> findLastModified() {
 		@SuppressWarnings("unchecked")
-		List<Paciente> lista = entityManager.createQuery("SELECT p FROM Paciente p ORDER BY p.lastChange DESC, p.id DESC")
-				.setMaxResults(10).getResultList();
+		List<Paciente> lista = entityManager
+				.createQuery("SELECT p FROM Paciente p ORDER BY p.lastChange DESC, p.id DESC").setMaxResults(10)
+				.getResultList();
 
 		return lista;
 	}
@@ -88,12 +89,10 @@ public class PacienteService {
 		return p;
 	}
 
-	public Paciente deletePaciente(long id) {
+	public void deletePaciente(long id) {
 		Paciente p = find(id);
-		if (p == null) {
-			return null;
+		if (p != null) {
+			entityManager.remove(p);
 		}
-		entityManager.remove(p);
-		return p;
 	}
 }

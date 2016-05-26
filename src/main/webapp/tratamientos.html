@@ -9,7 +9,7 @@
 <meta name="description" content="">
 <meta name="author" content="">
 
-<title>Dentool - Pacientes</title>
+<title>Dentool - Tratamientos</title>
 
 <!-- Bootstrap Core CSS -->
 <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -48,7 +48,7 @@
 			</div>
 			<div class="collapse navbar-collapse" id="myNavbar">
 				<ul class="nav navbar-nav">
-					<li class="active"><a href="index.html">Pacientes</a></li>
+					<li><a href="index.html">Pacientes</a></li>
 					<!-- <li class="dropdown"><a class="dropdown-toggle"
 						data-toggle="dropdown" href="#">Page 1 <span class="caret"></span></a>
 							<ul class="dropdown-menu">
@@ -57,7 +57,7 @@
 							<li><a href="#">Page 1-3</a></li>
 						</ul> -->
 					</li>
-					<li><a href="tratamientos.html">Tratamientos</a></li>
+					<li class="active"><a href="tratamientos.html">Tratamientos</a></li>
 					<li><a href="facturas.html">Facturas</a></li>
 				</ul>
 				<!-- 	<ul class="nav navbar-nav navbar-right">
@@ -76,18 +76,18 @@
 
 		<div id="contentRow1" class="row">
 
-			<h1 class="page-header">Pacientes</h1>
+			<h1 class="page-header">Tratamientos</h1>
 
 			<div class="col-md-6">
 
 				<div class="row">
 					<div class="col-md-4">
-						<h4>Últimos tratamientos</h4>
+						<h4>Lista tratamientos</h4>
 					</div>
 					<div class="col-md-5">
 						<div class="input-group">
 							<input type="search" class="form-control" id="searchKey"
-								placeholder="Buscar pacientes..."> <span
+								placeholder="Buscar tratamiento..."> <span
 								class="input-group-btn">
 								<button class="btn btn-default" type="button" id="btnSearch">
 									<span class="glyphicon glyphicon-search"></span>
@@ -96,24 +96,22 @@
 						</div>
 					</div>
 					<div class="col-md-3">
-						<a href="pacienteNuevo.html" class="btn btn-info btn-block"
+						<a href="tratamientoNuevo.html" class="btn btn-info btn-block"
 							role="button" id="btnAdd"> <span
 							class="glyphicon glyphicon-plus"></span> Nuevo
 						</a>
 					</div>
 				</div>
 
-				<table id="tableUltimosPacientes"
+				<table id="tableTratamientos"
 					class="table table-striped table-hover display responsive nowrap">
 					<thead>
 						<th>id</th>
 						<th>&nbsp;</th>
 						<th>Nombre</th>
-						<th>Apellidos</th>
-						<th>Teléfono</th>
-						<th>Fecha</th>
+						<th>Precio</th>
 					</thead>
-					<tbody id="ultimosPacientesBody"></tbody>
+					<tbody id="tableTratamientosBody"></tbody>
 				</table>
 
 			</div>
@@ -156,7 +154,7 @@
 	<!-- Bootstrap Core JavaScript -->
 	<script src="js/bootstrap.min.js"></script>
 
-	<script src="js/index.js"></script>
+	<script src="js/tratamientos.js"></script>
 
 </body>
 
