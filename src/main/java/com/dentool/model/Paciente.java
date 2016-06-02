@@ -2,13 +2,18 @@ package com.dentool.model;
 
 import java.sql.Date;
 import java.util.Calendar;
+import java.util.Collection;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import com.dentool.utils.Utils;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 public class Paciente {
@@ -16,6 +21,10 @@ public class Paciente {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "paciente", fetch = FetchType.EAGER)
+	@JsonManagedReference
+	private Collection<Diagnostico> diagnosticos;
 
 	private String name;
 	private String apellidos;
@@ -120,6 +129,7 @@ public class Paciente {
 		setDni(origen.getDni());
 		setAlta(origen.getAlta());
 		setLastChange(new Date(Calendar.getInstance().getTimeInMillis()));
+		setDiagnosticos(origen.getDiagnosticos());
 	}
 
 	public boolean isAlergico() {
@@ -152,5 +162,13 @@ public class Paciente {
 
 	public void setLastChange(Date lastChange) {
 		this.lastChange = lastChange;
+	}
+
+	public Collection<Diagnostico> getDiagnosticos() {
+		return diagnosticos;
+	}
+
+	public void setDiagnosticos(Collection<Diagnostico> diagnosticos) {
+		this.diagnosticos = diagnosticos;
 	}
 }

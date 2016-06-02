@@ -27,14 +27,14 @@ public class PacienteService {
 
 	public Paciente find(long id) {
 		Paciente p = entityManager.find(Paciente.class, id);
+		System.out.println(p.getDiagnosticos());
 		return p;
 	}
 
 	public List<Paciente> findLastModified() {
+		String query = "SELECT p FROM Paciente p ORDER BY p.lastChange DESC, p.id DESC";
 		@SuppressWarnings("unchecked")
-		List<Paciente> lista = entityManager
-				.createQuery("SELECT p FROM Paciente p ORDER BY p.lastChange DESC, p.id DESC").setMaxResults(10)
-				.getResultList();
+		List<Paciente> lista = entityManager.createQuery(query).setMaxResults(10).getResultList();
 
 		return lista;
 	}

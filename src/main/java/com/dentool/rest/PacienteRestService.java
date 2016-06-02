@@ -1,5 +1,6 @@
 package com.dentool.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -15,6 +16,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import com.dentool.model.Paciente;
+import com.dentool.model.PacienteLazy;
 import com.dentool.rest.service.PacienteService;
 
 @Path("/paciente")
@@ -106,7 +108,13 @@ public class PacienteRestService {
 		if (lista == null) {
 			throw new WebApplicationException(Response.Status.NOT_FOUND);
 		}
-		return Response.ok(lista).build();
+
+		List<PacienteLazy> listaLazy = new ArrayList<PacienteLazy>();
+		for (Paciente p : lista) {
+			listaLazy.add(new PacienteLazy(p));
+		}
+
+		return Response.ok(listaLazy).build();
 	}
 
 	@GET

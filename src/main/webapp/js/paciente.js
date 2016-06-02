@@ -1,5 +1,7 @@
 //var rootURL = 'https://dentool-elehin.rhcloud.com/service/paciente/';
 var rootURL = 'http://localhost:8080/service/paciente/';
+var diagnosticoURL = 'http://localhost:8080/service/diagnostico/';
+var tratamientoURL = 'http://localhost:8080/service/tratamiento/';
 
 var currentPaciente;
 var searchTable;
@@ -15,7 +17,69 @@ $(document).ready(function() {
 		return false;
 	});
 
+	$("#btnAddDiagnostico").click(function() {
+		addDiagnostico();
+		return false;
+	});
+
+	getTratamientosList();
+
 });
+
+function getTratamientosList() {
+	$.ajax({
+		type : 'GET',
+		url : tratamientoURL,
+		// dataType : "json",
+		success : function(data) {
+			$.each(data,
+					function(i, item) {
+						$('#tratamiento').append(
+								$('<option>').text(item.nombre).attr('value',
+										item.id));
+					});
+			$('#tratamiento').selectpicker('refresh');
+		}
+	});
+}
+
+function addDiagnostico() {
+	$.ajax({
+		type : 'POST',
+		contentType : 'application/json',
+		url : diagnosticoURL + 'add',
+		data : formToJSON('addDiagnostico'),
+		success : function(rdata, textStatus, jqXHR) {
+			showDiagnosticoSuccessMessage();
+			$('#addDiagDiv').toggleClass("in");
+			// findPaciente(currentPaciente.id);
+			findDiagnosticoByUrl(jqXHR.getResponseHeader('Location'));
+			$('#addDiagForm')[0].reset();
+
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			showErrorMessage(textStatus);
+		}
+	});
+}
+
+function findDiagnosticoByUrl(url) {
+	var lupa = '<button class="btn btn-info padding-0-4" role="button"><span class="glyphicon glyphicon-search"></span></button>';
+	var pagado = '<button class="btn btn-danger padding-0-4" role="button"><span class="glyphicon glyphicon-euro"></span></button>';
+
+	$.ajax({
+		type : 'GET',
+		url : url,
+		// dataType : "json",
+		success : function(data) {
+			var table = $('#tableUltimosTratamientos').DataTable({
+				"retrieve" : true
+			});
+			table.row.add([ data.id, lupa, pagado, data.tratamiento.nombre ])
+					.draw(false);
+		}
+	});
+}
 
 function findPaciente(id) {
 	$.ajax({
@@ -42,6 +106,71 @@ function renderDetails(paciente) {
 	$('#alergico').prop('checked', paciente.alergico);
 	$('#dni').val(paciente.dni);
 	$("#btnSave").attr('value', 'Modificar');
+	populateLastDiagnosticos();
+}
+
+function populateLastDiagnosticos() {
+	getDiagnosticosByPaciente(currentPaciente.id);
+
+}
+
+function renderTableDiagnosticos(diagnosticos) {
+	// var trHTML = '';
+	var lupa = '<button class="btn btn-info padding-0-4" role="button"><span class="glyphicon glyphicon-search"></span></button>';
+	// $('#ultimosTratamientosBody').empty();
+
+	/*
+	 * $.each(diagnosticos, function(i, item) { trHTML += '<tr><td>' +
+	 * item.id + '</td><td>' + lupa + '</td><td>' +
+	 * item.tratamiento.nombre + '</td></tr>'; });
+	 * $("#ultimosTratamientosBody").append(trHTML);
+	 */
+
+	var dataset = [];
+	$.each(diagnosticos, function(i, item) {
+		row = [ item.id, lupa, '', item.tratamiento.nombre ];
+		dataset.push(row);
+	});
+
+	searchTable = $('#tableUltimosTratamientos').DataTable({
+		"retrieve" : true,
+		"paging" : false,
+		"searching" : false,
+		"info" : false,
+		"data" : dataset,
+		"columns" : [ {
+			"title" : "id"
+		}, {
+			"title" : "&nbsp;"
+		}, {
+			"title" : "&nbsp;"
+		}, {
+			"title" : "Tratamiento"
+		}, ],
+		"columnDefs" : [ {
+			"className" : "never",
+			"targets" : [ 0 ],
+			"visible" : false
+		} ],
+	});
+
+	$('#tableUltimosTratamientos tbody').on('click', 'button', function() {
+		var data = searchTable.row($(this).parents('tr')).data();
+		url = serverURL + 'paciente.html?paciente=' + data[0];
+		window.location.replace(url);
+	});
+
+}
+
+function getDiagnosticosByPaciente(paciente) {
+	$.ajax({
+		type : 'GET',
+		url : diagnosticoURL + 'paciente/' + paciente,
+		// dataType : "json",
+		success : function(data) {
+			renderTableDiagnosticos(data);
+		}
+	});
 }
 
 var getUrlParameter = function getUrlParameter(sParam) {
@@ -73,18 +202,31 @@ function updatePaciente() {
 	});
 }
 
-function formToJSON() {
-	return JSON.stringify({
-		"id" : $('#pacienteId').val(),
-		"name" : $('#name').val(),
-		"apellidos" : $('#apellidos').val(),
-		"direccion" : $('#direccion').val(),
-		"telefono" : $('#telefono').val(),
-		"fechaNacimiento" : $('#fechaNacimiento').val(),
-		"notas" : $('#notas').val(),
-		"dni" : $('#dni').val(),
-		"alergico" : $('#alergico').prop('checked')
-	});
+function formToJSON(action) {
+	if (action == 'addDiagnostico') {
+		return JSON.stringify({
+			"tratamiento" : {
+				"id" : $('#tratamiento').val()
+			},
+			"paciente" : {
+				"id" : $('#pacienteId').val()
+			},
+			"iniciado" : false,
+			"finalizado" : false
+		});
+	} else {
+		return JSON.stringify({
+			"id" : $('#pacienteId').val(),
+			"name" : $('#name').val(),
+			"apellidos" : $('#apellidos').val(),
+			"direccion" : $('#direccion').val(),
+			"telefono" : $('#telefono').val(),
+			"fechaNacimiento" : $('#fechaNacimiento').val(),
+			"notas" : $('#notas').val(),
+			"dni" : $('#dni').val(),
+			"alergico" : $('#alergico').prop('checked')
+		});
+	}
 }
 
 function showSuccessMessage() {
@@ -93,6 +235,16 @@ function showSuccessMessage() {
 		$("#success-alert").fadeTo(2000, 500).slideUp(500, function() {
 			$("#success-alert").hide();
 		});
+	}, 0);
+}
+
+function showDiagnosticoSuccessMessage() {
+	$("#diagnostico-success-alert").alert();
+	window.setTimeout(function() {
+		$("#diagnostico-success-alert").fadeTo(2000, 500).slideUp(500,
+				function() {
+					$("#diagnostico-success-alert").hide();
+				});
 	}, 0);
 }
 

@@ -27,8 +27,20 @@ footer {
 	margin-top: 15px
 }
 
+.margin-top-5 {
+	margin-top: 15px
+}
+
 .padding-0-4 {
 	padding: 0px 4px;
+}
+
+.padding-5 {
+	padding: 5px;
+}
+
+.bgcolor-fff {
+	background-color: #fff;
 }
 
 #tableUltimosPacientes tbody tr {
