@@ -1,11 +1,17 @@
-//var rootURL = 'https://dentool-elehin.rhcloud.com/service/paciente/';
-var rootURL = 'http://localhost:8080/service/paciente/';
-var diagnosticoURL = 'http://localhost:8080/service/diagnostico/';
-var tratamientoURL = 'http://localhost:8080/service/tratamiento/';
+var rootURL = 'https://dentool-elehin.rhcloud.com/service/paciente/';
+var diagnosticoURL = 'https://dentool-elehin.rhcloud.com/service/diagnostico/';
+var tratamientoURL = 'https://dentool-elehin.rhcloud.com/service/tratamiento/';
+var tratamientosTopURL = 'https://dentool-elehin.rhcloud.com/service/tratamientoTop';
+
+//var rootURL = 'http://localhost:8080/service/paciente/';
+//var diagnosticoURL = 'http://localhost:8080/service/diagnostico/';
+//var tratamientoURL = 'http://localhost:8080/service/tratamiento/';
+//var tratamientosTopURL = 'http://localhost:8080/service/tratamientoTop';
 
 var currentPaciente;
 var searchTable;
 var searchDialog;
+var activeDiagnostico;
 
 $(document).ready(function() {
 	if (getUrlParameter("paciente") != '') {
@@ -22,9 +28,52 @@ $(document).ready(function() {
 		return false;
 	});
 
+	$("#ttbtn1").click(function() {
+		addDiagnostico(1);
+		return false;
+	});
+
+	$("#ttbtn2").click(function() {
+		addDiagnostico(2);
+		return false;
+	});
+
+	$("#ttbtn3").click(function() {
+		addDiagnostico(3);
+		return false;
+	});
+
+	$("#ttbtn4").click(function() {
+		addDiagnostico(4);
+		return false;
+	});
+
+	$("#ttbtn5").click(function() {
+		addDiagnostico(5);
+		return false;
+	});
+
 	getTratamientosList();
+	getTratamientosTop();
 
 });
+
+function getTratamientosTop() {
+	$.ajax({
+		type : 'GET',
+		url : tratamientosTopURL,
+		// dataType : "json",
+		success : function(data) {
+			$.each(data, function(i, item) {
+				var j = 1 + i;
+				var id = "tt" + j;
+				var valor = item.nombre + " " + item.precio + " €";
+				$("#" + id).attr("value", valor);
+				$("#" + id).attr("tratamiento", item.tratamiento);
+			});
+		}
+	});
+}
 
 function getTratamientosList() {
 	$.ajax({
@@ -43,40 +92,77 @@ function getTratamientosList() {
 	});
 }
 
-function addDiagnostico() {
-	$.ajax({
-		type : 'POST',
-		contentType : 'application/json',
-		url : diagnosticoURL + 'add',
-		data : formToJSON('addDiagnostico'),
-		success : function(rdata, textStatus, jqXHR) {
-			showDiagnosticoSuccessMessage();
-			$('#addDiagDiv').toggleClass("in");
-			// findPaciente(currentPaciente.id);
-			findDiagnosticoByUrl(jqXHR.getResponseHeader('Location'));
-			$('#addDiagForm')[0].reset();
+function addDiagnostico(tratamientoTop) {
+	if (tratamientoTop == null) {
+		tratamientoTop = 'addDiagnostico';
+	}
 
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-			showErrorMessage(textStatus);
-		}
-	});
+	var lupa = '<button class="btn btn-info padding-0-4" role="button"><span class="glyphicon glyphicon-search"></span></button>';
+	var sinPagar = '<button class="btn btn-danger padding-0-4" role="button"><span class="glyphicon glyphicon-euro"></span></button>';
+	var pagado = '<button class="btn btn-success padding-0-4" role="button"><span class="glyphicon glyphicon-euro"></span></button>';
+	var pagadoPacial = '<button class="btn btn-warning padding-0-4" role="button"><span class="glyphicon glyphicon-euro"></span></button>';
+
+	$
+			.ajax({
+				type : 'POST',
+				contentType : 'application/json',
+				url : diagnosticoURL + 'add',
+				data : formToJSON(tratamientoTop),
+				success : function(rdata, textStatus, jqXHR) {
+					showDiagnosticoSuccessMessage();
+					$('#addDiagDiv').toggleClass("in");
+					$
+							.when($
+									.ajax(
+											{
+												type : 'GET',
+												url : jqXHR
+														.getResponseHeader('Location'),
+												success : function(data) {
+													activeDiagnostico = data;
+												}
+											})
+									.done(
+											function() {
+												var table = $(
+														'#tableUltimosTratamientos')
+														.DataTable({
+															"retrieve" : true
+														});
+												var estado;
+												if (activeDiagnostico.pagado == 0) {
+													estado = sinPagar;
+												} else if (activeDiagnostico.pagado == activeDiagnostico.precio) {
+													estado = pagado;
+												} else {
+													estado = pagadoPacial;
+												}
+												table.row
+														.add(
+																[
+																		activeDiagnostico.id,
+																		activeDiagnostico.precio,
+																		activeDiagnostico.pagado,
+																		lupa,
+																		estado,
+																		activeDiagnostico.tratamiento.nombre ])
+														.draw(false);
+												$('#addDiagForm')[0].reset();
+											}));
+
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+					showErrorMessage(textStatus);
+				}
+			});
 }
 
 function findDiagnosticoByUrl(url) {
-	var lupa = '<button class="btn btn-info padding-0-4" role="button"><span class="glyphicon glyphicon-search"></span></button>';
-	var pagado = '<button class="btn btn-danger padding-0-4" role="button"><span class="glyphicon glyphicon-euro"></span></button>';
-
 	$.ajax({
 		type : 'GET',
 		url : url,
-		// dataType : "json",
 		success : function(data) {
-			var table = $('#tableUltimosTratamientos').DataTable({
-				"retrieve" : true
-			});
-			table.row.add([ data.id, lupa, pagado, data.tratamiento.nombre ])
-					.draw(false);
+			activeDiagnostico = data;
 		}
 	});
 }
@@ -114,25 +200,34 @@ function populateLastDiagnosticos() {
 
 }
 
-function renderTableDiagnosticos(diagnosticos) {
-	// var trHTML = '';
+function renderDiagTableRow(item) {
 	var lupa = '<button class="btn btn-info padding-0-4" role="button"><span class="glyphicon glyphicon-search"></span></button>';
-	// $('#ultimosTratamientosBody').empty();
+	var sinPagar = '<button class="btn btn-danger padding-0-4" role="button"><span class="glyphicon glyphicon-euro"></span></button>';
+	var pagado = '<button class="btn btn-success padding-0-4" role="button"><span class="glyphicon glyphicon-euro"></span></button>';
+	var pagadoPacial = '<button class="btn btn-warning padding-0-4" role="button"><span class="glyphicon glyphicon-euro"></span></button>';
 
-	/*
-	 * $.each(diagnosticos, function(i, item) { trHTML += '<tr><td>' +
-	 * item.id + '</td><td>' + lupa + '</td><td>' +
-	 * item.tratamiento.nombre + '</td></tr>'; });
-	 * $("#ultimosTratamientosBody").append(trHTML);
-	 */
+	if (item.pagado == 0) {
+		estado = sinPagar;
+	} else if (item.pagado == item.precio) {
+		estado = pagado;
+	} else {
+		estado = pagadoPacial;
+	}
+	row = [ item.id, item.precio, item.pagado, lupa, estado,
+			item.tratamiento.nombre ];
+
+	return row;
+}
+
+function renderTableDiagnosticos(diagnosticos) {
 
 	var dataset = [];
+
 	$.each(diagnosticos, function(i, item) {
-		row = [ item.id, lupa, '', item.tratamiento.nombre ];
-		dataset.push(row);
+		dataset.push(renderDiagTableRow(item));
 	});
 
-	searchTable = $('#tableUltimosTratamientos').DataTable({
+	diagsTable = $('#tableUltimosTratamientos').DataTable({
 		"retrieve" : true,
 		"paging" : false,
 		"searching" : false,
@@ -140,6 +235,10 @@ function renderTableDiagnosticos(diagnosticos) {
 		"data" : dataset,
 		"columns" : [ {
 			"title" : "id"
+		}, {
+			"title" : "precio"
+		}, {
+			"title" : "pagado"
 		}, {
 			"title" : "&nbsp;"
 		}, {
@@ -149,16 +248,56 @@ function renderTableDiagnosticos(diagnosticos) {
 		}, ],
 		"columnDefs" : [ {
 			"className" : "never",
-			"targets" : [ 0 ],
+			"targets" : [ 0, 1, 2 ],
 			"visible" : false
 		} ],
 	});
 
-	$('#tableUltimosTratamientos tbody').on('click', 'button', function() {
-		var data = searchTable.row($(this).parents('tr')).data();
-		url = serverURL + 'paciente.html?paciente=' + data[0];
-		window.location.replace(url);
-	});
+	var buttonOrigin;
+	$('#tableUltimosTratamientos tbody')
+			.on(
+					'click',
+					'button',
+					function() {
+						buttonOrigin = $(this).parents('tr');
+						var data = diagsTable.row($(this).parents('tr')).data();
+						$
+								.ajax({
+									type : 'POST',
+									contentType : 'application/json',
+									url : diagnosticoURL + 'update',
+									data : formToJSON('updateDiagnostico', data),
+									success : function(rdata, textStatus, jqXHR) {
+										showDiagnosticoSuccessMessage();
+										$
+												.when(
+														$
+																.ajax({
+																	type : 'GET',
+																	url : jqXHR
+																			.getResponseHeader('Location'),
+																	success : function(
+																			data) {
+																		activeDiagnostico = data;
+																	}
+																}))
+												.done(
+														function() {
+															diagsTable
+																	.row(
+																			buttonOrigin)
+																	.data(
+																			renderDiagTableRow(activeDiagnostico))
+																	.draw();
+														})
+
+									},
+									error : function(jqXHR, textStatus,
+											errorThrown) {
+										showErrorMessage(textStatus);
+									}
+								});
+					});
 
 }
 
@@ -202,8 +341,63 @@ function updatePaciente() {
 	});
 }
 
-function formToJSON(action) {
-	if (action == 'addDiagnostico') {
+function formToJSON(action, data) {
+	if (action == '1') {
+		return JSON.stringify({
+			"tratamiento" : {
+				"id" : $('#tt1').attr("tratamiento")
+			},
+			"paciente" : {
+				"id" : $('#pacienteId').val()
+			},
+			"iniciado" : false,
+			"finalizado" : false
+		});
+	} else if (action == '2') {
+		return JSON.stringify({
+			"tratamiento" : {
+				"id" : $('#tt2').attr("tratamiento")
+			},
+			"paciente" : {
+				"id" : $('#pacienteId').val()
+			},
+			"iniciado" : false,
+			"finalizado" : false
+		});
+	} else if (action == '3') {
+		return JSON.stringify({
+			"tratamiento" : {
+				"id" : $('#tt3').attr("tratamiento")
+			},
+			"paciente" : {
+				"id" : $('#pacienteId').val()
+			},
+			"iniciado" : false,
+			"finalizado" : false
+		});
+	} else if (action == '4') {
+		return JSON.stringify({
+			"tratamiento" : {
+				"id" : $('#tt4').attr("tratamiento")
+			},
+			"paciente" : {
+				"id" : $('#pacienteId').val()
+			},
+			"iniciado" : false,
+			"finalizado" : false
+		});
+	} else if (action == '5') {
+		return JSON.stringify({
+			"tratamiento" : {
+				"id" : $('#tt5').attr("tratamiento")
+			},
+			"paciente" : {
+				"id" : $('#pacienteId').val()
+			},
+			"iniciado" : false,
+			"finalizado" : false
+		});
+	} else if (action == 'addDiagnostico') {
 		return JSON.stringify({
 			"tratamiento" : {
 				"id" : $('#tratamiento').val()
@@ -213,6 +407,12 @@ function formToJSON(action) {
 			},
 			"iniciado" : false,
 			"finalizado" : false
+		});
+	} else if (action == 'updateDiagnostico') {
+		return JSON.stringify({
+			"id" : data[0],
+			"pagado" : data[1],
+			"precio" : data[1]
 		});
 	} else {
 		return JSON.stringify({

@@ -31,9 +31,34 @@ public class Diagnostico {
 	private Date diagnosticado;
 	private Date fechaFin;
 	private Date fechaInicio;
+	private float precio;
+	private float pagado;
+
+	public float getPrecio() {
+		return precio;
+	}
+
+	public void setPrecio(float precio) {
+		this.precio = precio;
+	}
+
+	public float getPagado() {
+		return pagado;
+	}
+
+	public void setPagado(float pagado) {
+		this.pagado = pagado;
+	}
 
 	public void update(Diagnostico origen) {
-		// setPrecio(origen.getPrecio());
+		setPrecio(origen.getPrecio());
+		setIniciado(origen.isIniciado());
+		setFinalizado(origen.isFinalizado());
+		setDiagnosticado(origen.getDiagnosticado());
+		setFechaFin(origen.getFechaFin());
+		setFechaInicio(origen.getFechaInicio());
+		setPrecio(origen.getPrecio());
+		setPagado(origen.getPagado());
 	}
 
 	public Paciente getPaciente() {

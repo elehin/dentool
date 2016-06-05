@@ -13,9 +13,6 @@ import com.dentool.model.Tratamiento;
 @Stateless
 public class DiagnosticoService {
 
-	// @Inject
-	// private PacienteService pacienteService;
-
 	@PersistenceContext
 	private EntityManager entityManager;
 
@@ -23,8 +20,10 @@ public class DiagnosticoService {
 		Paciente p = entityManager.find(Paciente.class, diagnostico.getPaciente().getId());
 		Tratamiento t = entityManager.find(Tratamiento.class, diagnostico.getTratamiento().getId());
 		diagnostico.setTratamiento(t);
+		// if (diagnostico.getPrecio() == 0) {
+		diagnostico.setPrecio(t.getPrecio());
+		// }
 		p.getDiagnosticos().add(diagnostico);
-		// pacienteService.updatePaciente(p);
 		return diagnostico;
 	}
 
@@ -41,5 +40,13 @@ public class DiagnosticoService {
 		@SuppressWarnings("unchecked")
 		List<Diagnostico> lista = entityManager.createQuery(query).setParameter("paciente", p).getResultList();
 		return lista;
+	}
+
+	public Diagnostico updateDiagnostico(Diagnostico d) {
+		Diagnostico ld = find(d.getId());
+
+		ld.update(d);
+
+		return d;
 	}
 }

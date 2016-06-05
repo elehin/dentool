@@ -62,4 +62,14 @@ public class DiagnosticoRestService {
 				.created(UriBuilder.fromResource(DiagnosticoRestService.class).path(String.valueOf(d.getId())).build())
 				.build();
 	}
+
+	@POST
+	@Path("/update")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response updateDiagnostico(Diagnostico d) {
+		diagnosticoService.updateDiagnostico(d);
+		return Response
+				.created(UriBuilder.fromResource(DiagnosticoRestService.class).path(String.valueOf(d.getId())).build())
+				.build();
+	}
 }
