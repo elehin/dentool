@@ -1,10 +1,10 @@
-var rootURL = 'https://dentool-elehin.rhcloud.com/service/paciente/';
+var rootURL = 'https://dentool-elehin.rhcloud.com/service/tratamiento/';
 var diagnosticoURL = 'https://dentool-elehin.rhcloud.com/service/diagnostico/';
 var tratamientoURL = 'https://dentool-elehin.rhcloud.com/service/tratamiento/';
 var tratamientosTopURL = 'https://dentool-elehin.rhcloud.com/service/tratamientoTop';
 var serverURL = 'https://dentool-elehin.rhcloud.com/';
 
-// var rootURL = 'http://localhost:8080/service/paciente/';
+// var rootURL = 'http://localhost:8080/service/tratamiento/';
 // var diagnosticoURL = 'http://localhost:8080/service/diagnostico/';
 // var tratamientoURL = 'http://localhost:8080/service/tratamiento/';
 // var tratamientosTopURL = 'http://localhost:8080/service/tratamientoTop';

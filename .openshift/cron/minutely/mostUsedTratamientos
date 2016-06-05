@@ -1,2 +1,0 @@
-cd $OPENSHIFT_REPO_DIR
-java -cp . com.dentool.cron.Main
