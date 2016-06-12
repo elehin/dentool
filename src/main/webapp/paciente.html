@@ -29,6 +29,7 @@
 	href="Select-1.2.0/css/select.bootstrap.min.css" />
 <link rel="stylesheet" type="text/css" href="css/datatables.min.css" />
 
+
 <!-- Custom CSS -->
 <link href="css/main.css" rel="stylesheet">
 
@@ -59,14 +60,6 @@
 			<div class="collapse navbar-collapse" id="myNavbar">
 				<ul class="nav navbar-nav">
 					<li class="active"><a href="index.html">Pacientes</a></li>
-					<!-- <li class="dropdown"><a class="dropdown-toggle"
-						data-toggle="dropdown" href="#">Page 1 <span class="caret"></span></a>
-							<ul class="dropdown-menu">
-							<li><a href="#">Page 1-1</a></li>
-							<li><a href="#">Page 1-2</a></li>
-							<li><a href="#">Page 1-3</a></li>
-						</ul> -->
-					</li>
 					<li><a href="tratamientos.html">Tratamientos</a></li>
 					<li><a href="facturas.html">Facturas</a></li>
 				</ul>
@@ -86,13 +79,23 @@
 
 		<div id="contentRow1" class="row">
 
-			<div class="alert collapse alert-warning alert-dismissable"
+			<!-- Alertas -->
+			<div class="alert collapse alert-danger alert-dismissable"
 				id="alergia-alert">
 				<span class="glyphicon glyphicon-exclamation-sign"></span> <strong>
-					Atención!</strong> Este paciente sufre algún tipo de alergia significativa.
+					Atención!</strong> Este paciente sufre algún tipo de <strong>alergia</strong> significativa.
 				<a href="#" class="close" data-dismiss="alert" aria-label="close"
 					aria-hidden="true">&times;</a>
 			</div>
+
+			<div class="alert collapse alert-danger alert-dismissable"
+				id="enfermoGrave-alert">
+				<span class="glyphicon glyphicon-exclamation-sign"></span> <strong>
+					Atención!</strong> Este paciente sufre algún tipo de <strong>enfermedad grave</strong>
+				significativa. <a href="#" class="close" data-dismiss="alert"
+					aria-label="close" aria-hidden="true">&times;</a>
+			</div>
+			<!-- /.Alertas -->
 
 			<form id="pacienteForm" role="form">
 				<div class="col-md-3">
@@ -129,8 +132,14 @@
 
 				<div class="col-md-5">
 					<div class="checkbox">
-						<label><input type="checkbox" value="true" id="alergico"
-							name="alergico">Alérgico</label>
+						<label for="alergico"> <input type="checkbox" value="true"
+							id="alergico" name="alergico">Alérgico
+						</label>
+					</div>
+					<div class="checkbox">
+						<label for="enfermoGrave"><input type="checkbox"
+							value="true" id="enfermoGrave" name="enfermoGrave">Enfermedad
+							grave</label>
 					</div>
 					<label for="notas">Notas:</label>
 					<textarea id="notas" name="notas" class="form-control" rows="15"></textarea>
@@ -139,15 +148,92 @@
 			</form>
 
 			<div class="col-md-4">
+				<!-- Nuevo diagnóstico -->
 				<a href="#addDiagDiv" class="btn btn-info btn-block"
 					data-toggle="collapse">Añadir tratamiento</a>
 				<div id="addDiagDiv" class="collapse padding-5">
 					<form id="addDiagForm" role="form">
 
-						<div class="input-group">
+						<!-- Selección de pieza dental para diagnóstico -->
+						<div class="margin-left-5">
+							<div class="btn-group btn-group-justified">
+								<button id="piezaBtn18" type="button"
+									class="btn btn-default botonPieza">18</button>
+								<button id="piezaBtn17" type="button"
+									class="btn btn-default botonPieza">17</button>
+								<button id="piezaBtn16" type="button"
+									class="btn btn-default botonPieza">16</button>
+								<button id="piezaBtn15" type="button"
+									class="btn btn-default botonPieza">15</button>
+								<button id="piezaBtn14" type="button"
+									class="btn btn-default botonPieza">14</button>
+								<button id="piezaBtn13" type="button"
+									class="btn btn-default botonPieza">13</button>
+								<button id="piezaBtn12" type="button"
+									class="btn btn-default botonPieza">12</button>
+								<button id="piezaBtn11" type="button"
+									class="btn btn-default botonPieza">11</button>
+								<button id="piezaBtn21" type="button"
+									class="btn btn-default botonPieza">21</button>
+								<button id="piezaBtn22" type="button"
+									class="btn btn-default botonPieza">22</button>
+								<button id="piezaBtn23" type="button"
+									class="btn btn-default botonPieza">23</button>
+								<button id="piezaBtn24" type="button"
+									class="btn btn-default botonPieza">24</button>
+								<button id="piezaBtn25" type="button"
+									class="btn btn-default botonPieza">25</button>
+								<button id="piezaBtn26" type="button"
+									class="btn btn-default botonPieza">26</button>
+								<button id="piezaBtn27" type="button"
+									class="btn btn-default botonPieza">27</button>
+								<button id="piezaBtn28" type="button"
+									class="btn btn-default botonPieza">28</button>
+							</div>
+							<img class="img-responsive margin-left-minus-5"
+								src="images/odontograma.png" alt="Odontograma" width="100%">
+							<div class="btn-group btn-group-justified">
+								<button id="piezaBtn48" type="button"
+									class="btn btn-default botonPieza">48</button>
+								<button id="piezaBtn47" type="button"
+									class="btn btn-default botonPieza">47</button>
+								<button id="piezaBtn46" type="button"
+									class="btn btn-default botonPieza">46</button>
+								<button id="piezaBtn45" type="button"
+									class="btn btn-default botonPieza">45</button>
+								<button id="piezaBtn44" type="button"
+									class="btn btn-default botonPieza">44</button>
+								<button id="piezaBtn43" type="button"
+									class="btn btn-default botonPieza">43</button>
+								<button id="piezaBtn42" type="button"
+									class="btn btn-default botonPieza">42</button>
+								<button id="piezaBtn41" type="button"
+									class="btn btn-default botonPieza">41</button>
+								<button id="piezaBtn31" type="button"
+									class="btn btn-default botonPieza">31</button>
+								<button id="piezaBtn32" type="button"
+									class="btn btn-default botonPieza">32</button>
+								<button id="piezaBtn33" type="button"
+									class="btn btn-default botonPieza">33</button>
+								<button id="piezaBtn34" type="button"
+									class="btn btn-default botonPieza">34</button>
+								<button id="piezaBtn35" type="button"
+									class="btn btn-default botonPieza">35</button>
+								<button id="piezaBtn36" type="button"
+									class="btn btn-default botonPieza">36</button>
+								<button id="piezaBtn37" type="button"
+									class="btn btn-default botonPieza">37</button>
+								<button id="piezaBtn38" type="button"
+									class="btn btn-default botonPieza">38</button>
+							</div>
+						</div>
+						<!-- /.Selección de pieza dental para diagnóstico -->
+
+						<!-- Tratamientos más utilizados -->
+						<div class="input-group margin-top-15">
 							<input type="text" class="form-control"
-								style="background-color: #fff" id="tt1" 
-								readonly> <span class="input-group-btn">
+								style="background-color: #fff" id="tt1" readonly> <span
+								class="input-group-btn">
 								<button class="btn btn-default" type="button" id="ttbtn1">
 									<span class="glyphicon glyphicon-plus"></span>
 								</button>
@@ -164,8 +250,9 @@
 						</div>
 						<div class="input-group">
 							<input type="text" class="form-control"
-								style="background-color: #fff" id="tt3" value="Extracción simple"
-								readonly> <span class="input-group-btn">
+								style="background-color: #fff" id="tt3"
+								value="Extracción simple" readonly> <span
+								class="input-group-btn">
 								<button class="btn btn-default" type="button" id="ttbtn3">
 									<span class="glyphicon glyphicon-plus"></span>
 								</button>
@@ -173,8 +260,8 @@
 						</div>
 						<div class="input-group">
 							<input type="text" class="form-control"
-								style="background-color: #fff" id="tt4" value="Curetaje" readonly>
-							<span class="input-group-btn">
+								style="background-color: #fff" id="tt4" value="Curetaje"
+								readonly> <span class="input-group-btn">
 								<button class="btn btn-default" type="button" id="ttbtn4">
 									<span class="glyphicon glyphicon-plus"></span>
 								</button>
@@ -189,6 +276,7 @@
 								</button>
 							</span>
 						</div>
+						<!-- /.Tratamientos más utilizados -->
 
 						<select class="selectpicker show-tick form-control margin-top-5"
 							title="Más tratamientos ..." data-live-search="true"
@@ -198,6 +286,8 @@
 							class="btn btn-primary btn-block margin-top-25 ">Añadir</button>
 					</form>
 				</div>
+
+				<!--  Mensajes de alerta sobre diagnositicos -->
 				<div class="alert alert-success collapse fade margin-top-25 "
 					id="diagnostico-success-alert">
 					<p>
@@ -206,6 +296,17 @@
 						</strong> El tratamiento se ha sido añadido.
 					</p>
 				</div>
+				<div class="alert alert-success collapse fade margin-top-25 "
+					id="diagnostico-update-success-alert">
+					<p>
+						<button type="button" class="close" data-dismiss="alert">x</button>
+						<span class="glyphicon glyphicon-ok"></span><strong> OK!
+						</strong> El tratamiento se ha modificado.
+					</p>
+				</div>
+				<!-- /.Mensajes de alerta sobre diagnositicos -->
+				<!-- /.Nuevo diagnóstico -->
+
 				<table id="tableUltimosTratamientos"
 					class="table table-striped table-hover display responsive nowrap">
 				</table>

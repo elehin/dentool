@@ -36,6 +36,7 @@ public class Paciente {
 	private String nameNormalized;
 	private String apellidosNormalized;
 	private boolean alergico = false;
+	private boolean enfermoGrave = false;
 	private Date alta;
 	private Date lastChange;
 
@@ -119,17 +120,18 @@ public class Paciente {
 	}
 
 	public void update(Paciente origen) {
-		setName(origen.getName());
-		setApellidos(origen.getApellidos());
-		setTelefono(origen.getTelefono());
-		setDireccion(origen.getDireccion());
-		setNotas(origen.getNotas());
-		setFechaNacimiento(origen.getFechaNacimiento());
-		setAlergico(origen.isAlergico());
-		setDni(origen.getDni());
-		setAlta(origen.getAlta());
-		setLastChange(new Date(Calendar.getInstance().getTimeInMillis()));
-		setDiagnosticos(origen.getDiagnosticos());
+		this.setName(origen.getName());
+		this.setApellidos(origen.getApellidos());
+		this.setTelefono(origen.getTelefono());
+		this.setDireccion(origen.getDireccion());
+		this.setNotas(origen.getNotas());
+		this.setFechaNacimiento(origen.getFechaNacimiento());
+		this.setAlergico(origen.isAlergico());
+		this.setDni(origen.getDni());
+		this.setAlta(origen.getAlta());
+		this.setLastChange(new Date(Calendar.getInstance().getTimeInMillis()));
+		this.setDiagnosticos(origen.getDiagnosticos());
+		this.setEnfermoGrave(origen.isEnfermoGrave());
 	}
 
 	public boolean isAlergico() {
@@ -170,5 +172,13 @@ public class Paciente {
 
 	public void setDiagnosticos(Collection<Diagnostico> diagnosticos) {
 		this.diagnosticos = diagnosticos;
+	}
+
+	public boolean isEnfermoGrave() {
+		return enfermoGrave;
+	}
+
+	public void setEnfermoGrave(boolean enfermoGrave) {
+		this.enfermoGrave = enfermoGrave;
 	}
 }

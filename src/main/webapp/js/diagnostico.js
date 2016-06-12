@@ -1,0 +1,391 @@
+var rootURL = 'https://dentool-elehin.rhcloud.com/service/tratamiento/';
+var diagnosticoURL = 'https://dentool-elehin.rhcloud.com/service/diagnostico/';
+var tratamientoURL = 'https://dentool-elehin.rhcloud.com/service/tratamiento/';
+var tratamientosTopURL = 'https://dentool-elehin.rhcloud.com/service/tratamientoTop';
+var serverURL = 'https://dentool-elehin.rhcloud.com/';
+var pacienteURL = 'http://dentool-elehin.rhcloud.com/service/paciente/';
+var pagosURL = 'http://dentool-elehin.rhcloud.com/service/pago/';
+
+//var rootURL = 'http://localhost:8080/service/tratamiento/';
+//var diagnosticoURL = 'http://localhost:8080/service/diagnostico/';
+//var pacienteURL = 'http://localhost:8080/service/paciente/';
+//var tratamientoURL = 'http://localhost:8080/service/tratamiento/';
+//var tratamientosTopURL = 'http://localhost:8080/service/tratamientoTop';
+//var serverURL = 'http://localhost:8080/';
+// var pagosURL = 'http://localhost:8080/service/pago/';
+
+var currentDiagnostico;
+var activePago;
+var pagosTable;
+
+var suprimir = '<button class="btn btn-warning padding-0-4 eliminar" role="button"><span class="glyphicon glyphicon-remove"></span></button>';
+
+$(document).ready(
+		function() {
+			if (getUrlParameter("diagnostico") != '') {
+				findTratamiento(getUrlParameter("diagnostico"));
+			}
+
+			if (getUrlParameter("paciente") != '') {
+				findPaciente(getUrlParameter("paciente"));
+				$('#backArrowLink').attr(
+						"href",
+						serverURL + 'paciente.html?paciente='
+								+ getUrlParameter("paciente"));
+			}
+
+			$("#btnSave").click(function() {
+				updateTratamiento();
+				return false;
+			});
+
+			$("#btnDelete").click(function() {
+				deleteTratamiento();
+				return false;
+			});
+
+			$("#btnAddPago").click(function() {
+				addPago();
+				return false;
+			});
+			pagoRestanteBtn
+
+			$("#pagoRestanteBtn").click(function() {
+				addPagoRestante();
+				return false;
+			});
+
+			$(".botonPieza").click(function(eventObject) {
+				$(".botonPieza").removeClass("active");
+				$(eventObject.target).toggleClass("active");
+				return false;
+			});
+		});
+
+function addPagoRestante() {
+	$.ajax({
+		type : 'PUT',
+		contentType : 'application/json',
+		url : pagosURL + 'create',
+		data : formToJSON('addPagoRestante'),
+		success : function(rdata, textStatus, jqXHR) {
+			showPagoSuccessMessage();
+			$.when($.ajax({
+				type : 'GET',
+				url : jqXHR.getResponseHeader('Location'),
+				success : function(data) {
+					activePago = data;
+				}
+			})).done(
+					function() {
+						var table = $('#tablePagos').DataTable({
+							"retrieve" : true
+						});
+
+						table.row.add(
+								[ activePago.id, activePago.fecha,
+										activePago.cantidad, '€', suprimir ])
+								.draw(false);
+
+						$.ajax({
+							type : 'GET',
+							url : diagnosticoURL + currentDiagnostico.id,
+							success : function(data) {
+								currentDiagnostico = data;
+								renderDetails(data);
+								actualizarPagoRestante();
+							}
+						});
+
+					});
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			showErrorMessage(textStatus);
+		}
+	});
+}
+
+function addPago() {
+	$.ajax({
+		type : 'PUT',
+		contentType : 'application/json',
+		url : pagosURL + 'create',
+		data : formToJSON('addPago'),
+		success : function(rdata, textStatus, jqXHR) {
+			showPagoSuccessMessage();
+			// $('#addPagoDiv').toggleClass("in");
+			$.when($.ajax({
+				type : 'GET',
+				url : jqXHR.getResponseHeader('Location'),
+				success : function(data) {
+					activePago = data;
+				}
+			})).done(
+					function() {
+						var table = $('#tablePagos').DataTable({
+							"retrieve" : true
+						});
+
+						table.row.add(
+								[ activePago.id, activePago.fecha,
+										activePago.cantidad, '€', suprimir ])
+								.draw(false);
+						$("#addPagoForm")[0].reset();
+
+						$.ajax({
+							type : 'GET',
+							url : diagnosticoURL + currentDiagnostico.id,
+							success : function(data) {
+								currentDiagnostico = data;
+								renderDetails(data);
+								actualizarPagoRestante();
+							}
+						});
+
+					});
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			showErrorMessage(textStatus);
+		}
+	});
+}
+
+function deleteTratamiento() {
+	$.ajax({
+		type : 'DELETE',
+		contentType : 'application/json',
+		url : diagnosticoURL + 'delete/' + $('#diagnosticoId').val(),
+		success : function(rdata, textStatus, jqXHR) {
+			url = serverURL + 'paciente.html?paciente='
+					+ currentDiagnostico.paciente.id;
+			window.location.replace(url);
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			showErrorMessage(textStatus);
+		}
+	});
+}
+
+function updateTratamiento() {
+	$.ajax({
+		type : 'POST',
+		contentType : 'application/json',
+		url : diagnosticoURL + 'update',
+		data : formToJSON(),
+		success : function(rdata, textStatus, jqXHR) {
+			showSuccessMessage();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			showErrorMessage(textStatus);
+		}
+	});
+}
+
+function findPaciente(id) {
+	$.ajax({
+		type : 'GET',
+		url : pacienteURL + id,
+		success : function(data) {
+			var paciente = data.name + ' ' + data.apellidos;
+			$('#backArrowLink').after(paciente);
+		}
+	});
+}
+
+function findTratamiento(id) {
+	$.ajax({
+		type : 'GET',
+		url : diagnosticoURL + id,
+		success : function(data) {
+			currentDiagnostico = data;
+			renderDetails(data);
+			getPagos();
+			actualizarPagoRestante();
+		}
+	});
+}
+
+function actualizarPagoRestante() {
+	var pagoRestante = currentDiagnostico.precio - currentDiagnostico.pagado;
+	$("#pagoRestante").attr('pago', pagoRestante);
+	$("#pagoRestante").val("Añadir pago por " + pagoRestante + " €");
+
+	if (pagoRestante == 0) {
+		$("#hPanelPagoRestante").text('+' + currentDiagnostico.precio + ' €');
+		$("#hPanelPagoRestante").removeClass('text-danger');
+		$("#hPanelPagoRestante").addClass('text-success');
+	} else if (pagoRestante < 0) {
+		var saldoPositivo = currentDiagnostico.pagado;
+		$("#hPanelPagoRestante").text('+' + saldoPositivo + ' €');
+		$("#hPanelPagoRestante").removeClass('text-danger');
+		$("#hPanelPagoRestante").addClass('text-success');
+	} else {
+		$("#hPanelPagoRestante").text('-' + pagoRestante + ' €');
+		$("#hPanelPagoRestante").removeClass('text-success');
+		$("#hPanelPagoRestante").addClass('text-danger');
+	}
+}
+
+function renderDetails(diagnostico) {
+	$('#diagnosticoId').val(diagnostico.id);
+	$('#tratamiento').val(diagnostico.tratamiento.nombre);
+	$('#diagnosticado').val(diagnostico.diagnosticado);
+	$('#fechaInicio').val(diagnostico.fechaInicio);
+	$('#fechaFin').val(diagnostico.fechaFin);
+	$('#precio').val(diagnostico.precio);
+	$('#pagado').val(diagnostico.pagado);
+	if (diagnostico.pieza != 0) {
+		$("#piezaBtn" + diagnostico.pieza).addClass("active");
+	}
+}
+
+function formToJSON(action) {
+	if (action == 'addPago') {
+		return JSON.stringify({
+			"cantidad" : $('#cantidad').val(),
+			"fecha" : new Date(),
+			"diagnosticoId" : $('#diagnosticoId').val()
+		});
+	} else if (action == 'addPagoRestante') {
+		return JSON.stringify({
+			"cantidad" : $('#pagoRestante').attr('pago'),
+			"fecha" : new Date(),
+			"diagnosticoId" : $('#diagnosticoId').val()
+		});
+	} else {
+		return JSON.stringify({
+			"id" : $('#diagnosticoId').val(),
+			"precio" : $('#precio').val(),
+			"pagado" : $('#pagado').val(),
+			"diagnosticado" : $('#diagnosticado').val(),
+			"fechaInicio" : $('#fechaInicio').val(),
+			"fechaFin" : $('#fechaFin').val(),
+			"pieza" : $(".botonPieza.active").text()
+		});
+	}
+}
+
+function showSuccessMessage() {
+	$("#success-alert").alert();
+	window.setTimeout(function() {
+		$("#success-alert").fadeTo(1000, 500).slideUp(500, function() {
+			$("#success-alert").hide();
+		});
+	}, 0);
+}
+
+function showPagoSuccessMessage() {
+	$("#success-pago-alert").alert();
+	window.setTimeout(function() {
+		$("#success-pago-alert").fadeTo(1000, 500).slideUp(500, function() {
+			$("#success-pago-alert").hide();
+		});
+	}, 0);
+}
+
+function showErrorMessage(error) {
+	$("#error-alert").alert();
+	window.setTimeout(function() {
+		$("#error-alert").fadeTo(2000, 500).slideUp(500, function() {
+			$("#error-alert").hide();
+		});
+	}, 0);
+}
+
+var getUrlParameter = function getUrlParameter(sParam) {
+	var sPageURL = decodeURIComponent(window.location.search.substring(1)), sURLVariables = sPageURL
+			.split('&'), sParameterName, i;
+
+	for (i = 0; i < sURLVariables.length; i++) {
+		sParameterName = sURLVariables[i].split('=');
+
+		if (sParameterName[0] === sParam) {
+			return sParameterName[1] === undefined ? true : sParameterName[1];
+		}
+	}
+};
+
+function getPagos() {
+	$.ajax({
+		type : 'GET',
+		url : pagosURL + 'diagnostico/' + $("#diagnosticoId").val(),
+		success : function(data) {
+			renderTablePagos(data);
+		}
+	});
+}
+
+function renderTablePagos(pagos) {
+
+	var dataset = [];
+
+	$.each(pagos, function(i, item) {
+		dataset.push([ item.id, item.fecha, item.cantidad, '€', suprimir ]);
+	});
+
+	pagosTable = $('#tablePagos').DataTable({
+		"retrieve" : true,
+		"paging" : false,
+		"searching" : false,
+		"info" : false,
+		"ordering" : false,
+		"data" : dataset,
+		"columns" : [ {
+			"title" : "id"
+		}, {
+			"title" : "Fecha"
+		}, {
+			"title" : "Cantidad"
+		}, {
+			"title" : "&nbsp;"
+		}, {
+			"title" : "&nbsp;"
+		} ],
+		"columnDefs" : [ {
+			"className" : "never",
+			"targets" : [ 0 ],
+			"visible" : false
+		}, {
+			"className" : "dt-right",
+			"targets" : [ 2 ]
+		}, {
+			"className" : "dt-left",
+			"targets" : [ 3 ]
+		} ],
+	});
+
+	var row;
+	$('#tablePagos tbody').on('click', 'button', function() {
+		row = $(this).parents('tr');
+		if ($(this).hasClass("eliminar")) {
+			deletePago(row);
+		}
+
+	});
+
+}
+
+function deletePago(row) {
+	var data = pagosTable.row(row).data();
+	$.ajax({
+		type : 'DELETE',
+		contentType : 'application/json',
+		url : pagosURL + 'delete/' + data[0],
+		success : function(rdata, textStatus, jqXHR) {
+			pagosTable.row(row).remove().draw();
+			showPagoSuccessMessage();
+			$.ajax({
+				type : 'GET',
+				url : diagnosticoURL + currentDiagnostico.id,
+				success : function(data) {
+					currentDiagnostico = data;
+					renderDetails(data);
+					actualizarPagoRestante();
+				}
+			});
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			showErrorMessage(textStatus);
+		}
+	});
+}

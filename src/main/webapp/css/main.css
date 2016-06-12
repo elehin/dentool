@@ -31,6 +31,14 @@ footer {
 	margin-top: 15px
 }
 
+.margin-left-5 {
+	margin-left: 5px
+}
+
+.margin-left-minus-5 {
+	margin-left: -5px
+}
+
 .padding-0-4 {
 	padding: 0px 4px;
 }
@@ -39,10 +47,18 @@ footer {
 	padding: 5px;
 }
 
+.botonPieza {
+	padding: 2px 17px 2px 3px;
+}
+
 .bgcolor-fff {
 	background-color: #fff;
 }
 
 #tableUltimosPacientes tbody tr {
 	cursor: pointer
+}
+
+.detalle {
+	
 }

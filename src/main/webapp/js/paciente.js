@@ -2,16 +2,26 @@ var rootURL = 'https://dentool-elehin.rhcloud.com/service/paciente/';
 var diagnosticoURL = 'https://dentool-elehin.rhcloud.com/service/diagnostico/';
 var tratamientoURL = 'https://dentool-elehin.rhcloud.com/service/tratamiento/';
 var tratamientosTopURL = 'https://dentool-elehin.rhcloud.com/service/tratamientoTop';
+var serverURL = 'https://dentool-elehin.rhcloud.com/';
 
 //var rootURL = 'http://localhost:8080/service/paciente/';
 //var diagnosticoURL = 'http://localhost:8080/service/diagnostico/';
 //var tratamientoURL = 'http://localhost:8080/service/tratamiento/';
 //var tratamientosTopURL = 'http://localhost:8080/service/tratamientoTop';
+// var serverURL = 'http://localhost:8080/';
 
 var currentPaciente;
 var searchTable;
 var searchDialog;
 var activeDiagnostico;
+
+var lupa = '<button class="btn btn-info padding-0-4 detalle" role="button"><span class="glyphicon glyphicon-search"></span></button>';
+var sinPagar = '<button class="btn btn-danger padding-0-4 pagar" role="button"><span class="glyphicon glyphicon-euro"></span></button>';
+var pagado = '<button class="btn btn-success padding-0-4 pagar" role="button"><span class="glyphicon glyphicon-euro"></span></button>';
+var pagadoPacial = '<button class="btn btn-warning padding-0-4 pagar" role="button"><span class="glyphicon glyphicon-euro"></span></button>';
+var statusSinEmpezar = '<button class="btn btn-default padding-0-4 sinEmpezar" role="button"><span class="glyphicon glyphicon-play"></span></button>';
+var statusEmpezado = '<button class="btn btn-warning padding-0-4 empezado" role="button"><span class="glyphicon glyphicon-adjust"></span></button>';
+var statusFinalizado = '<button class="btn btn-success padding-0-4 finalizado" role="button"><span class="glyphicon glyphicon-ok"></span></button>';
 
 $(document).ready(function() {
 	if (getUrlParameter("paciente") != '') {
@@ -50,6 +60,12 @@ $(document).ready(function() {
 
 	$("#ttbtn5").click(function() {
 		addDiagnostico(5);
+		return false;
+	});
+
+	$(".botonPieza").click(function(eventObject) {
+		$(".botonPieza").removeClass("active");
+		$(eventObject.target).toggleClass("active");
 		return false;
 	});
 
@@ -97,11 +113,6 @@ function addDiagnostico(tratamientoTop) {
 		tratamientoTop = 'addDiagnostico';
 	}
 
-	var lupa = '<button class="btn btn-info padding-0-4" role="button"><span class="glyphicon glyphicon-search"></span></button>';
-	var sinPagar = '<button class="btn btn-danger padding-0-4" role="button"><span class="glyphicon glyphicon-euro"></span></button>';
-	var pagado = '<button class="btn btn-success padding-0-4" role="button"><span class="glyphicon glyphicon-euro"></span></button>';
-	var pagadoPacial = '<button class="btn btn-warning padding-0-4" role="button"><span class="glyphicon glyphicon-euro"></span></button>';
-
 	$
 			.ajax({
 				type : 'POST',
@@ -129,14 +140,31 @@ function addDiagnostico(tratamientoTop) {
 														.DataTable({
 															"retrieve" : true
 														});
-												var estado;
+												var estadoPago;
 												if (activeDiagnostico.pagado == 0) {
-													estado = sinPagar;
+													estadoPago = sinPagar;
 												} else if (activeDiagnostico.pagado == activeDiagnostico.precio) {
-													estado = pagado;
+													estadoPago = pagado;
 												} else {
-													estado = pagadoPacial;
+													estestadoPagoado = pagadoPacial;
 												}
+												var estado
+												if (activeDiagnostico.iniciado == false) {
+													estado = statusSinEmpezar;
+												} else if (activeDiagnostico.iniciado == true
+														&& activeDiagnostico.finalizado == false) {
+													estado = statusEmpezado;
+												} else if (activeDiagnostico.finalizado == true) {
+													estado = statusFinalizado;
+												}
+
+												var pieza;
+												if (pieza == 0) {
+													pieza = '';
+												} else {
+													pieza = activeDiagnostico.pieza;
+												}
+
 												table.row
 														.add(
 																[
@@ -145,7 +173,9 @@ function addDiagnostico(tratamientoTop) {
 																		activeDiagnostico.pagado,
 																		lupa,
 																		estado,
-																		activeDiagnostico.tratamiento.nombre ])
+																		estadoPago,
+																		activeDiagnostico.tratamiento.nombre,
+																		pieza ])
 														.draw(false);
 												$('#addDiagForm')[0].reset();
 											}));
@@ -182,6 +212,8 @@ function findPaciente(id) {
 
 function renderDetails(paciente) {
 	showAlergicoMessage();
+	showEnfermoGraveMessage();
+
 	$('#pacienteId').val(paciente.id);
 	$('#name').val(paciente.name);
 	$('#apellidos').val(paciente.apellidos);
@@ -190,8 +222,10 @@ function renderDetails(paciente) {
 	$('#fechaNacimiento').val(paciente.fechaNacimiento);
 	$('#notas').val(paciente.notas);
 	$('#alergico').prop('checked', paciente.alergico);
+	$('#enfermoGrave').prop('checked', paciente.enfermoGrave);
 	$('#dni').val(paciente.dni);
 	$("#btnSave").attr('value', 'Modificar');
+
 	populateLastDiagnosticos();
 }
 
@@ -201,20 +235,33 @@ function populateLastDiagnosticos() {
 }
 
 function renderDiagTableRow(item) {
-	var lupa = '<button class="btn btn-info padding-0-4" role="button"><span class="glyphicon glyphicon-search"></span></button>';
-	var sinPagar = '<button class="btn btn-danger padding-0-4" role="button"><span class="glyphicon glyphicon-euro"></span></button>';
-	var pagado = '<button class="btn btn-success padding-0-4" role="button"><span class="glyphicon glyphicon-euro"></span></button>';
-	var pagadoPacial = '<button class="btn btn-warning padding-0-4" role="button"><span class="glyphicon glyphicon-euro"></span></button>';
 
 	if (item.pagado == 0) {
-		estado = sinPagar;
+		estadoPago = sinPagar;
 	} else if (item.pagado == item.precio) {
-		estado = pagado;
+		estadoPago = pagado;
 	} else {
-		estado = pagadoPacial;
+		estadoPago = pagadoPacial;
 	}
-	row = [ item.id, item.precio, item.pagado, lupa, estado,
-			item.tratamiento.nombre ];
+
+	var estado;
+	if (item.iniciado == false) {
+		estado = statusSinEmpezar;
+	} else if (item.iniciado == true && item.finalizado == false) {
+		estado = statusEmpezado;
+	} else if (item.finalizado == true) {
+		estado = statusFinalizado;
+	}
+
+	var pieza;
+	if (item.pieza == 0) {
+		pieza = '';
+	} else {
+		pieza = item.pieza;
+	}
+
+	row = [ item.id, item.precio, item.pagado, lupa, estado, estadoPago,
+			item.tratamiento.nombre, pieza ];
 
 	return row;
 }
@@ -232,6 +279,7 @@ function renderTableDiagnosticos(diagnosticos) {
 		"paging" : false,
 		"searching" : false,
 		"info" : false,
+		"ordering" : false,
 		"data" : dataset,
 		"columns" : [ {
 			"title" : "id"
@@ -244,8 +292,12 @@ function renderTableDiagnosticos(diagnosticos) {
 		}, {
 			"title" : "&nbsp;"
 		}, {
+			"title" : "&nbsp;"
+		}, {
 			"title" : "Tratamiento"
-		}, ],
+		}, {
+			"title" : "Pieza"
+		} ],
 		"columnDefs" : [ {
 			"className" : "never",
 			"targets" : [ 0, 1, 2 ],
@@ -253,51 +305,81 @@ function renderTableDiagnosticos(diagnosticos) {
 		} ],
 	});
 
-	var buttonOrigin;
-	$('#tableUltimosTratamientos tbody')
-			.on(
-					'click',
-					'button',
-					function() {
-						buttonOrigin = $(this).parents('tr');
-						var data = diagsTable.row($(this).parents('tr')).data();
-						$
-								.ajax({
-									type : 'POST',
-									contentType : 'application/json',
-									url : diagnosticoURL + 'update',
-									data : formToJSON('updateDiagnostico', data),
-									success : function(rdata, textStatus, jqXHR) {
-										showDiagnosticoSuccessMessage();
-										$
-												.when(
-														$
-																.ajax({
-																	type : 'GET',
-																	url : jqXHR
-																			.getResponseHeader('Location'),
-																	success : function(
-																			data) {
-																		activeDiagnostico = data;
-																	}
-																}))
-												.done(
-														function() {
-															diagsTable
-																	.row(
-																			buttonOrigin)
-																	.data(
-																			renderDiagTableRow(activeDiagnostico))
-																	.draw();
-														})
+	var row;
+	$('#tableUltimosTratamientos tbody').on(
+			'click',
+			'button',
+			function() {
+				row = $(this).parents('tr');
+				if ($(this).hasClass("pagar")) {
+					setPagado(row);
+				} else if ($(this).hasClass("detalle")) {
+					var data = diagsTable.row($(this).parents('tr')).data();
+					url = serverURL + 'diagnostico.html?paciente='
+							+ currentPaciente.id + '&diagnostico=' + data[0];
+					window.location.replace(url);
+				} else if ($(this).is('.sinEmpezar, .empezado')) {
+					setFinalizado(row);
+				}
 
-									},
-									error : function(jqXHR, textStatus,
-											errorThrown) {
-										showErrorMessage(textStatus);
-									}
-								});
-					});
+			});
+
+}
+
+function setFinalizado(row) {
+	var data = diagsTable.row(row).data();
+	$.ajax({
+		type : 'POST',
+		contentType : 'application/json',
+		url : diagnosticoURL + 'update',
+		data : formToJSON('updateEstadoDiagnostico', data),
+		success : function(rdata, textStatus, jqXHR) {
+			showDiagnosticoUpdateSuccessMessage();
+			$.when($.ajax({
+				type : 'GET',
+				url : jqXHR.getResponseHeader('Location'),
+				success : function(data) {
+					activeDiagnostico = data;
+				}
+			})).done(
+					function() {
+						diagsTable.row(row).data(
+								renderDiagTableRow(activeDiagnostico)).draw();
+					})
+
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			showErrorMessage(textStatus);
+		}
+	});
+}
+
+function setPagado(row) {
+	var data = diagsTable.row(row).data();
+	$.ajax({
+		type : 'POST',
+		contentType : 'application/json',
+		url : diagnosticoURL + 'update',
+		data : formToJSON('updateDiagnostico', data),
+		success : function(rdata, textStatus, jqXHR) {
+			showDiagnosticoUpdateSuccessMessage();
+			$.when($.ajax({
+				type : 'GET',
+				url : jqXHR.getResponseHeader('Location'),
+				success : function(data) {
+					activeDiagnostico = data;
+				}
+			})).done(
+					function() {
+						diagsTable.row(row).data(
+								renderDiagTableRow(activeDiagnostico)).draw();
+					})
+
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			showErrorMessage(textStatus);
+		}
+	});
 
 }
 
@@ -305,7 +387,6 @@ function getDiagnosticosByPaciente(paciente) {
 	$.ajax({
 		type : 'GET',
 		url : diagnosticoURL + 'paciente/' + paciente,
-		// dataType : "json",
 		success : function(data) {
 			renderTableDiagnosticos(data);
 		}
@@ -351,7 +432,8 @@ function formToJSON(action, data) {
 				"id" : $('#pacienteId').val()
 			},
 			"iniciado" : false,
-			"finalizado" : false
+			"finalizado" : false,
+			"pieza" : $(".botonPieza.active").text()
 		});
 	} else if (action == '2') {
 		return JSON.stringify({
@@ -362,7 +444,8 @@ function formToJSON(action, data) {
 				"id" : $('#pacienteId').val()
 			},
 			"iniciado" : false,
-			"finalizado" : false
+			"finalizado" : false,
+			"pieza" : $(".botonPieza.active").text()
 		});
 	} else if (action == '3') {
 		return JSON.stringify({
@@ -373,7 +456,8 @@ function formToJSON(action, data) {
 				"id" : $('#pacienteId').val()
 			},
 			"iniciado" : false,
-			"finalizado" : false
+			"finalizado" : false,
+			"pieza" : $(".botonPieza.active").text()
 		});
 	} else if (action == '4') {
 		return JSON.stringify({
@@ -384,7 +468,8 @@ function formToJSON(action, data) {
 				"id" : $('#pacienteId').val()
 			},
 			"iniciado" : false,
-			"finalizado" : false
+			"finalizado" : false,
+			"pieza" : $(".botonPieza.active").text()
 		});
 	} else if (action == '5') {
 		return JSON.stringify({
@@ -395,7 +480,8 @@ function formToJSON(action, data) {
 				"id" : $('#pacienteId').val()
 			},
 			"iniciado" : false,
-			"finalizado" : false
+			"finalizado" : false,
+			"pieza" : $(".botonPieza.active").text()
 		});
 	} else if (action == 'addDiagnostico') {
 		return JSON.stringify({
@@ -406,12 +492,20 @@ function formToJSON(action, data) {
 				"id" : $('#pacienteId').val()
 			},
 			"iniciado" : false,
-			"finalizado" : false
+			"finalizado" : false,
+			"pieza" : $(".botonPieza.active").text()
 		});
 	} else if (action == 'updateDiagnostico') {
 		return JSON.stringify({
 			"id" : data[0],
 			"pagado" : data[1],
+			"precio" : data[1]
+		});
+	} else if (action == 'updateEstadoDiagnostico') {
+		return JSON.stringify({
+			"id" : data[0],
+			"fechaFin" : new Date(),
+			"pagado" : data[2],
 			"precio" : data[1]
 		});
 	} else {
@@ -424,7 +518,8 @@ function formToJSON(action, data) {
 			"fechaNacimiento" : $('#fechaNacimiento').val(),
 			"notas" : $('#notas').val(),
 			"dni" : $('#dni').val(),
-			"alergico" : $('#alergico').prop('checked')
+			"alergico" : $('#alergico').prop('checked'),
+			"enfermoGrave" : $('#enfermoGrave').prop('checked')
 		});
 	}
 }
@@ -448,6 +543,16 @@ function showDiagnosticoSuccessMessage() {
 	}, 0);
 }
 
+function showDiagnosticoUpdateSuccessMessage() {
+	$("#diagnostico-update-success-alert").alert();
+	window.setTimeout(function() {
+		$("#diagnostico-update-success-alert").fadeTo(2000, 500).slideUp(500,
+				function() {
+					$("#diagnostico-update-success-alert").hide();
+				});
+	}, 0);
+}
+
 function showErrorMessage(error) {
 	$("#error-alert").alert();
 	window.setTimeout(function() {
@@ -460,6 +565,12 @@ function showErrorMessage(error) {
 function showAlergicoMessage() {
 	if (currentPaciente.alergico == true) {
 		$("#alergia-alert").show()
+	}
+}
+
+function showEnfermoGraveMessage() {
+	if (currentPaciente.enfermoGrave == true) {
+		$("#enfermoGrave-alert").show()
 	}
 }
 

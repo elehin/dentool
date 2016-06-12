@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<title>Dentool - Alta de Tratamiento</title>
+
+<!-- Bootstrap Core CSS -->
+<link href="css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Datatables CSS -->
+<link rel="stylesheet" type="text/css"
+	href="DataTables-1.10.12/css/dataTables.bootstrap.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="Buttons-1.2.1/css/buttons.bootstrap.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="FixedHeader-3.1.2/css/fixedHeader.bootstrap.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="Responsive-2.1.0/css/responsive.bootstrap.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="Select-1.2.0/css/select.bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="css/datatables.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="DataTables-1.10.12/css/jquery.dataTables.min.css" />
+
+<!-- Custom CSS -->
+<link href="css/main.css" rel="stylesheet">
+
+<!-- jquery CSS
+<link href="js/jquery-ui.min.css" rel="stylesheet" type="text/css" /> -->
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+	<!-- Navigation -->
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#myNavbar">
+					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="index.html">DenTool</a>
+			</div>
+			<div class="collapse navbar-collapse" id="myNavbar">
+				<ul class="nav navbar-nav">
+					<li><a href="index.html" class="active">Pacientes</a></li>
+					<li><a href="tratamientos.html">Tratamientos</a></li>
+					<li><a href="facturas.html">Facturas</a></li>
+				</ul>
+				<!-- 	<ul class="nav navbar-nav navbar-right">
+					<li><a href="#"><span class="glyphicon glyphicon-user"></span>
+							Sign Up</a></li>
+					<li><a href="#"><span class="glyphicon glyphicon-log-in"></span>
+							Login</a></li>
+				</ul> -->
+			</div>
+		</div>
+		<!-- /.container -->
+	</nav>
+
+	<!-- Page Content -->
+	<div class="container" id="ContentContainer">
+
+		<div id="contentRow1" class="row">
+
+
+			<form id="diagnosticoForm" role="form">
+				<div class="col-md-4">
+
+					<h2 id="pacienteHeader">
+						<a id="backArrowLink" href="#"> <span
+							class="glyphicon glyphicon-triangle-left"></span></a>
+					</h2>
+
+					<label class="collapse">Id:</label> <input id="diagnosticoId"
+						name="diagnosticoId" type="text" class="form-control collapse"
+						disabled /> <label for="tratamiento">Tratamiento:</label> <input
+						type="text" class="form-control" id="tratamiento"
+						name="tratamiento" readonly /> <label for="diagnosticado">Diagnosticado:</label>
+					<input type="date" class="form-control" id="diagnosticado"
+						name="diagnosticado" /> <label for="fechaInicio">Iniciado:</label>
+					<input type="date" class="form-control" id="fechaInicio"
+						name="fechaInicio" /> <label for="fechaFin">Finalizado:</label> <input
+						type="date" class="form-control" id="fechaFin" name="fechaFin" />
+					<label>Precio:</label>
+					<div class="input-group">
+						<span class="input-group-addon">€</span> <input type="number"
+							id="precio" name="precio" value="0" min="0" step="1.00"
+							data-number-to-fixed="2" data-number-stepfactor="100"
+							class="form-control currency" required />
+					</div>
+
+					<label>Pagado:</label>
+					<div class="input-group">
+						<span class="input-group-addon">€</span> <input type="number"
+							id="pagado" name="pagado" value="0" min="0" step="1.00"
+							data-number-to-fixed="2" data-number-stepfactor="100"
+							class="form-control currency" readonly />
+					</div>
+
+					<div class="alert alert-success collapse fade margin-top-25 "
+						id="success-alert">
+						<p>
+							<button type="button" class="close" data-dismiss="alert">x</button>
+							<span class="glyphicon glyphicon-ok"></span><strong> OK!
+							</strong> El diagnostico ha sido modificado.
+						</p>
+					</div>
+
+					<div class="alert alert-danger collapse margin-top-25 "
+						id="error-alert">
+						<strong>Error!</strong> Ha ocurrido algún tipo de error.
+					</div>
+
+					<button id="btnSave"
+						class="btn btn-primary btn-block margin-top-25 ">Modificar</button>
+
+					<hr>
+					<button id="btnDelete"
+						class="btn btn-warning btn-block margin-top-25 ">Eliminar</button>
+				</div>
+
+			</form>
+			<div class="col-md-4">
+				<h3>Pagos</h3>
+
+				<!--  <a href="#addPagoDiv" class="btn btn-info btn-block"
+					data-toggle="collapse">Añadir pago</a>-->
+
+				<div id="addPagoDiv" class="padding-5">
+					<form id="addPagoForm" role="form">
+
+						<label>Cantidad:</label>
+						<div class="input-group">
+							<span class="input-group-addon">€</span> <input type="number"
+								id="cantidad" name="cantidad" value="0" min="0" step="1.00"
+								data-number-to-fixed="2" data-number-stepfactor="100"
+								class="form-control currency" />
+						</div>
+
+						<button id="btnAddPago"
+							class="btn btn-primary btn-block margin-top-25 ">Añadir
+							pago</button>
+
+						<div class="input-group margin-top-15">
+							<input type="text" class="form-control"
+								style="background-color: #fff" id="pagoRestante" readonly>
+							<span class="input-group-btn">
+								<button class="btn btn-info" type="button" id="pagoRestanteBtn">
+									<span class="glyphicon glyphicon-plus"></span>
+								</button>
+							</span>
+						</div>
+					</form>
+				</div>
+
+				<div class="alert alert-success collapse fade margin-top-25 "
+					id="success-pago-alert">
+					<p>
+						<button type="button" class="close" data-dismiss="alert">x</button>
+						<span class="glyphicon glyphicon-ok"></span><strong> OK!
+						</strong> Se ha añadido el pago.
+					</p>
+				</div>
+
+				<table id="tablePagos"
+					class="table table-striped table-hover display responsive nowrap">
+				</table>
+			</div>
+
+			<div class="col-md-4">
+				<div class="panel panel-default">
+					<h1 id="hPanelPagoRestante" class="text-center"></h1>
+				</div>
+
+				<h3>Pieza:</h3>
+				<!-- Selección de pieza dental para diagnóstico -->
+				<div class="margin-left-5">
+					<div class="btn-group btn-group-justified">
+						<button id="piezaBtn18" type="button"
+							class="btn btn-default botonPieza">18</button>
+						<button id="piezaBtn17" type="button"
+							class="btn btn-default botonPieza">17</button>
+						<button id="piezaBtn16" type="button"
+							class="btn btn-default botonPieza">16</button>
+						<button id="piezaBtn15" type="button"
+							class="btn btn-default botonPieza">15</button>
+						<button id="piezaBtn14" type="button"
+							class="btn btn-default botonPieza">14</button>
+						<button id="piezaBtn13" type="button"
+							class="btn btn-default botonPieza">13</button>
+						<button id="piezaBtn12" type="button"
+							class="btn btn-default botonPieza">12</button>
+						<button id="piezaBtn11" type="button"
+							class="btn btn-default botonPieza">11</button>
+						<button id="piezaBtn21" type="button"
+							class="btn btn-default botonPieza">21</button>
+						<button id="piezaBtn22" type="button"
+							class="btn btn-default botonPieza">22</button>
+						<button id="piezaBtn23" type="button"
+							class="btn btn-default botonPieza">23</button>
+						<button id="piezaBtn24" type="button"
+							class="btn btn-default botonPieza">24</button>
+						<button id="piezaBtn25" type="button"
+							class="btn btn-default botonPieza">25</button>
+						<button id="piezaBtn26" type="button"
+							class="btn btn-default botonPieza">26</button>
+						<button id="piezaBtn27" type="button"
+							class="btn btn-default botonPieza">27</button>
+						<button id="piezaBtn28" type="button"
+							class="btn btn-default botonPieza">28</button>
+					</div>
+					<img class="img-responsive margin-left-minus-5"
+						src="images/odontograma.png" alt="Odontograma" width="100%">
+					<div class="btn-group btn-group-justified">
+						<button id="piezaBtn48" type="button"
+							class="btn btn-default botonPieza">48</button>
+						<button id="piezaBtn47" type="button"
+							class="btn btn-default botonPieza">47</button>
+						<button id="piezaBtn46" type="button"
+							class="btn btn-default botonPieza">46</button>
+						<button id="piezaBtn45" type="button"
+							class="btn btn-default botonPieza">45</button>
+						<button id="piezaBtn44" type="button"
+							class="btn btn-default botonPieza">44</button>
+						<button id="piezaBtn43" type="button"
+							class="btn btn-default botonPieza">43</button>
+						<button id="piezaBtn42" type="button"
+							class="btn btn-default botonPieza">42</button>
+						<button id="piezaBtn41" type="button"
+							class="btn btn-default botonPieza">41</button>
+						<button id="piezaBtn31" type="button"
+							class="btn btn-default botonPieza">31</button>
+						<button id="piezaBtn32" type="button"
+							class="btn btn-default botonPieza">32</button>
+						<button id="piezaBtn33" type="button"
+							class="btn btn-default botonPieza">33</button>
+						<button id="piezaBtn34" type="button"
+							class="btn btn-default botonPieza">34</button>
+						<button id="piezaBtn35" type="button"
+							class="btn btn-default botonPieza">35</button>
+						<button id="piezaBtn36" type="button"
+							class="btn btn-default botonPieza">36</button>
+						<button id="piezaBtn37" type="button"
+							class="btn btn-default botonPieza">37</button>
+						<button id="piezaBtn38" type="button"
+							class="btn btn-default botonPieza">38</button>
+					</div>
+				</div>
+				<!-- /.Selección de pieza dental para diagnóstico -->
+
+
+
+			</div>
+			<!-- /. div tercera columna -->
+		</div>
+
+	</div>
+	<!-- /.row -->
+
+	<hr>
+
+	<!-- Footer -->
+	<footer>
+		<div class="row">
+			<div class="col-lg-12">
+				<p>Copyright &copy; Your Website 2014</p>
+			</div>
+			<!-- /.col-lg-12 -->
+		</div>
+		<!-- /.row -->
+	</footer>
+
+
+	<!-- jQuery -->
+	<script src="js/jquery-1.12.4.min.js"></script>
+	<!-- 	<script type="text/javascript" src="js/jquery-ui.js"></script> -->
+
+	<!--DataTables -->
+	<script type="text/javascript"
+		src="DataTables-1.10.12/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript"
+		src="DataTables-1.10.12/js/dataTables.bootstrap.min.js"></script>
+	<script type="text/javascript"
+		src="Buttons-1.2.1/js/dataTables.buttons.min.js"></script>
+	<script type="text/javascript"
+		src="Buttons-1.2.1/js/buttons.bootstrap.min.js"></script>
+	<script type="text/javascript"
+		src="Buttons-1.2.1/js/buttons.print.min.js"></script>
+	<script type="text/javascript"
+		src="FixedHeader-3.1.2/js/dataTables.fixedHeader.min.js"></script>
+	<script type="text/javascript"
+		src="Responsive-2.1.0/js/dataTables.responsive.min.js"></script>
+	<script type="text/javascript"
+		src="Responsive-2.1.0/js/responsive.bootstrap.min.js"></script>
+	<script type="text/javascript"
+		src="Select-1.2.0/js/dataTables.select.min.js"></script>
+	<script type="text/javascript" src="js/datatables.js"></script>
+
+
+	<!-- Bootstrap Core JavaScript -->
+	<script src="js/bootstrap.min.js"></script>
+
+	<script src="js/diagnostico.js"></script>
+
+</body>
+</html>

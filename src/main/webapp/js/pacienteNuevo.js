@@ -4,10 +4,10 @@ var tratamientoURL = 'https://dentool-elehin.rhcloud.com/service/tratamiento/';
 var tratamientosTopURL = 'https://dentool-elehin.rhcloud.com/service/tratamientoTop';
 var serverURL = 'https://dentool-elehin.rhcloud.com/';
 
-// var rootURL = 'http://localhost:8080/service/paciente/';
-// var diagnosticoURL = 'http://localhost:8080/service/diagnostico/';
-// var tratamientoURL = 'http://localhost:8080/service/tratamiento/';
-// var tratamientosTopURL = 'http://localhost:8080/service/tratamientoTop';
+//var rootURL = 'http://localhost:8080/service/paciente/';
+//var diagnosticoURL = 'http://localhost:8080/service/diagnostico/';
+//var tratamientoURL = 'http://localhost:8080/service/tratamiento/';
+//var tratamientosTopURL = 'http://localhost:8080/service/tratamientoTop';
 // var serverURL = 'http://localhost:8080/';
 
 var currentPaciente;
@@ -51,7 +51,8 @@ function formToJSON() {
 		"fechaNacimiento" : $('#fechaNacimiento').val(),
 		"notas" : $('#notas').val(),
 		"dni" : $('#dni').val(),
-		"alergico" : $('#alergico').prop('checked')
+		"alergico" : $('#alergico').prop('checked'),
+		"enfermoGrave" : $('#enfermoGrave').prop('checked')
 	});
 }
 

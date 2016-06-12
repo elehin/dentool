@@ -2,6 +2,7 @@ package com.dentool.model;
 
 import java.sql.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -19,13 +20,14 @@ public class Diagnostico {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, cascade = CascadeType.MERGE)
 	@JoinColumn(name = "paciente", referencedColumnName = "id")
 	@JsonBackReference
 	private Paciente paciente;
 
-	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false, cascade = CascadeType.MERGE)
 	private Tratamiento tratamiento;
+
 	private boolean iniciado;
 	private boolean finalizado;
 	private Date diagnosticado;
@@ -33,6 +35,7 @@ public class Diagnostico {
 	private Date fechaInicio;
 	private float precio;
 	private float pagado;
+	private short pieza;
 
 	public float getPrecio() {
 		return precio;
@@ -51,14 +54,27 @@ public class Diagnostico {
 	}
 
 	public void update(Diagnostico origen) {
-		setPrecio(origen.getPrecio());
-		setIniciado(origen.isIniciado());
-		setFinalizado(origen.isFinalizado());
-		setDiagnosticado(origen.getDiagnosticado());
-		setFechaFin(origen.getFechaFin());
-		setFechaInicio(origen.getFechaInicio());
-		setPrecio(origen.getPrecio());
-		setPagado(origen.getPagado());
+		if (origen.getPrecio() != 0) {
+			this.setPrecio(origen.getPrecio());
+		}
+		if (origen.getDiagnosticado() != null) {
+			this.setDiagnosticado(origen.getDiagnosticado());
+		}
+		if (origen.getFechaFin() != null) {
+			this.setFechaFin(origen.getFechaFin());
+		}
+		if (origen.getFechaInicio() != null) {
+			this.setFechaInicio(origen.getFechaInicio());
+		}
+		if (origen.getPrecio() != 0) {
+			this.setPrecio(origen.getPrecio());
+		}
+		if (origen.getPagado() != 0) {
+			this.setPagado(origen.getPagado());
+		}
+		if (origen.getPieza() != 0) {
+			this.setPieza(origen.getPieza());
+		}
 	}
 
 	public Paciente getPaciente() {
@@ -107,6 +123,7 @@ public class Diagnostico {
 
 	public void setFechaFin(Date fechaFin) {
 		this.fechaFin = fechaFin;
+		setFinalizado(this.fechaFin != null);
 	}
 
 	public Date getFechaInicio() {
@@ -115,6 +132,7 @@ public class Diagnostico {
 
 	public void setFechaInicio(Date fechaInicio) {
 		this.fechaInicio = fechaInicio;
+		setIniciado(this.fechaInicio != null);
 	}
 
 	public Tratamiento getTratamiento() {
@@ -129,6 +147,14 @@ public class Diagnostico {
 	public String toString() {
 		String s = "Diagnostico: {\"id\" : \"" + this.id + "\", \"tratamiento\" : \"" + this.tratamiento + "\"}";
 		return s;
+	}
+
+	public short getPieza() {
+		return pieza;
+	}
+
+	public void setPieza(short pieza) {
+		this.pieza = pieza;
 	}
 
 }

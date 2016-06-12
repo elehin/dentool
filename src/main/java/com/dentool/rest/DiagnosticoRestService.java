@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -71,5 +72,11 @@ public class DiagnosticoRestService {
 		return Response
 				.created(UriBuilder.fromResource(DiagnosticoRestService.class).path(String.valueOf(d.getId())).build())
 				.build();
+	}
+
+	@Path("/delete/{id}")
+	@DELETE
+	public void delete(@PathParam("id") long id) {
+		diagnosticoService.delete(id);
 	}
 }
