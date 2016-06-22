@@ -5,6 +5,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.ejb.Singleton;
 
@@ -24,8 +30,14 @@ public class KeyStoreService {
 		// this.encodedKey = null;
 		// }
 		String envVar = System.getenv("OPENSHIFT_DATA_DIR");
-		final File f = new File(envVar);
-		listFilesForFolder(f);
+		final File f = new File(envVar + "/key");
+		List<String> lines = Arrays.asList("BBpMqmy6BG+F2yd+/tzZ3g==");
+		Path file = Paths.get(envVar);
+		try {
+			Files.write(file, lines, Charset.forName("UTF-8"));
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+		}
 	}
 
 	public String getEncodedKey() {
@@ -33,16 +45,6 @@ public class KeyStoreService {
 	}
 
 	public void setEncodedKey(String encodedKey) {
-	}
-
-	private void listFilesForFolder(final File folder) {
-		for (final File fileEntry : folder.listFiles()) {
-			if (fileEntry.isDirectory()) {
-				listFilesForFolder(fileEntry);
-			} else {
-				logger.info(fileEntry.getName());
-			}
-		}
 	}
 
 	private String getKey() {
