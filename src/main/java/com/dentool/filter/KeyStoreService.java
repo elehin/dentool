@@ -30,13 +30,26 @@ public class KeyStoreService {
 		// this.encodedKey = null;
 		// }
 		String envVar = System.getenv("OPENSHIFT_DATA_DIR");
-		final File f = new File(envVar + "/key");
+		final File f = new File(envVar);
+		
 		List<String> lines = Arrays.asList("BBpMqmy6BG+F2yd+/tzZ3g==");
-		Path file = Paths.get(envVar);
+		Path file = Paths.get(envVar + "/key");
 		try {
 			Files.write(file, lines, Charset.forName("UTF-8"));
 		} catch (IOException e) {
 			logger.error(e.getMessage());
+		}
+
+		listFilesForFolder(f);
+	}
+
+	private void listFilesForFolder(final File folder) {
+		for (final File fileEntry : folder.listFiles()) {
+			if (fileEntry.isDirectory()) {
+				listFilesForFolder(fileEntry);
+			} else {
+				logger.info(fileEntry.getName());
+			}
 		}
 	}
 
