@@ -1,15 +1,3 @@
-var rootURL = 'https://dentool-elehin.rhcloud.com/service/tratamiento/';
-var diagnosticoURL = 'https://dentool-elehin.rhcloud.com/service/diagnostico/';
-var tratamientoURL = 'https://dentool-elehin.rhcloud.com/service/tratamiento/';
-var tratamientosTopURL = 'https://dentool-elehin.rhcloud.com/service/tratamientoTop';
-var serverURL = 'https://dentool-elehin.rhcloud.com/';
-
-//var rootURL = 'http://localhost:8080/service/tratamiento/';
-//var diagnosticoURL = 'http://localhost:8080/service/diagnostico/';
-//var tratamientoURL = 'http://localhost:8080/service/tratamiento/';
-//var tratamientosTopURL = 'http://localhost:8080/service/tratamientoTop';
-// var serverURL = 'http://localhost:8080/';
-
 var currentPaciente;
 
 $(document).ready(function() {
@@ -19,6 +7,11 @@ $(document).ready(function() {
 
 	$("#btnSave").click(function() {
 		updateTratamiento();
+		return false;
+	});
+
+	$("input:text, #precio").focus(function() {
+		$(this).select();
 		return false;
 	});
 
@@ -35,7 +28,15 @@ function updateTratamiento() {
 			showSuccessMessage();
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
-			showErrorMessage(textStatus);
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			} else {
+				showErrorMessage(textStatus);
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
 		}
 	});
 }
@@ -47,6 +48,15 @@ function findTratamiento(id) {
 		// dataType : "json",
 		success : function(data) {
 			renderDetails(data);
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
 		}
 	});
 }

@@ -1,5 +1,10 @@
 package com.dentool.utils;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import com.dentool.model.Paciente;
 
 public class Utils {
@@ -34,4 +39,20 @@ public class Utils {
 		destino.setAlergico(origen.isAlergico());
 	}
 
+	public static String md5Hash(String input) {
+		byte[] bytesOfMessage;
+		byte[] thedigest = null;
+		try {
+			bytesOfMessage = input.getBytes("UTF-8");
+
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			thedigest = md.digest(bytesOfMessage);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		String result = new String(thedigest, StandardCharsets.UTF_8);
+		return result;
+	}
 }

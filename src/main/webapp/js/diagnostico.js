@@ -1,19 +1,3 @@
-var rootURL = 'https://dentool-elehin.rhcloud.com/service/tratamiento/';
-var diagnosticoURL = 'https://dentool-elehin.rhcloud.com/service/diagnostico/';
-var tratamientoURL = 'https://dentool-elehin.rhcloud.com/service/tratamiento/';
-var tratamientosTopURL = 'https://dentool-elehin.rhcloud.com/service/tratamientoTop';
-var serverURL = 'https://dentool-elehin.rhcloud.com/';
-var pacienteURL = 'http://dentool-elehin.rhcloud.com/service/paciente/';
-var pagosURL = 'http://dentool-elehin.rhcloud.com/service/pago/';
-
-//var rootURL = 'http://localhost:8080/service/tratamiento/';
-//var diagnosticoURL = 'http://localhost:8080/service/diagnostico/';
-//var pacienteURL = 'http://localhost:8080/service/paciente/';
-//var tratamientoURL = 'http://localhost:8080/service/tratamiento/';
-//var tratamientosTopURL = 'http://localhost:8080/service/tratamientoTop';
-//var serverURL = 'http://localhost:8080/';
-// var pagosURL = 'http://localhost:8080/service/pago/';
-
 var currentDiagnostico;
 var activePago;
 var pagosTable;
@@ -60,6 +44,11 @@ $(document).ready(
 				$(eventObject.target).toggleClass("active");
 				return false;
 			});
+
+			$("#precio, #cantidad").focus(function() {
+				$(this).select();
+				return false;
+			})
 		});
 
 function addPagoRestante() {
@@ -70,13 +59,24 @@ function addPagoRestante() {
 		data : formToJSON('addPagoRestante'),
 		success : function(rdata, textStatus, jqXHR) {
 			showPagoSuccessMessage();
-			$.when($.ajax({
-				type : 'GET',
-				url : jqXHR.getResponseHeader('Location'),
-				success : function(data) {
-					activePago = data;
-				}
-			})).done(
+			$.when(
+					$.ajax({
+						type : 'GET',
+						url : jqXHR.getResponseHeader('Location'),
+						success : function(data) {
+							activePago = data;
+						},
+						error : function(jqXHR, textStatus, errorThrown) {
+							if (errorThrown == 'Unauthorized') {
+								window.location.replace(serverURL
+										+ 'login.html');
+							}
+						},
+						beforeSend : function(xhr, settings) {
+							xhr.setRequestHeader('Authorization', 'Bearer '
+									+ $.cookie('restTokenC'));
+						}
+					})).done(
 					function() {
 						var table = $('#tablePagos').DataTable({
 							"retrieve" : true
@@ -94,13 +94,31 @@ function addPagoRestante() {
 								currentDiagnostico = data;
 								renderDetails(data);
 								actualizarPagoRestante();
+							},
+							error : function(jqXHR, textStatus, errorThrown) {
+								if (errorThrown == 'Unauthorized') {
+									window.location.replace(serverURL
+											+ 'login.html');
+								}
+							},
+							beforeSend : function(xhr, settings) {
+								xhr.setRequestHeader('Authorization', 'Bearer '
+										+ $.cookie('restTokenC'));
 							}
 						});
 
 					});
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
-			showErrorMessage(textStatus);
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			} else {
+				showErrorMessage(textStatus);
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
 		}
 	});
 }
@@ -114,13 +132,24 @@ function addPago() {
 		success : function(rdata, textStatus, jqXHR) {
 			showPagoSuccessMessage();
 			// $('#addPagoDiv').toggleClass("in");
-			$.when($.ajax({
-				type : 'GET',
-				url : jqXHR.getResponseHeader('Location'),
-				success : function(data) {
-					activePago = data;
-				}
-			})).done(
+			$.when(
+					$.ajax({
+						type : 'GET',
+						url : jqXHR.getResponseHeader('Location'),
+						success : function(data) {
+							activePago = data;
+						},
+						error : function(jqXHR, textStatus, errorThrown) {
+							if (errorThrown == 'Unauthorized') {
+								window.location.replace(serverURL
+										+ 'login.html');
+							}
+						},
+						beforeSend : function(xhr, settings) {
+							xhr.setRequestHeader('Authorization', 'Bearer '
+									+ $.cookie('restTokenC'));
+						}
+					})).done(
 					function() {
 						var table = $('#tablePagos').DataTable({
 							"retrieve" : true
@@ -139,13 +168,31 @@ function addPago() {
 								currentDiagnostico = data;
 								renderDetails(data);
 								actualizarPagoRestante();
+							},
+							error : function(jqXHR, textStatus, errorThrown) {
+								if (errorThrown == 'Unauthorized') {
+									window.location.replace(serverURL
+											+ 'login.html');
+								}
+							},
+							beforeSend : function(xhr, settings) {
+								xhr.setRequestHeader('Authorization', 'Bearer '
+										+ $.cookie('restTokenC'));
 							}
 						});
 
 					});
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
-			showErrorMessage(textStatus);
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			} else {
+				showErrorMessage(textStatus);
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
 		}
 	});
 }
@@ -161,7 +208,15 @@ function deleteTratamiento() {
 			window.location.replace(url);
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
-			showErrorMessage(textStatus);
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			} else {
+				showErrorMessage(textStatus);
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
 		}
 	});
 }
@@ -176,7 +231,15 @@ function updateTratamiento() {
 			showSuccessMessage();
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
-			showErrorMessage(textStatus);
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			} else {
+				showErrorMessage(textStatus);
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
 		}
 	});
 }
@@ -188,6 +251,15 @@ function findPaciente(id) {
 		success : function(data) {
 			var paciente = data.name + ' ' + data.apellidos;
 			$('#backArrowLink').after(paciente);
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
 		}
 	});
 }
@@ -201,6 +273,15 @@ function findTratamiento(id) {
 			renderDetails(data);
 			getPagos();
 			actualizarPagoRestante();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
 		}
 	});
 }
@@ -311,6 +392,15 @@ function getPagos() {
 		url : pagosURL + 'diagnostico/' + $("#diagnosticoId").val(),
 		success : function(data) {
 			renderTablePagos(data);
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
 		}
 	});
 }
@@ -381,11 +471,28 @@ function deletePago(row) {
 					currentDiagnostico = data;
 					renderDetails(data);
 					actualizarPagoRestante();
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+					if (errorThrown == 'Unauthorized') {
+						window.location.replace(serverURL + 'login.html');
+					}
+				},
+				beforeSend : function(xhr, settings) {
+					xhr.setRequestHeader('Authorization', 'Bearer '
+							+ $.cookie('restTokenC'));
 				}
 			});
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
-			showErrorMessage(textStatus);
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			} else {
+				showErrorMessage(textStatus);
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
 		}
 	});
 }

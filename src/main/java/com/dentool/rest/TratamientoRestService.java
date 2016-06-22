@@ -14,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
+import com.dentool.filter.Secured;
 import com.dentool.model.Tratamiento;
 import com.dentool.rest.service.TratamientoService;
 
@@ -24,6 +25,7 @@ public class TratamientoRestService {
 	private TratamientoService tratamientoService;
 
 	@POST
+	@Secured
 	@Consumes("application/json")
 	public Response create(Tratamiento tratamiento) {
 		tratamientoService.create(tratamiento);
@@ -33,6 +35,7 @@ public class TratamientoRestService {
 	}
 
 	@GET
+	@Secured
 	@Path("/{id:[0-9][0-9]*}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response lookupTratamientoById(@PathParam("id") long id) {
@@ -44,6 +47,7 @@ public class TratamientoRestService {
 	}
 
 	@GET
+	@Secured
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response findAll() {
 		List<Tratamiento> lista = tratamientoService.findAll();
@@ -54,6 +58,7 @@ public class TratamientoRestService {
 	}
 
 	@GET
+	@Secured
 	@Path("/nombre/{nombre}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response lookupTratamientoByName(@PathParam("nombre") String nombre) {
@@ -72,6 +77,7 @@ public class TratamientoRestService {
 	}
 
 	@POST
+	@Secured
 	@Path("/update")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response updateTratamiento(Tratamiento t) {

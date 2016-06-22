@@ -10,6 +10,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.dentool.filter.Secured;
 import com.dentool.model.TratamientoTop;
 import com.dentool.rest.service.MostUsedTratamientosService;
 
@@ -20,6 +21,7 @@ public class MostUsedTratamientosRestService {
 	private MostUsedTratamientosService mostUsedTratamientosService;
 
 	@GET
+	@Secured
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response findAll() {
 		List<TratamientoTop> lista = mostUsedTratamientosService.getTratamientosTop();

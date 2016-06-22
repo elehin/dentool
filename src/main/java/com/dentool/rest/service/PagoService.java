@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dentool.model.Diagnostico;
+import com.dentool.model.Paciente;
 import com.dentool.model.Pago;
 
 @Stateless
@@ -25,6 +26,8 @@ public class PagoService {
 
 		this.actualizarPagos(pago.getDiagnosticoId());
 
+		this.actualizaSaldo(pago.getDiagnosticoId(), pago);
+
 		return pago;
 	}
 
@@ -38,6 +41,19 @@ public class PagoService {
 			this.entityManager.find(Diagnostico.class, diagnosticoId).setPagado(resultFloat);
 		} else {
 			this.entityManager.find(Diagnostico.class, diagnosticoId).setPagado(0);
+		}
+	}
+
+	private void actualizaSaldo(long diagnosticoId, Pago pago) {
+		Diagnostico d = entityManager.find(Diagnostico.class, diagnosticoId);
+		Paciente paciente = this.entityManager.find(Paciente.class, d.getPaciente().getId());
+
+		if (paciente.getSaldo() > 0) {
+			if (paciente.getSaldo() - pago.getCantidad() < 0) {
+				paciente.setSaldo(0);
+			} else {
+				paciente.setSaldo(paciente.getSaldo() - pago.getCantidad());
+			}
 		}
 	}
 

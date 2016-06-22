@@ -54,20 +54,25 @@ public class DiagnosticoService {
 	public Diagnostico updateDiagnostico(Diagnostico d) {
 		Diagnostico ld = find(d.getId());
 
+		//Comprueba si hay nuevo pago
 		if (d.getPagado() > 0 && ld.getPagado() != d.getPagado()) {
+			// Se crea el pago al haber diferencias entre el precio anterior y el nuevo
 			this.createPago(ld, d.getPagado() - ld.getPagado());
 		}
 
 		ld.update(d);
 
+		//Si está pagado y sin fecha de inicio se actualiza la fecha de inicio a now()
 		if (ld.getPagado() == ld.getPrecio() && ld.getFechaInicio() == null) {
 			ld.setFechaInicio(new Date(Calendar.getInstance().getTimeInMillis()));
 		}
 
+		// Si está pagado y no está finalizado se actualiza la fecha de fin a now()
 		if (ld.getPagado() == ld.getPrecio() && ld.getFechaFin() == null) {
 			ld.setFechaFin(new Date(Calendar.getInstance().getTimeInMillis()));
 		}
 
+		// Si tiene fecha de fin y no tiene fecha de inicio se actualiza la fecha de inicio = a fecha de fin
 		if (ld.getFechaFin() != null && ld.getFechaInicio() == null) {
 			ld.setFechaInicio(ld.getFechaFin());
 		}
@@ -89,6 +94,34 @@ public class DiagnosticoService {
 		p.setCantidad(cantidad);
 		p.setFecha(new Date(Calendar.getInstance().getTimeInMillis()));
 
+		Paciente paciente = this.entityManager.find(Paciente.class, d.getPaciente().getId());
+		if (paciente.getSaldo() > 0) {
+			if (paciente.getSaldo() - cantidad < 0) {
+				paciente.setSaldo(0);
+			} else {
+				paciente.setSaldo(paciente.getSaldo() - cantidad);
+			}
+		}
+
 		this.entityManager.persist(p);
+	}
+
+	public float getPagosPendientes(Paciente p) {
+		return getPagosPendientes(p.getId());
+	}
+
+	public float getPagosPendientes(long pacienteId) {
+		Paciente p = this.entityManager.find(Paciente.class, pacienteId);
+		String query = "SELECT sum(d.precio)-sum(d.pagado) FROM Diagnostico d WHERE d.finalizado = :finalizado AND d.precio > d.pagado AND d.paciente = :paciente";
+		Object r = this.entityManager.createQuery(query).setParameter("finalizado", true).setParameter("paciente", p)
+				.getSingleResult();
+
+		if (r != null) {
+			double result = (double) r;
+			float resultFloat = Float.parseFloat(Double.toString(result));
+			return resultFloat;
+		}
+		return 0;
+
 	}
 }

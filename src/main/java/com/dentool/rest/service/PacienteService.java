@@ -27,7 +27,6 @@ public class PacienteService {
 
 	public Paciente find(long id) {
 		Paciente p = entityManager.find(Paciente.class, id);
-		System.out.println(p.getDiagnosticos());
 		return p;
 	}
 

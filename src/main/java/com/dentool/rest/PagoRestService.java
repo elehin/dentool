@@ -16,21 +16,20 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.dentool.filter.Secured;
 import com.dentool.model.Pago;
 import com.dentool.rest.service.PagoService;
 
 @Path("/pago")
 public class PagoRestService {
 
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	// private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Inject
 	private PagoService pagoService;
 
 	@GET
+	@Secured
 	@Path("/{id:[0-9][0-9]*}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response lookupPagoById(@PathParam("id") long id) {
@@ -42,6 +41,7 @@ public class PagoRestService {
 	}
 
 	@GET
+	@Secured
 	@Path("/diagnostico/{diagnostico}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response lookupDiagnosticosByPaciente(@PathParam("diagnostico") long diagnosticoId) {
@@ -60,16 +60,17 @@ public class PagoRestService {
 	}
 
 	@PUT
+	@Secured
 	@Path("/create")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response create(Pago p) {
-		logger.debug("diagnosticoId: " + p.getDiagnosticoId() + "###################################");
 		this.pagoService.create(p);
 		return Response.created(UriBuilder.fromResource(PagoRestService.class).path(String.valueOf(p.getId())).build())
 				.build();
 	}
 
 	@POST
+	@Secured
 	@Path("/update")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response update(Pago p) {
@@ -78,8 +79,9 @@ public class PagoRestService {
 				.build();
 	}
 
-	@Path("/delete/{id}")
 	@DELETE
+	@Secured
+	@Path("/delete/{id}")
 	public void delete(@PathParam("id") long id) {
 		this.pagoService.delete(id);
 	}

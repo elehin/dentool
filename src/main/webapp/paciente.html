@@ -63,12 +63,12 @@
 					<li><a href="tratamientos.html">Tratamientos</a></li>
 					<li><a href="facturas.html">Facturas</a></li>
 				</ul>
-				<!-- 	<ul class="nav navbar-nav navbar-right">
-					<li><a href="#"><span class="glyphicon glyphicon-user"></span>
-							Sign Up</a></li>
-					<li><a href="#"><span class="glyphicon glyphicon-log-in"></span>
-							Login</a></li>
-				</ul> -->
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="usuarios.html"><span
+							class="glyphicon glyphicon-cog"></span> Configuración</a></li>
+					<li><a href="login.html"><span
+							class="glyphicon glyphicon-log-in"></span> Entrar</a></li>
+				</ul>
 			</div>
 		</div>
 		<!-- /.container -->
@@ -83,16 +83,16 @@
 			<div class="alert collapse alert-danger alert-dismissable"
 				id="alergia-alert">
 				<span class="glyphicon glyphicon-exclamation-sign"></span> <strong>
-					Atención!</strong> Este paciente sufre algún tipo de <strong>alergia</strong> significativa.
-				<a href="#" class="close" data-dismiss="alert" aria-label="close"
-					aria-hidden="true">&times;</a>
+					Atención!</strong> Este paciente sufre algún tipo de <strong>alergia</strong>
+				significativa. <a href="#" class="close" data-dismiss="alert"
+					aria-label="close" aria-hidden="true">&times;</a>
 			</div>
 
 			<div class="alert collapse alert-danger alert-dismissable"
 				id="enfermoGrave-alert">
 				<span class="glyphicon glyphicon-exclamation-sign"></span> <strong>
-					Atención!</strong> Este paciente sufre algún tipo de <strong>enfermedad grave</strong>
-				significativa. <a href="#" class="close" data-dismiss="alert"
+					Atención!</strong> Este paciente sufre algún tipo de <strong>enfermedad
+					grave</strong> significativa. <a href="#" class="close" data-dismiss="alert"
 					aria-label="close" aria-hidden="true">&times;</a>
 			</div>
 			<!-- /.Alertas -->
@@ -144,10 +144,38 @@
 					<label for="notas">Notas:</label>
 					<textarea id="notas" name="notas" class="form-control" rows="15"></textarea>
 
+					<div class="well well-sm margin-top-5 collapse" id="saldoPanel">
+						<h2 id="hSaldo" class="text-center text-success"></h2>
+					</div>
+
+					<a id="addSaldoLink" href="#addSaldoDiv"
+						class="btn btn-info btn-block margin-top-5" data-toggle="collapse">Añadir
+						saldo</a>
+
+					<div id="addSaldoDiv" class="collapse">
+
+						<label>Cantidad:</label>
+						<div class="input-group">
+							<span class="input-group-addon">€</span> <input type="number"
+								id="cantidadSaldo" name="cantidadSaldo" value="0" min="0"
+								step="1.00" data-number-to-fixed="2"
+								data-number-stepfactor="100" class="form-control currency" />
+						</div>
+
+						<button id="btnAddSaldo"
+							class="btn btn-primary btn-block margin-top-5 ">Añadir
+							saldo</button>
+					</div>
+
 				</div>
 			</form>
 
 			<div class="col-md-4">
+				<!-- Pagos Pendientes -->
+				<div class="well well-sm collapse" id="pagosPendientesPanel">
+					<h3 id="hPagosPendientes" class="text-center text-danger"></h3>
+				</div>
+
 				<!-- Nuevo diagnóstico -->
 				<a href="#addDiagDiv" class="btn btn-info btn-block"
 					data-toggle="collapse">Añadir tratamiento</a>
@@ -192,6 +220,7 @@
 							</div>
 							<img class="img-responsive margin-left-minus-5"
 								src="images/odontograma.png" alt="Odontograma" width="100%">
+								
 							<div class="btn-group btn-group-justified">
 								<button id="piezaBtn48" type="button"
 									class="btn btn-default botonPieza">48</button>
@@ -308,7 +337,7 @@
 				<!-- /.Nuevo diagnóstico -->
 
 				<table id="tableUltimosTratamientos"
-					class="table table-striped table-hover display responsive nowrap">
+					class="table table-striped table-hover display responsive">
 				</table>
 			</div>
 		</div>
@@ -332,7 +361,9 @@
 
 	<!-- jQuery -->
 	<script src="js/jquery-1.12.4.min.js"></script>
-	<!-- 	<script type="text/javascript" src="js/jquery-ui.js"></script> -->
+
+	<!-- jQuery Cookie -->
+	<script src="js/jquery.cookie.js"></script>
 
 	<!--DataTables -->
 	<script type="text/javascript"
@@ -362,6 +393,7 @@
 	<!-- bootstrap-select JavaScript -->
 	<script src="js/bootstrap-select.min.js"></script>
 
+	<script src="js/entorno.js"></script>
 	<script src="js/paciente.js"></script>
 
 

@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
+import com.dentool.filter.Secured;
 import com.dentool.model.Paciente;
 import com.dentool.model.PacienteLazy;
 import com.dentool.rest.service.PacienteService;
@@ -26,6 +27,7 @@ public class PacienteRestService {
 	private PacienteService pacienteService;
 
 	@POST
+	@Secured
 	@Consumes("application/json")
 	public Response create(Paciente paciente) {
 		pacienteService.create(paciente);
@@ -35,6 +37,7 @@ public class PacienteRestService {
 	}
 
 	@GET
+	@Secured
 	@Path("/{id:[0-9][0-9]*}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response lookupPacienteById(@PathParam("id") long id) {
@@ -46,6 +49,7 @@ public class PacienteRestService {
 	}
 
 	@GET
+	@Secured
 	@Path("/apellido/{apellido}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response lookupPacienteByApellido(@PathParam("apellido") String apellido) {
@@ -57,6 +61,7 @@ public class PacienteRestService {
 	}
 
 	@GET
+	@Secured
 	@Path("/telefono/{telefono}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response lookupPacienteByTelefono(@PathParam("telefono") String telefono) {
@@ -68,6 +73,7 @@ public class PacienteRestService {
 	}
 
 	@GET
+	@Secured
 	@Path("/dni/{dni}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response lookupPacienteByDni(@PathParam("dni") String dni) {
@@ -79,6 +85,7 @@ public class PacienteRestService {
 	}
 
 	@GET
+	@Secured
 	@Path("/nombre/{nombre}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response lookupPacienteByName(@PathParam("nombre") String nombre) {
@@ -90,6 +97,7 @@ public class PacienteRestService {
 	}
 
 	@GET
+	@Secured
 	@Path("/nombre/{nombre}/apellido/{apellido}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response lookupPacienteByFullName(@PathParam("nombre") String name, @PathParam("apellido") String apellido) {
@@ -101,6 +109,7 @@ public class PacienteRestService {
 	}
 
 	@GET
+	@Secured
 	@Path("/lastChanges")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response lookupPacienteByLastChange() {
@@ -125,6 +134,7 @@ public class PacienteRestService {
 	}
 
 	@POST
+	@Secured
 	@Path("/update")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response updatePaciente(Paciente p) {

@@ -1,29 +1,27 @@
-var rootURL = 'https://dentool-elehin.rhcloud.com/service/tratamiento/';
-var diagnosticoURL = 'https://dentool-elehin.rhcloud.com/service/diagnostico/';
-var tratamientoURL = 'https://dentool-elehin.rhcloud.com/service/tratamiento/';
-var tratamientosTopURL = 'https://dentool-elehin.rhcloud.com/service/tratamientoTop';
-var serverURL = 'https://dentool-elehin.rhcloud.com/';
-
-//var rootURL = 'http://localhost:8080/service/tratamiento/';
-//var diagnosticoURL = 'http://localhost:8080/service/diagnostico/';
-//var tratamientoURL = 'http://localhost:8080/service/tratamiento/';
-//var tratamientosTopURL = 'http://localhost:8080/service/tratamientoTop';
-// var serverURL = 'http://localhost:8080/';
-
 var currentPaciente;
 
 $(document).ready(function() {
 
 	$("#btnSave").click(function() {
-		createTratamiento();
+		createTratamiento('back');
+		return false;
+	});
+
+	$("#btnSaveAndNew").click(function() {
+		createTratamiento('new');
 		return false;
 	});
 
 	$("#name").focus();
 
+	$("input:text, #precio").focus(function() {
+		$(this).select();
+		return false;
+	});
+
 });
 
-function createTratamiento() {
+function createTratamiento(nextAction) {
 	$.ajax({
 		type : 'POST',
 		contentType : 'application/json',
@@ -31,15 +29,24 @@ function createTratamiento() {
 		// dataType : "json",
 		data : formToJSON(),
 		success : function(rdata, textStatus, jqXHR) {
-			var location = jqXHR.getResponseHeader('Location');
-			var split = location.split("/");
-			$("#btnSave").prop('disabled', true);
-			$(":input").prop('disabled', true);
-			$("#notas").prop('disabled', true);
-			showSuccessMessage(split[split.length - 1]);
+			// var location = jqXHR.getResponseHeader('Location');
+			// var split = location.split("/");
+			// $("#btnSave").prop('disabled', true);
+			// $(":input").prop('disabled', true);
+			// $("#notas").prop('disabled', true);
+			// showSuccessMessage(split[split.length - 1]);
+			showSuccessMessage(nextAction);
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
-			showErrorMessage(textStatus);
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			} else {
+				showErrorMessage(textStatus);
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
 		}
 	});
 }
@@ -51,12 +58,17 @@ function formToJSON() {
 	});
 }
 
-function showSuccessMessage(id) {
+function showSuccessMessage(nextAction) {
 	$("#success-alert").alert();
 	window.setTimeout(function() {
 		$("#success-alert").fadeTo(1000, 500).slideUp(500, function() {
 			$("#success-alert").hide();
-			url = serverURL + 'tratamiento.html?tratamiento=' + id;
+			var url;
+			if (nextAction == 'back') {
+				url = serverURL + 'tratamientos.html';
+			} else if (nextAction == 'new') {
+				url = serverURL + 'tratamientoNuevo.html';
+			}
 			window.location.replace(url);
 		});
 	}, 0);

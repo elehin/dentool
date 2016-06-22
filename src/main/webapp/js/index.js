@@ -1,14 +1,14 @@
-var rootURL = 'https://dentool-elehin.rhcloud.com/service/paciente/';
-var diagnosticoURL = 'https://dentool-elehin.rhcloud.com/service/diagnostico/';
-var tratamientoURL = 'https://dentool-elehin.rhcloud.com/service/tratamiento/';
-var tratamientosTopURL = 'https://dentool-elehin.rhcloud.com/service/tratamientoTop';
-var serverURL = 'https://dentool-elehin.rhcloud.com/';
+//var rootURL = 'https://dentool-elehin.rhcloud.com/service/paciente/';
+//var diagnosticoURL = 'https://dentool-elehin.rhcloud.com/service/diagnostico/';
+//var tratamientoURL = 'https://dentool-elehin.rhcloud.com/service/tratamiento/';
+//var tratamientosTopURL = 'https://dentool-elehin.rhcloud.com/service/tratamientoTop';
+//var serverURL = 'https://dentool-elehin.rhcloud.com/';
 
-//var rootURL = 'http://localhost:8080/service/paciente/';
-//var diagnosticoURL = 'http://localhost:8080/service/diagnostico/';
-//var tratamientoURL = 'http://localhost:8080/service/tratamiento/';
-//var tratamientosTopURL = 'http://localhost:8080/service/tratamientoTop';
-// var serverURL = 'http://localhost:8080/';
+var rootURL = 'http://localhost:8080/service/paciente/';
+var diagnosticoURL = 'http://localhost:8080/service/diagnostico/';
+var tratamientoURL = 'http://localhost:8080/service/tratamiento/';
+var tratamientosTopURL = 'http://localhost:8080/service/tratamientoTop';
+var serverURL = 'http://localhost:8080/';
 
 // ################### document.ready() ##################################
 $(document).ready(function() {
@@ -87,6 +87,13 @@ function getLastChangedPacientes() {
 		// dataType : "json",
 		success : function(data) {
 			populateTable(data);
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			window.location.replace(serverURL + 'login.html');
 		}
 	});
 }

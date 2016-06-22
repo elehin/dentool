@@ -1,7 +1,8 @@
+
 // ################### document.ready() ##################################
 $(document).ready(function() {
 
-	getTratamientos();
+	getUsuarios();
 
 	$("#btnSearch").click(function() {
 		buscarTratamiento();
@@ -20,15 +21,16 @@ $(document).ready(function() {
 function populateTable(dataset) {
 	var trHTML = '';
 	var lupa = '<button class="btn btn-info padding-0-4" role="button"><span class="glyphicon glyphicon-search"></span></button>';
-	$('#tableTratamientosBody').empty();
+	$('#tableUsuariosBody').empty();
 
 	$.each(dataset, function(i, item) {
 		trHTML += '<tr><td>' + item.id + '</td><td>' + lupa + '</td><td>'
-				+ item.nombre + '</td><td>' + item.precio + '</td></tr>';
+				+ item.username + '</td><td>' + item.nombre + '</td><td>'
+				+ item.apellidos + '</td></tr>';
 	});
-	$("#tableTratamientosBody").append(trHTML);
+	$("#tableUsuariosBody").append(trHTML);
 
-	searchTable = $('#tableTratamientos').DataTable({
+	searchTable = $('#tableUsuarios').DataTable({
 		"retrieve" : false,
 		"paging" : true,
 		"searching" : false,
@@ -43,9 +45,9 @@ function populateTable(dataset) {
 		}
 	});
 
-	$('#tableTratamientos tbody').on('click', 'button', function() {
+	$('#tableUsuariosBody tbody').on('click', 'button', function() {
 		var data = searchTable.row($(this).parents('tr')).data();
-		url = serverURL + 'tratamiento.html?tratamiento=' + data[0];
+		url = serverURL + 'usuario.html?usuario=' + data[0];
 		window.location.replace(url);
 	});
 }
@@ -53,23 +55,20 @@ function populateTable(dataset) {
 function buscarTratamiento() {
 	key = $("#searchKey").val();
 
-	var url = serverURL + 'tratamientoMultiple.html?key=' + key;
+	var url = serverURL + 'usuarioMultiple.html?key=' + key;
 	window.location.replace(url);
 }
 
-function getTratamientos() {
+function getUsuarios() {
 	$.ajax({
 		type : 'GET',
-		url : rootURL,
-		// dataType : "json",
+		url : authenticationURL + 'lastUsers',
 		success : function(data) {
 			populateTable(data);
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			if (errorThrown == 'Unauthorized') {
 				window.location.replace(serverURL + 'login.html');
-			} else {
-				showErrorMessage(textStatus);
 			}
 		},
 		beforeSend : function(xhr, settings) {

@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
+import com.dentool.filter.Secured;
 import com.dentool.model.Diagnostico;
 import com.dentool.rest.service.DiagnosticoService;
 
@@ -25,6 +26,7 @@ public class DiagnosticoRestService {
 	private DiagnosticoService diagnosticoService;
 
 	@GET
+	@Secured
 	@Path("/{id:[0-9][0-9]*}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response lookupDiagnosticoById(@PathParam("id") long id) {
@@ -36,6 +38,7 @@ public class DiagnosticoRestService {
 	}
 
 	@GET
+	@Secured
 	@Path("/paciente/{paciente}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response lookupDiagnosticosByPaciente(@PathParam("paciente") long id) {
@@ -44,6 +47,15 @@ public class DiagnosticoRestService {
 			throw new WebApplicationException(Response.Status.NOT_FOUND);
 		}
 		return Response.ok(lista).build();
+	}
+
+	@GET
+	@Secured
+	@Path("/pagosPendientes/{paciente}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getPagosPendientes(@PathParam("paciente") long id) {
+		float pagosPendientes = diagnosticoService.getPagosPendientes(id);
+		return Response.ok(pagosPendientes).build();
 	}
 
 	@GET
@@ -57,7 +69,6 @@ public class DiagnosticoRestService {
 	@Path("/add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response addDiagnostico(Diagnostico d) {
-		System.out.println(d);
 		diagnosticoService.addDiagnostico(d);
 		return Response
 				.created(UriBuilder.fromResource(DiagnosticoRestService.class).path(String.valueOf(d.getId())).build())
@@ -65,6 +76,7 @@ public class DiagnosticoRestService {
 	}
 
 	@POST
+	@Secured
 	@Path("/update")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response updateDiagnostico(Diagnostico d) {
@@ -74,8 +86,9 @@ public class DiagnosticoRestService {
 				.build();
 	}
 
-	@Path("/delete/{id}")
 	@DELETE
+	@Secured
+	@Path("/delete/{id}")
 	public void delete(@PathParam("id") long id) {
 		diagnosticoService.delete(id);
 	}

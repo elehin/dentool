@@ -39,6 +39,7 @@ public class Paciente {
 	private boolean enfermoGrave = false;
 	private Date alta;
 	private Date lastChange;
+	private float saldo = 0;
 
 	public Long getId() {
 		return id;
@@ -132,6 +133,18 @@ public class Paciente {
 		this.setLastChange(new Date(Calendar.getInstance().getTimeInMillis()));
 		this.setDiagnosticos(origen.getDiagnosticos());
 		this.setEnfermoGrave(origen.isEnfermoGrave());
+
+		if (origen.getSaldo() > this.getSaldo()) {
+			String n = "";
+			String fecha = Calendar.getInstance().get(Calendar.DATE) + "-" + Calendar.getInstance().get(Calendar.MONTH)
+					+ "-" + Calendar.getInstance().get(Calendar.YEAR);
+			if (!"".equals(this.getNotas())) {
+				n = this.getNotas() + "\n";
+				n += fecha + ": Depositado saldo por " + (origen.getSaldo() - this.getSaldo()) + " €";
+			}
+			this.setNotas(n);
+		}
+		this.setSaldo(origen.getSaldo());
 	}
 
 	public boolean isAlergico() {
@@ -180,5 +193,13 @@ public class Paciente {
 
 	public void setEnfermoGrave(boolean enfermoGrave) {
 		this.enfermoGrave = enfermoGrave;
+	}
+
+	public float getSaldo() {
+		return saldo;
+	}
+
+	public void setSaldo(float saldo) {
+		this.saldo = saldo;
 	}
 }

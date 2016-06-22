@@ -1,15 +1,3 @@
-var rootURL = 'https://dentool-elehin.rhcloud.com/service/paciente/';
-var diagnosticoURL = 'https://dentool-elehin.rhcloud.com/service/diagnostico/';
-var tratamientoURL = 'https://dentool-elehin.rhcloud.com/service/tratamiento/';
-var tratamientosTopURL = 'https://dentool-elehin.rhcloud.com/service/tratamientoTop';
-var serverURL = 'https://dentool-elehin.rhcloud.com/';
-
-//var rootURL = 'http://localhost:8080/service/paciente/';
-//var diagnosticoURL = 'http://localhost:8080/service/diagnostico/';
-//var tratamientoURL = 'http://localhost:8080/service/tratamiento/';
-//var tratamientosTopURL = 'http://localhost:8080/service/tratamientoTop';
-// var serverURL = 'http://localhost:8080/';
-
 var currentPaciente;
 var searchTable;
 var searchDialog;
@@ -24,57 +12,91 @@ var statusEmpezado = '<button class="btn btn-warning padding-0-4 empezado" role=
 var statusFinalizado = '<button class="btn btn-success padding-0-4 finalizado" role="button"><span class="glyphicon glyphicon-ok"></span></button>';
 
 $(document).ready(function() {
+	// console.log('$(document).ready');
+
+	$("input:text, #telefono").focus(function() {
+		$(this).select();
+		return false;
+	});
+
+	$("#cantidadSaldo").focus(function() {
+		$(this).select();
+		return false;
+	})
+
 	if (getUrlParameter("paciente") != '') {
 		findPaciente(getUrlParameter("paciente"));
 	}
 
 	$("#btnSave").click(function() {
+		// console.log('$("#btnSave").click');
 		updatePaciente();
 		return false;
 	});
 
 	$("#btnAddDiagnostico").click(function() {
+		// console.log('$("#btnAddDiagnostico").click');
 		addDiagnostico();
 		return false;
 	});
 
 	$("#ttbtn1").click(function() {
+		// console.log('$("#ttbtn1").click');
 		addDiagnostico(1);
 		return false;
 	});
 
 	$("#ttbtn2").click(function() {
+		// console.log('$("#ttbtn2").click');
 		addDiagnostico(2);
 		return false;
 	});
 
 	$("#ttbtn3").click(function() {
+		// console.log('$("#ttbtn3").click');
 		addDiagnostico(3);
 		return false;
 	});
 
 	$("#ttbtn4").click(function() {
+		// console.log('$("#ttbtn4").click');
 		addDiagnostico(4);
 		return false;
 	});
 
 	$("#ttbtn5").click(function() {
+		// console.log('$("#ttbtn5").click');
 		addDiagnostico(5);
 		return false;
 	});
 
 	$(".botonPieza").click(function(eventObject) {
+		// console.log('$("#botonPieza").click');
 		$(".botonPieza").removeClass("active");
 		$(eventObject.target).toggleClass("active");
+		return false;
+	});
+
+	$("#btnAddSaldo").click(function() {
+		// console.log('$("#btnAddSaldo").click');
+		updatePaciente();
+		$('#addSaldoDiv').toggleClass("in");
 		return false;
 	});
 
 	getTratamientosList();
 	getTratamientosTop();
 
+	$("#addSaldoLink").click(function() {
+		$('html, body').animate({
+			scrollTop : $("#addSaldoLink").offset().top
+		}, 500);
+	});
+
 });
 
 function getTratamientosTop() {
+	// console.log('getTratamientosTop');
 	$.ajax({
 		type : 'GET',
 		url : tratamientosTopURL,
@@ -87,11 +109,21 @@ function getTratamientosTop() {
 				$("#" + id).attr("value", valor);
 				$("#" + id).attr("tratamiento", item.tratamiento);
 			});
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
 		}
 	});
 }
 
 function getTratamientosList() {
+	// console.log('getTratamientosList');
 	$.ajax({
 		type : 'GET',
 		url : tratamientoURL,
@@ -104,11 +136,21 @@ function getTratamientosList() {
 										item.id));
 					});
 			$('#tratamiento').selectpicker('refresh');
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
 		}
 	});
 }
 
 function addDiagnostico(tratamientoTop) {
+	// console.log('addDiagnostico');
 	if (tratamientoTop == null) {
 		tratamientoTop = 'addDiagnostico';
 	}
@@ -122,6 +164,8 @@ function addDiagnostico(tratamientoTop) {
 				success : function(rdata, textStatus, jqXHR) {
 					showDiagnosticoSuccessMessage();
 					$('#addDiagDiv').toggleClass("in");
+					$('.botonPieza').removeClass('active');
+					$('#addDiagForm')[0].reset();
 					$
 							.when($
 									.ajax(
@@ -131,6 +175,23 @@ function addDiagnostico(tratamientoTop) {
 														.getResponseHeader('Location'),
 												success : function(data) {
 													activeDiagnostico = data;
+												},
+												error : function(jqXHR,
+														textStatus, errorThrown) {
+													if (errorThrown == 'Unauthorized') {
+														window.location
+																.replace(serverURL
+																		+ 'login.html');
+													}
+												},
+												beforeSend : function(xhr,
+														settings) {
+													xhr
+															.setRequestHeader(
+																	'Authorization',
+																	'Bearer '
+																			+ $
+																					.cookie('restTokenC'));
 												}
 											})
 									.done(
@@ -177,27 +238,45 @@ function addDiagnostico(tratamientoTop) {
 																		activeDiagnostico.tratamiento.nombre,
 																		pieza ])
 														.draw(false);
-												$('#addDiagForm')[0].reset();
 											}));
 
 				},
 				error : function(jqXHR, textStatus, errorThrown) {
-					showErrorMessage(textStatus);
+					if (errorThrown == 'Unauthorized') {
+						window.location.replace(serverURL + 'login.html');
+					} else {
+						showErrorMessage(textStatus);
+					}
+				},
+				beforeSend : function(xhr, settings) {
+					xhr.setRequestHeader('Authorization', 'Bearer '
+							+ $.cookie('restTokenC'));
 				}
 			});
 }
 
 function findDiagnosticoByUrl(url) {
+	// console.log('findDiagnosticoByUrl');
 	$.ajax({
 		type : 'GET',
 		url : url,
 		success : function(data) {
 			activeDiagnostico = data;
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
 		}
 	});
 }
 
 function findPaciente(id) {
+	// console.log('findPaciente');
 	$.ajax({
 		type : 'GET',
 		url : rootURL + id,
@@ -206,11 +285,21 @@ function findPaciente(id) {
 			currentPaciente = data;
 			$("#btnSave").attr('value', 'Modificar');
 			renderDetails(currentPaciente);
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
 		}
 	});
 }
 
 function renderDetails(paciente) {
+	// console.log('renderDetails');
 	showAlergicoMessage();
 	showEnfermoGraveMessage();
 
@@ -227,14 +316,45 @@ function renderDetails(paciente) {
 	$("#btnSave").attr('value', 'Modificar');
 
 	populateLastDiagnosticos();
+	renderSaldo();
+	renderPagosPendientes();
+}
+
+function renderPagosPendientes() {
+	// console.log('renderPagosPendientes');
+	$.ajax({
+		type : 'GET',
+		url : diagnosticoURL + "pagosPendientes/" + currentPaciente.id,
+		// dataType : "json",
+		success : function(data) {
+			if (data > 0) {
+				$("#pagosPendientesPanel").addClass("in");
+				$("#hPagosPendientes").text("Deuda -" + data + " €");
+			} else {
+				$("#pagosPendientesPanel").removeClass("in");
+			}
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
+		}
+	});
+
 }
 
 function populateLastDiagnosticos() {
+	// console.log('populateLastDiagnosticos');
 	getDiagnosticosByPaciente(currentPaciente.id);
 
 }
 
 function renderDiagTableRow(item) {
+	// console.log('renderDiagTableRow');
 
 	if (item.pagado == 0) {
 		estadoPago = sinPagar;
@@ -267,6 +387,7 @@ function renderDiagTableRow(item) {
 }
 
 function renderTableDiagnosticos(diagnosticos) {
+	// console.log('renderTableDiagnosticos');
 
 	var dataset = [];
 
@@ -306,11 +427,17 @@ function renderTableDiagnosticos(diagnosticos) {
 	});
 
 	var row;
-	$('#tableUltimosTratamientos tbody').on(
+
+	$('#tableUltimosTratamientos tbody tr').off('click');
+	$('#tableUltimosTratamientos tbody tr').on(
 			'click',
 			'button',
-			function() {
+			function(evt) {
+				evt.stopPropagation();
+				evt.preventDefault();
+
 				row = $(this).parents('tr');
+
 				if ($(this).hasClass("pagar")) {
 					setPagado(row);
 				} else if ($(this).hasClass("detalle")) {
@@ -327,73 +454,167 @@ function renderTableDiagnosticos(diagnosticos) {
 }
 
 function setFinalizado(row) {
-	var data = diagsTable.row(row).data();
+	// console.log('setFinalizado');
+
+	var dData = diagsTable.row(row).data();
+	var actionFTJSON = 'updateEstadoDiagnostico';
+
+	if (currentPaciente.saldo > 0) {
+		actionFTJSON = 'updateSaldoParcialDiagnostico';
+	}
+
 	$.ajax({
 		type : 'POST',
 		contentType : 'application/json',
 		url : diagnosticoURL + 'update',
-		data : formToJSON('updateEstadoDiagnostico', data),
+		data : formToJSON(actionFTJSON, dData),
 		success : function(rdata, textStatus, jqXHR) {
 			showDiagnosticoUpdateSuccessMessage();
-			$.when($.ajax({
-				type : 'GET',
-				url : jqXHR.getResponseHeader('Location'),
-				success : function(data) {
-					activeDiagnostico = data;
-				}
-			})).done(
+			updateSaldoWell(dData);
+			$.when(
+					$.ajax({
+						type : 'GET',
+						url : jqXHR.getResponseHeader('Location'),
+						success : function(data) {
+							activeDiagnostico = data;
+						},
+						error : function(jqXHR, textStatus, errorThrown) {
+							if (errorThrown == 'Unauthorized') {
+								window.location.replace(serverURL
+										+ 'login.html');
+							}
+						},
+						beforeSend : function(xhr, settings) {
+							xhr.setRequestHeader('Authorization', 'Bearer '
+									+ $.cookie('restTokenC'));
+						}
+					})).done(
 					function() {
 						diagsTable.row(row).data(
 								renderDiagTableRow(activeDiagnostico)).draw();
+						renderSaldo();
+						renderPagosPendientes();
 					})
 
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
-			showErrorMessage(textStatus);
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			} else {
+				showErrorMessage(textStatus);
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
 		}
 	});
 }
 
 function setPagado(row) {
-	var data = diagsTable.row(row).data();
+	// console.log('setPagado');
+
+	var dData = diagsTable.row(row).data();
 	$.ajax({
 		type : 'POST',
 		contentType : 'application/json',
 		url : diagnosticoURL + 'update',
-		data : formToJSON('updateDiagnostico', data),
+		data : formToJSON('updateDiagnostico', dData),
 		success : function(rdata, textStatus, jqXHR) {
 			showDiagnosticoUpdateSuccessMessage();
-			$.when($.ajax({
-				type : 'GET',
-				url : jqXHR.getResponseHeader('Location'),
-				success : function(data) {
-					activeDiagnostico = data;
-				}
-			})).done(
+			updateSaldoWell(dData);
+			$.when(
+					$.ajax({
+						type : 'GET',
+						url : jqXHR.getResponseHeader('Location'),
+						success : function(data) {
+							activeDiagnostico = data;
+						},
+						error : function(jqXHR, textStatus, errorThrown) {
+							if (errorThrown == 'Unauthorized') {
+								window.location.replace(serverURL
+										+ 'login.html');
+							}
+						},
+						beforeSend : function(xhr, settings) {
+							xhr.setRequestHeader('Authorization', 'Bearer '
+									+ $.cookie('restTokenC'));
+						}
+					})).done(
 					function() {
 						diagsTable.row(row).data(
 								renderDiagTableRow(activeDiagnostico)).draw();
-					})
+						renderSaldo();
+						renderPagosPendientes();
+					});
 
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
-			showErrorMessage(textStatus);
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			} else {
+				showErrorMessage(textStatus);
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
 		}
 	});
 
 }
 
+function updateSaldoWell(data) {
+	// console.log('updateSaldoWell');
+
+	if (currentPaciente.saldo > 0) {
+		if (currentPaciente.saldo <= (data[1] - data[2])) {
+			currentPaciente.saldo = 0;
+		} else {
+			currentPaciente.saldo = currentPaciente.saldo - (data[1] - data[2]);
+		}
+	}
+
+	renderSaldo();
+}
+
+function renderSaldo() {
+	// console.log('renderSaldo');
+	if (currentPaciente.saldo > 0) {
+		$("#hSaldo").empty();
+		$("#saldoPanel").addClass("in");
+		$("#hSaldo").text("Saldo : +" + currentPaciente.saldo + " €");
+		$("#cantidadSaldo").val(0);
+	} else {
+		$("#hSaldo").empty();
+		$("#saldoPanel").removeClass("in");
+	}
+}
+
 function getDiagnosticosByPaciente(paciente) {
+	// console.log('getDiagnosticosByPaciente');
+
 	$.ajax({
 		type : 'GET',
 		url : diagnosticoURL + 'paciente/' + paciente,
 		success : function(data) {
 			renderTableDiagnosticos(data);
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
 		}
 	});
 }
 
 var getUrlParameter = function getUrlParameter(sParam) {
+	// console.log('getUrlParameter');
+
 	var sPageURL = decodeURIComponent(window.location.search.substring(1)), sURLVariables = sPageURL
 			.split('&'), sParameterName, i;
 
@@ -407,6 +628,8 @@ var getUrlParameter = function getUrlParameter(sParam) {
 };
 
 function updatePaciente() {
+	// console.log('updatePaciente');
+
 	$.ajax({
 		type : 'POST',
 		contentType : 'application/json',
@@ -417,12 +640,22 @@ function updatePaciente() {
 			findPacienteByUrl(jqXHR.getResponseHeader('Location'));
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
-			showErrorMessage(textStatus);
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			} else {
+				showErrorMessage(textStatus);
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
 		}
 	});
 }
 
 function formToJSON(action, data) {
+	// console.log('formToJSON() -> ' + action + ' data {' + data + '}');
+
 	if (action == '1') {
 		return JSON.stringify({
 			"tratamiento" : {
@@ -496,9 +729,16 @@ function formToJSON(action, data) {
 			"pieza" : $(".botonPieza.active").text()
 		});
 	} else if (action == 'updateDiagnostico') {
+		var pagado;
+		if (currentPaciente.saldo > 0
+				&& currentPaciente.saldo < (data[1] - data[2])) {
+			pagado = data[2] + currentPaciente.saldo;
+		} else {
+			pagado = data[1];
+		}
 		return JSON.stringify({
 			"id" : data[0],
-			"pagado" : data[1],
+			"pagado" : pagado,
 			"precio" : data[1]
 		});
 	} else if (action == 'updateEstadoDiagnostico') {
@@ -508,7 +748,28 @@ function formToJSON(action, data) {
 			"pagado" : data[2],
 			"precio" : data[1]
 		});
+	} else if (action == 'updateSaldoParcialDiagnostico') {
+		var pagado;
+		if (currentPaciente.saldo > 0
+				&& currentPaciente.saldo < (data[1] - data[2])) {
+			pagado = data[2] + currentPaciente.saldo;
+		} else {
+			pagado = data[1];
+		}
+		return JSON.stringify({
+			"id" : data[0],
+			"fechaFin" : new Date(),
+			"pagado" : pagado,
+			"precio" : data[1]
+		});
 	} else {
+		var newSaldo;
+		if ($("#cantidadSaldo").val() == 0) {
+			newSaldo = currentPaciente.saldo;
+		} else {
+			newSaldo = parseFloat($("#cantidadSaldo").val())
+					+ parseFloat(currentPaciente.saldo);
+		}
 		return JSON.stringify({
 			"id" : $('#pacienteId').val(),
 			"name" : $('#name').val(),
@@ -519,12 +780,14 @@ function formToJSON(action, data) {
 			"notas" : $('#notas').val(),
 			"dni" : $('#dni').val(),
 			"alergico" : $('#alergico').prop('checked'),
-			"enfermoGrave" : $('#enfermoGrave').prop('checked')
+			"enfermoGrave" : $('#enfermoGrave').prop('checked'),
+			"saldo" : newSaldo
 		});
 	}
 }
 
 function showSuccessMessage() {
+	// console.log('showSuccessMessage');
 	$("#success-alert").alert();
 	window.setTimeout(function() {
 		$("#success-alert").fadeTo(2000, 500).slideUp(500, function() {
@@ -534,6 +797,7 @@ function showSuccessMessage() {
 }
 
 function showDiagnosticoSuccessMessage() {
+	// console.log('showDiagnosticoSuccessMessage');
 	$("#diagnostico-success-alert").alert();
 	window.setTimeout(function() {
 		$("#diagnostico-success-alert").fadeTo(2000, 500).slideUp(500,
@@ -544,6 +808,7 @@ function showDiagnosticoSuccessMessage() {
 }
 
 function showDiagnosticoUpdateSuccessMessage() {
+	// console.log('showDiagnosticoUpdateSuccessMessage');
 	$("#diagnostico-update-success-alert").alert();
 	window.setTimeout(function() {
 		$("#diagnostico-update-success-alert").fadeTo(2000, 500).slideUp(500,
@@ -554,6 +819,7 @@ function showDiagnosticoUpdateSuccessMessage() {
 }
 
 function showErrorMessage(error) {
+	// console.log('showErrorMessage');
 	$("#error-alert").alert();
 	window.setTimeout(function() {
 		$("#error-alert").fadeTo(2000, 500).slideUp(500, function() {
@@ -563,18 +829,21 @@ function showErrorMessage(error) {
 }
 
 function showAlergicoMessage() {
+	// console.log('showAlergicoMessage');
 	if (currentPaciente.alergico == true) {
 		$("#alergia-alert").show()
 	}
 }
 
 function showEnfermoGraveMessage() {
+	// console.log('showEnfermoGraveMessage');
 	if (currentPaciente.enfermoGrave == true) {
 		$("#enfermoGrave-alert").show()
 	}
 }
 
 function findPacienteByUrl(url) {
+	// console.log('findPacienteByUrl');
 	$.ajax({
 		type : 'GET',
 		url : url,
@@ -582,6 +851,15 @@ function findPacienteByUrl(url) {
 		success : function(data) {
 			currentPaciente = data;
 			renderDetails(currentPaciente);
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
 		}
 	});
 }
