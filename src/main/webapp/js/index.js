@@ -72,7 +72,7 @@ function buscarPaciente() {
 function getLastChangedPacientes() {
 	$.ajax({
 		type : 'GET',
-		url : rootURL + 'lastChanges',
+		url : pacienteURL + 'lastChanges',
 		// dataType : "json",
 		success : function(data) {
 			populateTable(data);

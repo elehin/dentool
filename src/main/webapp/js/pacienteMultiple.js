@@ -15,7 +15,7 @@ $(document).ready(function() {
 function findPacienteByApellidos(apellidos) {
 	$.ajax({
 		type : 'GET',
-		url : rootURL + "apellido/" + apellidos,
+		url : pacienteURL + "apellido/" + apellidos,
 		// dataType : "json",
 		success : function(data) {
 			if (data.length == 1) {
@@ -40,7 +40,7 @@ function findPacienteByApellidos(apellidos) {
 function findPacienteByTelefono(telefono) {
 	$.ajax({
 		type : 'GET',
-		url : rootURL + "telefono/" + telefono,
+		url : pacienteURL + "telefono/" + telefono,
 		// dataType : "json",
 		success : function(data) {
 			if (data.length == 1) {
@@ -65,7 +65,7 @@ function findPacienteByTelefono(telefono) {
 function findPacienteByDni(dni) {
 	$.ajax({
 		type : 'GET',
-		url : rootURL + "dni/" + dni,
+		url : pacienteURL + "dni/" + dni,
 		// dataType : "json",
 		success : function(data) {
 			if (data.length == 1) {

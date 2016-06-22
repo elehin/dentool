@@ -238,6 +238,8 @@ function addDiagnostico(tratamientoTop) {
 																		activeDiagnostico.tratamiento.nombre,
 																		pieza ])
 														.draw(false);
+
+												setTableButtonsClickListeners();
 											}));
 
 				},
@@ -279,7 +281,7 @@ function findPaciente(id) {
 	// console.log('findPaciente');
 	$.ajax({
 		type : 'GET',
-		url : rootURL + id,
+		url : pacienteURL + id,
 		// dataType : "json",
 		success : function(data) {
 			currentPaciente = data;
@@ -426,6 +428,11 @@ function renderTableDiagnosticos(diagnosticos) {
 		} ],
 	});
 
+	setTableButtonsClickListeners();
+
+}
+
+function setTableButtonsClickListeners() {
 	var row;
 
 	$('#tableUltimosTratamientos tbody tr').off('click');
@@ -448,9 +455,7 @@ function renderTableDiagnosticos(diagnosticos) {
 				} else if ($(this).is('.sinEmpezar, .empezado')) {
 					setFinalizado(row);
 				}
-
 			});
-
 }
 
 function setFinalizado(row) {

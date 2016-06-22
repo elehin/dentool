@@ -45,7 +45,7 @@ function populateTable(dataset) {
 		}
 	});
 
-	$('#tableUsuariosBody tbody').on('click', 'button', function() {
+	$('#tableUsuariosBody').on('click', 'button', function() {
 		var data = searchTable.row($(this).parents('tr')).data();
 		url = serverURL + 'usuario.html?usuario=' + data[0];
 		window.location.replace(url);

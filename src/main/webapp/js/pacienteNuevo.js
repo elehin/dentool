@@ -13,7 +13,7 @@ function createPaciente() {
 	$.ajax({
 		type : 'POST',
 		contentType : 'application/json',
-		url : rootURL,
+		url : pacienteURL,
 		// dataType : "json",
 		data : formToJSON(),
 		success : function(rdata, textStatus, jqXHR) {
