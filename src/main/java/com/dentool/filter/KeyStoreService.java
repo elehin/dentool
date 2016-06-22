@@ -1,16 +1,9 @@
 package com.dentool.filter;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.ejb.Singleton;
 
@@ -25,32 +18,10 @@ public class KeyStoreService {
 	private String encodedKey;
 
 	KeyStoreService() {
-		// this.encodedKey = this.getKey();
-		// if ("".equals(this.encodedKey)) {
-		// this.encodedKey = null;
-		// }
-		String envVar = System.getenv("OPENSHIFT_DATA_DIR");
-		final File f = new File(envVar);
-		
-		List<String> lines = Arrays.asList("BBpMqmy6BG+F2yd+/tzZ3g==");
-		Path file = Paths.get(envVar + "/key");
-		try {
-			Files.write(file, lines, Charset.forName("UTF-8"));
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-		}
-
-		listFilesForFolder(f);
-	}
-
-	private void listFilesForFolder(final File folder) {
-		for (final File fileEntry : folder.listFiles()) {
-			if (fileEntry.isDirectory()) {
-				listFilesForFolder(fileEntry);
-			} else {
-				logger.info(fileEntry.getName());
-			}
-		}
+		this.encodedKey = this.getKey();
+		if ("".equals(this.encodedKey)) {
+			this.encodedKey = null;
+		 }
 	}
 
 	public String getEncodedKey() {
@@ -64,11 +35,13 @@ public class KeyStoreService {
 
 		logger.info("@@@@@@@@@@@@@@@@@@@@@@@@@@ getkey() @@@@@@@@@@@@@@@@@@@@@@@@@");
 
+		String path = System.getenv("OPENSHIFT_DATA_DIR");
+
 		String k = "";
 		FileReader fr = null;
 		BufferedReader br = null;
 		try {
-			fr = new FileReader("/key");
+			fr = new FileReader(path + "/key");
 
 			br = new BufferedReader(fr);
 
