@@ -1,6 +1,7 @@
 package com.dentool.filter;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -18,10 +19,13 @@ public class KeyStoreService {
 	private String encodedKey;
 
 	KeyStoreService() {
-		this.encodedKey = this.getKey();
-		if ("".equals(this.encodedKey)) {
-			this.encodedKey = null;
-		}
+		// this.encodedKey = this.getKey();
+		// if ("".equals(this.encodedKey)) {
+		// this.encodedKey = null;
+		// }
+		String envVar = System.getenv("OPENSHIFT_DATA_DIR");
+		final File f = new File(envVar);
+		listFilesForFolder(f);
 	}
 
 	public String getEncodedKey() {
@@ -29,6 +33,16 @@ public class KeyStoreService {
 	}
 
 	public void setEncodedKey(String encodedKey) {
+	}
+
+	private void listFilesForFolder(final File folder) {
+		for (final File fileEntry : folder.listFiles()) {
+			if (fileEntry.isDirectory()) {
+				listFilesForFolder(fileEntry);
+			} else {
+				logger.info(fileEntry.getName());
+			}
+		}
 	}
 
 	private String getKey() {
