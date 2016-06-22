@@ -21,7 +21,7 @@ public class KeyStoreService {
 		this.encodedKey = this.getKey();
 		if ("".equals(this.encodedKey)) {
 			this.encodedKey = null;
-		 }
+		}
 	}
 
 	public String getEncodedKey() {
@@ -36,6 +36,9 @@ public class KeyStoreService {
 		logger.info("@@@@@@@@@@@@@@@@@@@@@@@@@@ getkey() @@@@@@@@@@@@@@@@@@@@@@@@@");
 
 		String path = System.getenv("OPENSHIFT_DATA_DIR");
+		if (path == null) {
+			path = "c:";
+		}
 
 		String k = "";
 		FileReader fr = null;
