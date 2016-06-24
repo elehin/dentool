@@ -638,7 +638,7 @@ function updatePaciente() {
 	$.ajax({
 		type : 'POST',
 		contentType : 'application/json',
-		url : rootURL + 'update',
+		url : pacienteURL + 'update',
 		data : formToJSON('modificar'),
 		success : function(rdata, textStatus, jqXHR) {
 			showSuccessMessage();

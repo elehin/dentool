@@ -15,3 +15,7 @@ var authenticationURL = 'https://dentool-elehin.rhcloud.com/service/authenticati
 //var serverURL = 'http://localhost:8080/';
 //var pagosURL = 'http://localhost:8080/service/pago/';
 //var authenticationURL = 'http://localhost:8080/service/authentication/';
+
+$(document).ready(function() {
+	$('.dropdown-toggle').dropdown();
+});
