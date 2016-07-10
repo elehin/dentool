@@ -4,96 +4,181 @@ var searchDialog;
 var activeDiagnostico;
 
 var lupa = '<button class="btn btn-info padding-0-4 detalle" role="button"><span class="glyphicon glyphicon-search"></span></button>';
+var descarga = '<button class="btn btn-info padding-0-4 detalle" role="button"><span class="glyphicon glyphicon-download-alt"></span></button>';
 var sinPagar = '<button class="btn btn-danger padding-0-4 pagar" role="button"><span class="glyphicon glyphicon-euro"></span></button>';
 var pagado = '<button class="btn btn-success padding-0-4 pagar" role="button"><span class="glyphicon glyphicon-euro"></span></button>';
 var pagadoPacial = '<button class="btn btn-warning padding-0-4 pagar" role="button"><span class="glyphicon glyphicon-euro"></span></button>';
-var statusSinEmpezar = '<button class="btn btn-default padding-0-4 sinEmpezar" role="button"><span class="glyphicon glyphicon-play"></span></button>';
+var statusSinEmpezar = '<button class="btn btn-default padding-0-4 sinEmpezar" role="button"><span class="glyphicon glyphicon-expand"></span></button>';
 var statusEmpezado = '<button class="btn btn-warning padding-0-4 empezado" role="button"><span class="glyphicon glyphicon-adjust"></span></button>';
-var statusFinalizado = '<button class="btn btn-success padding-0-4 finalizado" role="button"><span class="glyphicon glyphicon-ok"></span></button>';
+var statusFinalizado = '<button class="btn btn-success padding-0-4 finalizado" role="button"><span class="glyphicon glyphicon-check"></span></button>';
 
-$(document).ready(function() {
-	// console.log('$(document).ready');
+$(document).ready(
+		function() {
+			// console.log('$(document).ready');
 
-	$("input:text, #telefono").focus(function() {
-		$(this).select();
-		return false;
+			$("input:text, #telefono").focus(function() {
+				$(this).select();
+				return false;
+			});
+
+			$("#cantidadSaldo").focus(function() {
+				$(this).select();
+				return false;
+			})
+
+			if (getUrlParameter("paciente") != '') {
+				findPaciente(getUrlParameter("paciente"));
+			}
+
+			$("#btnSave").click(function() {
+				// console.log('$("#btnSave").click');
+				$('html, body').animate({
+					scrollTop : $("#btnSave").offset().top
+				}, 500);
+				updatePaciente();
+				return false;
+			});
+
+			$("#btnAddDiagnostico").click(function() {
+				// console.log('$("#btnAddDiagnostico").click');
+				addDiagnostico();
+				return false;
+			});
+
+			$("#ttbtn1").click(function() {
+				// console.log('$("#ttbtn1").click');
+				addDiagnostico(1);
+				return false;
+			});
+
+			$("#ttbtn2").click(function() {
+				// console.log('$("#ttbtn2").click');
+				addDiagnostico(2);
+				return false;
+			});
+
+			$("#ttbtn3").click(function() {
+				// console.log('$("#ttbtn3").click');
+				addDiagnostico(3);
+				return false;
+			});
+
+			$("#ttbtn4").click(function() {
+				// console.log('$("#ttbtn4").click');
+				addDiagnostico(4);
+				return false;
+			});
+
+			$("#ttbtn5").click(function() {
+				// console.log('$("#ttbtn5").click');
+				addDiagnostico(5);
+				return false;
+			});
+
+			$(".botonPieza").click(function(eventObject) {
+				// console.log('$("#botonPieza").click');
+				$(".botonPieza").removeClass("active");
+				$(eventObject.target).toggleClass("active");
+				return false;
+			});
+
+			$("#btnAddSaldo").click(function() {
+				// console.log('$("#btnAddSaldo").click');
+				updatePaciente();
+				$('#addSaldoDiv').toggleClass("in");
+				return false;
+			});
+
+			$("#btnCreatePresupuesto").click(
+					function() {
+						// console.log('$("#btnAddSaldo").click');
+						window.location.replace(serverURL
+								+ 'presupuesto.html?paciente='
+								+ getUrlParameter("paciente"));
+						return false;
+					});
+
+			// $("#linkPresupuestosTab").click(function() {
+			// getPresupuestos();
+			// return false;
+			// });
+
+			getTratamientosList();
+			getTratamientosTop();
+			getPresupuestos();
+
+			// $("#addSaldoLink").click(function() {
+			// $('html, body').animate({
+			// scrollTop : $("#addSaldoLink").offset().top
+			// }, 500);
+			// });
+
+		});
+
+function getPresupuestos() {
+	$.ajax({
+		type : 'GET',
+		url : presupuestoURL + "paciente/" + getUrlParameter("paciente"),
+		success : function(data) {
+			renderTablePresupuestos(data);
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
+		}
+	});
+}
+
+function renderTablePresupuestos(presupuestos) {
+	var dataset = [];
+
+	$.each(presupuestos, function(i, item) {
+
+		dataset.push([ item.id, descarga, item.fecha, item.precio + ' €' ]);
 	});
 
-	$("#cantidadSaldo").focus(function() {
-		$(this).select();
-		return false;
-	})
-
-	if (getUrlParameter("paciente") != '') {
-		findPaciente(getUrlParameter("paciente"));
-	}
-
-	$("#btnSave").click(function() {
-		// console.log('$("#btnSave").click');
-		updatePaciente();
-		return false;
+	presupuestosTable = $('#tablePresupuestos').DataTable({
+		"retrieve" : true,
+		"paging" : false,
+		"searching" : false,
+		"info" : false,
+		"ordering" : false,
+		"data" : dataset,
+		"columns" : [ {
+			"title" : "id"
+		}, {
+			"title" : "&nbsp;"
+		}, {
+			"title" : "Fecha"
+		}, {
+			"title" : "Precio"
+		} ],
+		"columnDefs" : [ {
+			"className" : "never",
+			"targets" : [ 0 ],
+			"visible" : false
+		} ],
+		"order" : [ [ 2, "desc" ] ]
 	});
 
-	$("#btnAddDiagnostico").click(function() {
-		// console.log('$("#btnAddDiagnostico").click');
-		addDiagnostico();
-		return false;
+	$('#tablePresupuestos tbody tr').off('click');
+	$('#tablePresupuestos tbody tr').on('click', 'button', function(evt) {
+		evt.stopPropagation();
+		evt.preventDefault();
+
+		row = $(this).parents('tr');
+
+		if ($(this).hasClass("detalle")) {
+			var data = presupuestosTable.row($(this).parents('tr')).data();
+			descargaPresupuesto(data);
+		}
 	});
-
-	$("#ttbtn1").click(function() {
-		// console.log('$("#ttbtn1").click');
-		addDiagnostico(1);
-		return false;
-	});
-
-	$("#ttbtn2").click(function() {
-		// console.log('$("#ttbtn2").click');
-		addDiagnostico(2);
-		return false;
-	});
-
-	$("#ttbtn3").click(function() {
-		// console.log('$("#ttbtn3").click');
-		addDiagnostico(3);
-		return false;
-	});
-
-	$("#ttbtn4").click(function() {
-		// console.log('$("#ttbtn4").click');
-		addDiagnostico(4);
-		return false;
-	});
-
-	$("#ttbtn5").click(function() {
-		// console.log('$("#ttbtn5").click');
-		addDiagnostico(5);
-		return false;
-	});
-
-	$(".botonPieza").click(function(eventObject) {
-		// console.log('$("#botonPieza").click');
-		$(".botonPieza").removeClass("active");
-		$(eventObject.target).toggleClass("active");
-		return false;
-	});
-
-	$("#btnAddSaldo").click(function() {
-		// console.log('$("#btnAddSaldo").click');
-		updatePaciente();
-		$('#addSaldoDiv').toggleClass("in");
-		return false;
-	});
-
-	getTratamientosList();
-	getTratamientosTop();
-
-	$("#addSaldoLink").click(function() {
-		$('html, body').animate({
-			scrollTop : $("#addSaldoLink").offset().top
-		}, 500);
-	});
-
-});
+}
 
 function getTratamientosTop() {
 	// console.log('getTratamientosTop');
@@ -331,7 +416,10 @@ function renderPagosPendientes() {
 		success : function(data) {
 			if (data > 0) {
 				$("#pagosPendientesPanel").addClass("in");
-				$("#hPagosPendientes").text("Deuda -" + data + " €");
+				// $("#hPagosPendientes").text("Deuda -" + data + " €");
+				$("#hPagosPendientes").html(
+						"<span class='glyphicon glyphicon-flag'></span> Deuda -"
+								+ data + " €");
 			} else {
 				$("#pagosPendientesPanel").removeClass("in");
 			}
@@ -456,6 +544,61 @@ function setTableButtonsClickListeners() {
 					setFinalizado(row);
 				}
 			});
+}
+
+function descargaPresupuesto(data) {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', presupuestoURL + 'pdf/' + data[0], true);
+	xhr.setRequestHeader('Authorization', 'Bearer ' + $.cookie('restTokenC'));
+	xhr.responseType = 'blob';
+	xhr.onload = function(e) {
+		if (this.status == 200) {
+			var myBlob = this.response;
+			var blob = new Blob([ myBlob ]);
+			var link = document.createElement('a');
+			var fileName = this.getResponseHeader('Content-Disposition');
+			fileName = fileName.substring(fileName.lastIndexOf("=") + 1,
+					fileName.length).trim();
+			link.href = window.URL.createObjectURL(blob);
+			link.download = fileName;
+			link.click();
+		}
+		if (this.status == 401) {
+			window.location.replace(serverURL + 'login.html');
+		}
+	};
+	xhr.send();
+	// $.ajax({
+	// type : 'GET',
+	// contentType : 'application/json',
+	// url : presupuestoURL + 'pdf/' + data[0],
+	// dataType : 'native',
+	// // data : formToJSON(),
+	// xhrFields : {
+	// responseType : 'native'
+	// },
+	// success : function(rdata, textStatus, jqXHR) {
+	// var blob = new Blob([ rdata ]);
+	// var link = document.createElement('a');
+	// var fileName = jqXHR.getResponseHeader('Content-Disposition');
+	// fileName = fileName.substring(fileName.lastIndexOf("=") + 1,
+	// fileName.length).trim();
+	// link.href = window.URL.createObjectURL(blob);
+	// link.download = fileName;
+	// link.click();
+	// },
+	// error : function(jqXHR, textStatus, errorThrown) {
+	// if (errorThrown == 'Unauthorized') {
+	// window.location.replace(serverURL + 'login.html');
+	// } else {
+	// console.log(errorThrown);
+	// }
+	// },
+	// beforeSend : function(xhr, settings) {
+	// xhr.setRequestHeader('Authorization', 'Bearer '
+	// + $.cookie('restTokenC'));
+	// }
+	// });
 }
 
 function setFinalizado(row) {

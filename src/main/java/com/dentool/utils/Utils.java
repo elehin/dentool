@@ -4,6 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Calendar;
+import java.util.Date;
 
 import com.dentool.model.Paciente;
 
@@ -54,5 +56,47 @@ public class Utils {
 		}
 		String result = new String(thedigest, StandardCharsets.UTF_8);
 		return result;
+	}
+
+	public static String getCurrentFormattedDate() {
+
+		Calendar cal = Calendar.getInstance();
+
+		int dia = cal.get(Calendar.DATE);
+		String sDia;
+		if (dia < 10) {
+			sDia = "0" + dia;
+		} else {
+			sDia = String.valueOf(dia);
+		}
+
+		int month = cal.get(Calendar.MONTH) + 1;
+		String sMonth;
+		if (month < 10) {
+			sMonth = "0" + month;
+		} else {
+			sMonth = String.valueOf(month);
+		}
+		String year = String.valueOf(cal.get(Calendar.YEAR));
+
+		return sDia + "-" + sMonth + "-" + year;
+	}
+
+	public static String formatAsCurrency(float ammount) {
+		return CurrencyFormatter.format(ammount);
+	}
+
+	public static String formatAsFecha(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		String dia = String.valueOf(cal.get(Calendar.DATE));
+		String mes = String.valueOf(cal.get(Calendar.MONTH) + 1);
+		if (Integer.parseInt(mes) < 10) {
+			mes = "0" + mes;
+		}
+		String year = String.valueOf(cal.get(Calendar.YEAR));
+		String fecha = dia + "-" + mes + "-" + year;
+
+		return fecha;
 	}
 }

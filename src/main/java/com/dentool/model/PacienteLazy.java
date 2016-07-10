@@ -1,7 +1,6 @@
 package com.dentool.model;
 
-import java.sql.Date;
-import java.util.Calendar;
+import java.util.Date;
 
 import com.dentool.utils.Utils;
 
@@ -19,7 +18,8 @@ public class PacienteLazy {
 	private String apellidosNormalized;
 	private boolean alergico = false;
 	private Date alta;
-	private Date lastChange;
+	private String lastChange;
+	private short orden;
 
 	public PacienteLazy() {
 	};
@@ -35,7 +35,7 @@ public class PacienteLazy {
 		setAlergico(origen.isAlergico());
 		setDni(origen.getDni());
 		setAlta(origen.getAlta());
-		setLastChange(new Date(Calendar.getInstance().getTimeInMillis()));
+		setLastChange(Utils.formatAsFecha(origen.getLastChange()));
 	}
 
 	public Long getId() {
@@ -141,11 +141,19 @@ public class PacienteLazy {
 		this.alta = alta;
 	}
 
-	public Date getLastChange() {
+	public String getLastChange() {
 		return lastChange;
 	}
 
-	public void setLastChange(Date lastChange) {
+	public void setLastChange(String lastChange) {
 		this.lastChange = lastChange;
+	}
+
+	public short getOrden() {
+		return orden;
+	}
+
+	public void setOrden(short orden) {
+		this.orden = orden;
 	}
 }

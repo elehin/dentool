@@ -54,9 +54,18 @@ public class PacienteRestService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response lookupPacienteByApellido(@PathParam("apellido") String apellido) {
 		List<Paciente> lista = pacienteService.findByApellido(apellido);
-		if (lista == null) {
+		List<Paciente> listaNombres = this.pacienteService.findByName(apellido);
+
+		if (lista == null && listaNombres == null) {
 			throw new WebApplicationException(Response.Status.NOT_FOUND);
 		}
+
+		if (lista != null && listaNombres != null) {
+			lista.addAll(listaNombres);
+		} else if (lista == null) {
+			lista = listaNombres;
+		}
+
 		return Response.ok(lista).build();
 	}
 
@@ -119,7 +128,11 @@ public class PacienteRestService {
 		}
 
 		List<PacienteLazy> listaLazy = new ArrayList<PacienteLazy>();
+		short orden = 0;
 		for (Paciente p : lista) {
+			PacienteLazy pl = new PacienteLazy(p);
+			orden++;
+			pl.setOrden(orden);
 			listaLazy.add(new PacienteLazy(p));
 		}
 

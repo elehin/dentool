@@ -1,6 +1,6 @@
 package com.dentool.model;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.Calendar;
 import java.util.Collection;
 
@@ -11,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import com.dentool.utils.Utils;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -38,7 +40,11 @@ public class Paciente {
 	private boolean alergico = false;
 	private boolean enfermoGrave = false;
 	private Date alta;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date lastChangeTs;
 	private Date lastChange;
+
 	private float saldo = 0;
 
 	public Long getId() {
@@ -130,7 +136,7 @@ public class Paciente {
 		this.setAlergico(origen.isAlergico());
 		this.setDni(origen.getDni());
 		this.setAlta(origen.getAlta());
-		this.setLastChange(new Date(Calendar.getInstance().getTimeInMillis()));
+		this.setLastChangeTs(new Date(Calendar.getInstance().getTimeInMillis()));
 		this.setDiagnosticos(origen.getDiagnosticos());
 		this.setEnfermoGrave(origen.isEnfermoGrave());
 
@@ -201,5 +207,14 @@ public class Paciente {
 
 	public void setSaldo(float saldo) {
 		this.saldo = saldo;
+	}
+
+	public Date getLastChangeTs() {
+		return lastChangeTs;
+	}
+
+	public void setLastChangeTs(Date lastChangeTs) {
+		this.lastChangeTs = lastChangeTs;
+		this.setLastChange(lastChangeTs);
 	}
 }

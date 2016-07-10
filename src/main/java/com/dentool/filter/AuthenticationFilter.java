@@ -33,23 +33,23 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
 		// Get the HTTP Authorization header from the request
 		String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
-
-		// Check if the HTTP Authorization header is present and formatted
-		// correctly
-		if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-			// throw new NotAuthorizedException("Authorization header must be
-			// provided");
-			requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
-		}
-
-		// Extract the token from the HTTP Authorization header
-		String token = authorizationHeader.substring("Bearer".length()).trim();
-
+		
 		try {
+			// Check if the HTTP Authorization header is present and formatted
+			// correctly
+			if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+				// throw new NotAuthorizedException("Authorization header must
+				// be
+				// provided");
+				requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
+			} else {
 
-			// Validate the token
-			this.validateToken(token);
+				// Extract the token from the HTTP Authorization header
+				String token = authorizationHeader.substring("Bearer".length()).trim();
 
+				// Validate the token
+				this.validateToken(token);
+			}
 		} catch (Exception e) {
 			requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
 		}

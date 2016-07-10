@@ -118,6 +118,17 @@
 						Nacimiento:</label> <input type="date" class="form-control"
 						id="fechaNacimiento" name="fechaNacimiento" />
 
+					<div class="checkbox">
+						<label for="alergico"> <input type="checkbox" value="true"
+							id="alergico" name="alergico">Alérgico
+						</label>
+					</div>
+					<div class="checkbox">
+						<label for="enfermoGrave"><input type="checkbox"
+							value="true" id="enfermoGrave" name="enfermoGrave">Enfermedad
+							grave</label>
+					</div>
+
 					<div class="alert alert-success collapse fade margin-top-25 "
 						id="success-alert">
 						<p>
@@ -132,24 +143,16 @@
 						<strong>Error!</strong> Ha ocurrido algún tipo de error.
 					</div>
 
+
+
 					<button id="btnSave"
 						class="btn btn-primary btn-block margin-top-25 ">Modificar</button>
 				</div>
 
 				<div class="col-md-5">
-					<div class="checkbox">
-						<label for="alergico"> <input type="checkbox" value="true"
-							id="alergico" name="alergico">Alérgico
-						</label>
-					</div>
-					<div class="checkbox">
-						<label for="enfermoGrave"><input type="checkbox"
-							value="true" id="enfermoGrave" name="enfermoGrave">Enfermedad
-							grave</label>
-					</div>
-					<label for="notas">Notas:</label>
-					<textarea id="notas" name="notas" class="form-control" rows="15"></textarea>
 
+
+					<!-- Panel y opciones para añadir saldo -->
 					<div class="well well-sm margin-top-5 collapse" id="saldoPanel">
 						<h2 id="hSaldo" class="text-center text-success"></h2>
 					</div>
@@ -173,10 +176,40 @@
 							saldo</button>
 					</div>
 
+					<!-- ------------ Tabs para Notas y presupuestos ----------------------- -->
+
+					<ul class="nav nav-tabs margin-top-5">
+						<li class="active"><a data-toggle="tab" href="#notasTab">Notas</a></li>
+						<li><a id="linkPresupuestosTab" data-toggle="tab"
+							href="#presupuestosTab">Presupuestos</a></li>
+					</ul>
+
+					<div class="tab-content">
+						<!-- Notas -->
+
+						<div id="notasTab" class="tab-pane fade in active">
+							<!-- <label for="notas">Notas:</label> -->
+							<textarea id="notas" name="notas" class="form-control" rows="15"></textarea>
+						</div>
+						<div id="presupuestosTab" class="tab-pane fade">
+							<table id="tablePresupuestos" style="width: 100%"
+								class="table table-striped table-hover display responsive">
+							</table>
+						</div>
+					</div>
+					<!-- ------------ Tabs para Notas y presupuestos ----------------------- -->
 				</div>
 			</form>
 
 			<div class="col-md-4">
+
+				<!-- Mostrar presupuesto -->
+				<button id="btnCreatePresupuesto"
+					class="btn btn-primary btn-block margin-top-5 hidden-xs hidden-sm">Crear
+					Presupuesto</button>
+
+				<hr>
+
 				<!-- Pagos Pendientes -->
 				<div class="well well-sm collapse" id="pagosPendientesPanel">
 					<h3 id="hPagosPendientes" class="text-center text-danger"></h3>

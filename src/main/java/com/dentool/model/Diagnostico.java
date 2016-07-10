@@ -1,6 +1,7 @@
 package com.dentool.model;
 
-import java.sql.Date;
+import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -9,11 +10,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
+@JsonIdentityInfo(property = "@id", generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Diagnostico {
 
 	@Id
@@ -28,6 +35,9 @@ public class Diagnostico {
 	@ManyToOne(fetch = FetchType.EAGER, optional = false, cascade = CascadeType.MERGE)
 	private Tratamiento tratamiento;
 
+	@ManyToMany
+	private List<Presupuesto> presupuestos;
+
 	private boolean iniciado;
 	private boolean finalizado;
 	private Date diagnosticado;
@@ -36,6 +46,10 @@ public class Diagnostico {
 	private float precio;
 	private float pagado;
 	private short pieza;
+	private Date lastChange;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date lastChangeTs;
 
 	public float getPrecio() {
 		return precio;
@@ -155,6 +169,24 @@ public class Diagnostico {
 
 	public void setPieza(short pieza) {
 		this.pieza = pieza;
+	}
+
+	public Date getLastChange() {
+		return lastChange;
+	}
+
+	public void setLastChange(Date lastChange) {
+		this.lastChange = lastChange;
+
+	}
+
+	public Date getLastChangeTs() {
+		return lastChangeTs;
+	}
+
+	public void setLastChangeTs(Date lastChangeTs) {
+		this.lastChangeTs = lastChangeTs;
+		this.setLastChange(lastChangeTs);
 	}
 
 }

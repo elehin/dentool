@@ -1,4 +1,3 @@
-
 // ################### document.ready() ##################################
 $(document).ready(function() {
 
@@ -24,9 +23,10 @@ function populateTable(dataset) {
 	$('#ultimosPacientesBody').empty();
 
 	$.each(dataset, function(i, item) {
-		trHTML += '<tr><td>' + item.id + '</td><td>' + lupa + '</td><td>'
-				+ item.name + '</td><td>' + item.apellidos + '</td><td>'
-				+ item.telefono + '</td><td>' + item.lastChange + '</td></tr>';
+		trHTML += '<tr><td>' + item.id + '</td><td>' + item.orden + '</td><td>'
+				+ lupa + '</td><td>' + item.name + '</td><td>' + item.apellidos
+				+ '</td><td>' + item.telefono + '</td><td>' + item.lastChange
+				+ '</td></tr>';
 	});
 	$("#ultimosPacientesBody").append(trHTML);
 
@@ -36,10 +36,10 @@ function populateTable(dataset) {
 		"searching" : false,
 		"info" : false,
 		"columnDefs" : [ {
-			"targets" : [ 0 ],
+			"targets" : [ 0, 1 ],
 			"visible" : false
 		} ],
-		"order" : [ [ 5, "desc" ], [ 0, "desc" ] ],
+		"order" : [ [ 1, "asc" ] ],
 		"language" : {
 			"search" : "Buscar:"
 		}

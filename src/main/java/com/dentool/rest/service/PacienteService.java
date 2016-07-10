@@ -20,7 +20,7 @@ public class PacienteService {
 	public Paciente create(Paciente paciente) {
 		Date now = new Date(Calendar.getInstance().getTimeInMillis());
 		paciente.setAlta(now);
-		paciente.setLastChange(now);
+		paciente.setLastChangeTs(now);
 		entityManager.persist(paciente);
 		return paciente;
 	}
@@ -31,7 +31,7 @@ public class PacienteService {
 	}
 
 	public List<Paciente> findLastModified() {
-		String query = "SELECT p FROM Paciente p ORDER BY p.lastChange DESC, p.id DESC";
+		String query = "SELECT p FROM Paciente p ORDER BY p.lastChangeTs DESC, p.id DESC";
 		@SuppressWarnings("unchecked")
 		List<Paciente> lista = entityManager.createQuery(query).setMaxResults(10).getResultList();
 

@@ -30,8 +30,11 @@ public class DiagnosticoService {
 
 		diagnostico.setTratamiento(t);
 		diagnostico.setPrecio(t.getPrecio());
-		diagnostico.setDiagnosticado(new Date(Calendar.getInstance().getTimeInMillis()));
+		Date now = new Date(Calendar.getInstance().getTimeInMillis());
+		diagnostico.setDiagnosticado(now);
+		diagnostico.setLastChangeTs(now);
 		p.getDiagnosticos().add(diagnostico);
+		p.setLastChangeTs(now);
 
 		return diagnostico;
 	}
@@ -51,37 +54,73 @@ public class DiagnosticoService {
 		return lista;
 	}
 
+	public List<Diagnostico> getDiagnosticosNotStartedByPaciente(Long pacienteId) {
+		Paciente p = entityManager.find(Paciente.class, pacienteId);
+
+		String query = "SELECT d FROM Diagnostico d WHERE d.paciente = :paciente AND d.iniciado = :iniciado "
+				+ "ORDER BY d.finalizado, d.iniciado DESC, d.diagnosticado DESC, d.fechaInicio, d.fechaFin DESC";
+		@SuppressWarnings("unchecked")
+		List<Diagnostico> lista = entityManager.createQuery(query).setParameter("paciente", p)
+				.setParameter("iniciado", false).getResultList();
+		return lista;
+	}
+
+	public List<Diagnostico> getDiagnosticos(List<Long> ids) {
+		String query = "SELECT d FROM Diagnostico d WHERE d.id IN :ides";
+
+		@SuppressWarnings("unchecked")
+		List<Diagnostico> lista = this.entityManager.createQuery(query).setParameter("ides", ids).getResultList();
+
+		return lista;
+	}
+
 	public Diagnostico updateDiagnostico(Diagnostico d) {
 		Diagnostico ld = find(d.getId());
 
-		//Comprueba si hay nuevo pago
+		// Comprueba si hay nuevo pago
 		if (d.getPagado() > 0 && ld.getPagado() != d.getPagado()) {
-			// Se crea el pago al haber diferencias entre el precio anterior y el nuevo
+			// Se crea el pago al haber diferencias entre el precio anterior y
+			// el nuevo
 			this.createPago(ld, d.getPagado() - ld.getPagado());
 		}
 
 		ld.update(d);
 
-		//Si está pagado y sin fecha de inicio se actualiza la fecha de inicio a now()
+		Date now = new Date(Calendar.getInstance().getTimeInMillis());
+		// Si está pagado y sin fecha de inicio se actualiza la fecha de inicio
+		// a now()
 		if (ld.getPagado() == ld.getPrecio() && ld.getFechaInicio() == null) {
-			ld.setFechaInicio(new Date(Calendar.getInstance().getTimeInMillis()));
+			ld.setFechaInicio(now);
 		}
 
-		// Si está pagado y no está finalizado se actualiza la fecha de fin a now()
+		// Si está pagado y no está finalizado se actualiza la fecha de fin a
+		// now()
 		if (ld.getPagado() == ld.getPrecio() && ld.getFechaFin() == null) {
-			ld.setFechaFin(new Date(Calendar.getInstance().getTimeInMillis()));
+			ld.setFechaFin(now);
 		}
 
-		// Si tiene fecha de fin y no tiene fecha de inicio se actualiza la fecha de inicio = a fecha de fin
+		// Si tiene fecha de fin y no tiene fecha de inicio se actualiza la
+		// fecha de inicio = a fecha de fin
 		if (ld.getFechaFin() != null && ld.getFechaInicio() == null) {
 			ld.setFechaInicio(ld.getFechaFin());
 		}
+
+		// Se actualiza la fecha de última modificación
+		ld.setLastChangeTs(now);
+
+		Paciente p = this.entityManager.find(Paciente.class, ld.getPaciente().getId());
+		p.setLastChangeTs(now);
 
 		return d;
 	}
 
 	public void delete(long id) {
 		Diagnostico ld = entityManager.find(Diagnostico.class, id);
+
+		// Se actualiza la fecha de modificación del paciente
+		Paciente p = this.entityManager.find(Paciente.class, ld.getPaciente().getId());
+		p.setLastChangeTs(new Date(ld.getLastChange().getTime()));
+
 		ld.getPaciente().getDiagnosticos().remove(ld);
 		logger.debug("######################################### Borrando diagnóstico " + ld.getId());
 		entityManager.remove(ld);
@@ -103,6 +142,9 @@ public class DiagnosticoService {
 			}
 		}
 
+		d.setLastChangeTs(new Date(Calendar.getInstance().getTimeInMillis()));
+		paciente.setLastChangeTs(new Date(Calendar.getInstance().getTimeInMillis()));
+
 		this.entityManager.persist(p);
 	}
 
@@ -123,5 +165,16 @@ public class DiagnosticoService {
 		}
 		return 0;
 
+	}
+
+	public float getPrecioDiagnosticos(List<Diagnostico> diagnosticos) {
+		String query = "SELECT sum(d.precio) FROM Diagnostico d WHERE d IN :diagnosticos";
+		Object o = this.entityManager.createQuery(query).setParameter("diagnosticos", diagnosticos).getSingleResult();
+		if (o != null) {
+			double result = (double) o;
+			float resultFloat = Float.parseFloat(Double.toString(result));
+			return resultFloat;
+		}
+		return 0f;
 	}
 }
