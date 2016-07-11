@@ -64,12 +64,21 @@ public class PresupuestoPdfCreator {
 		try {
 			context = new InitialContext();
 
-			pacienteService = (PacienteService) context.lookup("java:global/dentool/PacienteService");
-			diagnosticoService = (DiagnosticoService) context.lookup("java:global/dentool/DiagnosticoService");
+			pacienteService = (PacienteService) context.lookup("java:global/ROOT/PacienteService");
+			diagnosticoService = (DiagnosticoService) context.lookup("java:global/ROOT/DiagnosticoService");
 
 		} catch (NamingException e) {
-			logger.error(e.getMessage());
-			e.printStackTrace();
+			logger.info("----- Ejecución en entorno no OpenShift, se usará \"java:global/dentool/\" ------");
+			try {
+				context = new InitialContext();
+
+				pacienteService = (PacienteService) context.lookup("java:global/dentool/PacienteService");
+				diagnosticoService = (DiagnosticoService) context.lookup("java:global/dentool/DiagnosticoService");
+			} catch (NamingException e1) {
+				logger.error("PresupuestoPdfCreator() ---- Error al obtener stub para paciente o diagnostico ----");
+				logger.error(e.getMessage());
+				e1.printStackTrace();
+			}
 		}
 	}
 
@@ -223,7 +232,7 @@ public class PresupuestoPdfCreator {
 	}
 
 	private void checkFilePath() {
-		path = System.getenv("OPENSHIFT_DATA_DIR") + "/";
+		this.path = System.getenv("OPENSHIFT_DATA_DIR");
 		String name = "presupuesto_" + Calendar.getInstance().getTimeInMillis() + ".pdf";
 
 		File f = new File(path + name);
@@ -239,7 +248,7 @@ public class PresupuestoPdfCreator {
 			f.delete();
 		}
 
-		System.out.println(path);
+		System.out.println(this.path);
 	}
 
 	private String getFileName(Presupuesto presupuesto) {
