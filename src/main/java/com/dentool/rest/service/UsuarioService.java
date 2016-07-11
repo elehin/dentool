@@ -62,21 +62,6 @@ public class UsuarioService {
 			if (!u.getPassword().equals(password)) {
 				return null;
 			}
-			/*
-			 * if (u.getToken() == null) { u.setToken(this.issueToken());
-			 * 
-			 * Calendar c = Calendar.getInstance(); c.add(Calendar.DATE, 3);
-			 * Date expirationDate = new Date(c.getTimeInMillis());
-			 * 
-			 * u.setTokenExpirationDate(expirationDate); } else if
-			 * (Calendar.getInstance().getTime().after(u.getTokenExpirationDate(
-			 * ))) { u.setToken(this.issueToken());
-			 * 
-			 * Calendar c = Calendar.getInstance(); c.add(Calendar.DATE, 3);
-			 * Date expirationDate = new Date(c.getTimeInMillis());
-			 * 
-			 * u.setTokenExpirationDate(expirationDate); }
-			 */
 		} catch (Exception e) {
 			return null;
 		}
@@ -135,15 +120,6 @@ public class UsuarioService {
 		return lista;
 	}
 
-	/*
-	 * public Usuario validaToken(String token) { String query =
-	 * "SELECT u FROM Usuario u WHERE u.token = :token"; Usuario u = null; try {
-	 * u = (Usuario) this.entityManager.createQuery(query).setParameter("token",
-	 * token).getSingleResult(); } catch (Exception e) { return null; } if
-	 * (Calendar.getInstance().getTime().after(u.getTokenExpirationDate())) {
-	 * return null; } else { return u; } }
-	 */
-
 	public Usuario updateUsuario(Usuario u) {
 		Usuario lu = entityManager.find(Usuario.class, u.getId());
 
@@ -152,12 +128,4 @@ public class UsuarioService {
 
 		return lu;
 	}
-
-	// private String issueToken() {
-	// SecureRandom random = new SecureRandom();
-	// byte bytes[] = new byte[40];
-	// random.nextBytes(bytes);
-	// String token = bytes.toString();
-	// return token;
-	// }
 }

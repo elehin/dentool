@@ -28,35 +28,6 @@ public class AuthenticationRestService {
 	@Inject
 	private UsuarioService usuarioService;
 
-	/*
-	 * @POST
-	 * 
-	 * @Produces("application/json")
-	 * 
-	 * @Consumes("application/json") public Response
-	 * authenticateUser(Credenciales credenciales) {
-	 * 
-	 * logger.info(credenciales.getUsername());
-	 * logger.info(credenciales.getPassword());
-	 * 
-	 * try {
-	 * 
-	 * // Authenticate the user using the credentials provided Usuario u =
-	 * authenticate(credenciales);
-	 * 
-	 * // Return the token on the response return Response.ok(u).build();
-	 * 
-	 * } catch (Exception e) { return
-	 * Response.status(Response.Status.UNAUTHORIZED).build(); }
-	 * 
-	 * }
-	 */
-	/*
-	 * private Usuario authenticate(Credenciales credenciales) throws Exception
-	 * { Usuario u = usuarioService.find(credenciales); if (u == null) { throw
-	 * new Exception(); } return u; }
-	 */
-
 	@POST
 	@Produces("application/json")
 	@Consumes("application/json")

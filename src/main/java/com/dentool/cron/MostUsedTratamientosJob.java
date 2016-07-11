@@ -28,10 +28,18 @@ public class MostUsedTratamientosJob implements Job {
 			context = new InitialContext();
 
 			mostUsedTratamientosService = (MostUsedTratamientosService) context
-					.lookup("java:global/dentool/MostUsedTratamientosService");
+					.lookup("java:global/ROOT/MostUsedTratamientosService");
 
 		} catch (NamingException e) {
-			throw new JobExecutionException("NamingException al acceder a MostUsedTratamientosService");
+			try {
+				context = new InitialContext();
+
+				mostUsedTratamientosService = (MostUsedTratamientosService) context
+						.lookup("java:global/dentool/MostUsedTratamientosService");
+			} catch (NamingException e1) {
+				throw new JobExecutionException("NamingException al acceder a MostUsedTratamientosService");
+			}
+
 		}
 		if (mostUsedTratamientosService == null) {
 			throw new JobExecutionException("mostUsedTratamientosService es null");
@@ -39,5 +47,4 @@ public class MostUsedTratamientosJob implements Job {
 		mostUsedTratamientosService.executeReport();
 
 	}
-
 }
