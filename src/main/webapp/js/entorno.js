@@ -4,7 +4,7 @@ var tratamientoURL = 'https://dentool-elehin.rhcloud.com/service/tratamiento/';
 var tratamientosTopURL = 'https://dentool-elehin.rhcloud.com/service/tratamientoTop';
 var serverURL = 'https://dentool-elehin.rhcloud.com/';
 var pacienteURL = 'https://dentool-elehin.rhcloud.com/service/paciente/';
-var pagosURL = 'http://dentool-elehin.rhcloud.com/service/pago/';
+var pagosURL = 'https://dentool-elehin.rhcloud.com/service/pago/';
 var authenticationURL = 'https://dentool-elehin.rhcloud.com/service/authentication/';
 var presupuestoURL = 'https://dentool-elehin.rhcloud.com/service/presupuesto/';
 
