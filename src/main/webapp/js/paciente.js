@@ -142,29 +142,45 @@ function renderTablePresupuestos(presupuestos) {
 		dataset.push([ item.id, descarga, item.fecha, item.precio + ' €' ]);
 	});
 
-	presupuestosTable = $('#tablePresupuestos').DataTable({
-		"retrieve" : true,
-		"paging" : false,
-		"searching" : false,
-		"info" : false,
-		"ordering" : false,
-		"data" : dataset,
-		"columns" : [ {
-			"title" : "id"
-		}, {
-			"title" : "&nbsp;"
-		}, {
-			"title" : "Fecha"
-		}, {
-			"title" : "Precio"
-		} ],
-		"columnDefs" : [ {
-			"className" : "never",
-			"targets" : [ 0 ],
-			"visible" : false
-		} ],
-		"order" : [ [ 2, "desc" ] ]
-	});
+	presupuestosTable = $('#tablePresupuestos')
+			.DataTable(
+					{
+						"retrieve" : true,
+						"paging" : false,
+						"searching" : false,
+						"info" : false,
+						"ordering" : false,
+						"data" : dataset,
+						"columns" : [ {
+							"title" : "id"
+						}, {
+							"title" : "&nbsp;"
+						}, {
+							"title" : "Fecha"
+						}, {
+							"title" : "Precio"
+						} ],
+						"columnDefs" : [ {
+							"className" : "never",
+							"targets" : [ 0 ],
+							"visible" : false
+						} ],
+						"order" : [ [ 2, "desc" ] ],
+						"language" : {
+							"search" : "Buscar:",
+							"sLengthMenu" : "Mostrar _MENU_ registros",
+							"sZeroRecords" : "No se encontraron resultados",
+							"sEmptyTable" : "No hay ningún presupuesto para este paciente",
+							"sInfo" : "Mostrando registros del _START_ al _END_ de un total de _TOTAL_",
+							"sInfoEmpty" : "Mostrando registros del 0 al 0 de un total de 0 registros",
+							"oPaginate" : {
+								"sFirst" : "Primero",
+								"sLast" : "Último",
+								"sNext" : "Siguiente",
+								"sPrevious" : "Anterior"
+							}
+						}
+					});
 
 	$('#tablePresupuestos tbody tr').off('click');
 	$('#tablePresupuestos tbody tr').on('click', 'button', function(evt) {
@@ -485,36 +501,52 @@ function renderTableDiagnosticos(diagnosticos) {
 		dataset.push(renderDiagTableRow(item));
 	});
 
-	diagsTable = $('#tableUltimosTratamientos').DataTable({
-		"retrieve" : true,
-		"paging" : false,
-		"searching" : false,
-		"info" : false,
-		"ordering" : false,
-		"data" : dataset,
-		"columns" : [ {
-			"title" : "id"
-		}, {
-			"title" : "precio"
-		}, {
-			"title" : "pagado"
-		}, {
-			"title" : "&nbsp;"
-		}, {
-			"title" : "&nbsp;"
-		}, {
-			"title" : "&nbsp;"
-		}, {
-			"title" : "Tratamiento"
-		}, {
-			"title" : "Pieza"
-		} ],
-		"columnDefs" : [ {
-			"className" : "never",
-			"targets" : [ 0, 1, 2 ],
-			"visible" : false
-		} ],
-	});
+	diagsTable = $('#tableUltimosTratamientos')
+			.DataTable(
+					{
+						"retrieve" : true,
+						"paging" : false,
+						"searching" : false,
+						"info" : false,
+						"ordering" : false,
+						"data" : dataset,
+						"columns" : [ {
+							"title" : "id"
+						}, {
+							"title" : "precio"
+						}, {
+							"title" : "pagado"
+						}, {
+							"title" : "&nbsp;"
+						}, {
+							"title" : "&nbsp;"
+						}, {
+							"title" : "&nbsp;"
+						}, {
+							"title" : "Tratamiento"
+						}, {
+							"title" : "Pieza"
+						} ],
+						"columnDefs" : [ {
+							"className" : "never",
+							"targets" : [ 0, 1, 2 ],
+							"visible" : false
+						} ],
+						"language" : {
+							"search" : "Buscar:",
+							"sLengthMenu" : "Mostrar _MENU_ registros",
+							"sZeroRecords" : "No se encontraron resultados",
+							"sEmptyTable" : "No hay tratamientos aún",
+							"sInfo" : "Mostrando registros del _START_ al _END_ de un total de _TOTAL_",
+							"sInfoEmpty" : "Mostrando registros del 0 al 0 de un total de 0 registros",
+							"oPaginate" : {
+								"sFirst" : "Primero",
+								"sLast" : "Último",
+								"sNext" : "Siguiente",
+								"sPrevious" : "Anterior"
+							}
+						}
+					});
 
 	setTableButtonsClickListeners();
 

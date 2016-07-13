@@ -204,7 +204,7 @@ function deleteTratamiento() {
 		url : diagnosticoURL + 'delete/' + $('#diagnosticoId').val(),
 		success : function(rdata, textStatus, jqXHR) {
 			url = serverURL + 'paciente.html?paciente='
-					+ currentDiagnostico.paciente.id;
+					+ getUrlParameter("paciente");
 			window.location.replace(url);
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
@@ -367,7 +367,7 @@ function showPagoSuccessMessage() {
 function showErrorMessage(error) {
 	$("#error-alert").alert();
 	window.setTimeout(function() {
-		$("#error-alert").fadeTo(2000, 500).slideUp(500, function() {
+		$("#error-alert").fadeTo(10000, 500).slideUp(500, function() {
 			$("#error-alert").hide();
 		});
 	}, 0);

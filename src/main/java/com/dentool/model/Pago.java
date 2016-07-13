@@ -1,21 +1,27 @@
 package com.dentool.model;
 
-import java.sql.Date;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 public class Pago {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@SequenceGenerator(name = "pago_id_seq", sequenceName = "pago_id_seq", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pago_id_seq")
+	// @GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
 	private long diagnosticoId;
 	private float cantidad;
+	@Temporal(TemporalType.DATE)
 	private Date fecha;
 
 	public long getId() {

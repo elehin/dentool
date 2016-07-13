@@ -2,6 +2,9 @@ package com.dentool.model;
 
 import java.util.Date;
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import com.dentool.utils.Utils;
 
 public class PacienteLazy {
@@ -12,11 +15,13 @@ public class PacienteLazy {
 	private String telefono;
 	private String direccion;
 	private String notas;
+	@Temporal(TemporalType.DATE)
 	private Date fechaNacimiento;
 	private String dni;
 	private String nameNormalized;
 	private String apellidosNormalized;
 	private boolean alergico = false;
+	@Temporal(TemporalType.DATE)
 	private Date alta;
 	private String lastChange;
 	private short orden;

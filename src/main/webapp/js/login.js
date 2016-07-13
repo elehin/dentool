@@ -7,6 +7,10 @@ $(document).ready(function() {
 		return false;
 	});
 
+	if (getUrlParameter('action') == 'logout') {
+		$.removeCookie('restTokenC');
+	}
+
 });
 
 function login() {

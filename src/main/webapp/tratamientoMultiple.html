@@ -56,8 +56,8 @@
 			</div>
 			<div class="collapse navbar-collapse" id="myNavbar">
 				<ul class="nav navbar-nav">
-					<li class="active"><a href="index.html">Pacientes</a></li>
-					<li><a href="tratamientos.html">Tratamientos</a></li>
+					<li><a href="index.html">Pacientes</a></li>
+					<li class="active"><a href="tratamientos.html">Tratamientos</a></li>
 					<li><a href="facturas.html">Facturas</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
@@ -69,8 +69,8 @@
 							<li><a href="usuarios.html"><span
 									class="glyphicon glyphicon-user"></span> Usuarios</a></li>
 						</ul></li>
-					<li><a href="login.html"><span
-							class="glyphicon glyphicon-log-in"></span> Entrar</a></li>
+					<li><a href="login.html?action=logout"><span
+							class="glyphicon glyphicon-log-out"></span> Cerrar sesión</a></li>
 				</ul>
 			</div>
 		</div>
@@ -81,18 +81,15 @@
 	<div class="container" id="ContentContainer">
 
 		<div id="contentRow1" class="row">
-			<table id="tablePacientes"
+			<table id="tableTratamientos"
 				class="table table-striped table-hover display responsive nowrap">
 				<thead>
 					<th>id</th>
 					<th>&nbsp;</th>
-					<th>Nombre</th>
-					<th>Apellidos</th>
-					<th>Teléfono</th>
-					<th>Dirección</th>
-					<th>Último cambio</th>
+					<th>Tratamiento</th>
+					<th>Precio</th>
 				</thead>
-				<tbody id="pacientesBody"></tbody>
+				<tbody id="tableTratamientosBody"></tbody>
 			</table>
 		</div>
 	</div>
@@ -145,7 +142,7 @@
 	<script src="js/bootstrap.min.js"></script>
 
 	<script src="js/entorno.js"></script>
-	<script src="js/pacienteMultiple.js"></script>
+	<script src="js/tratamientoMultiple.js"></script>
 
 </body>
 </html>

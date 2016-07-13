@@ -1,6 +1,5 @@
 package com.dentool.rest.service.itext;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -233,22 +232,12 @@ public class PresupuestoPdfCreator {
 
 	private void checkFilePath() {
 		this.path = System.getenv("OPENSHIFT_DATA_DIR");
-		String name = "presupuesto_" + Calendar.getInstance().getTimeInMillis() + ".pdf";
-
-		File f = new File(path + name);
-
-		try {
-			f.createNewFile();
-		} catch (IOException e) {
+		if (this.path == null) {
 			logger.info("Ejecución en entorno no OpenShift, se crearán los ficheros en ruta absoluta.");
-
 			this.path = "C:/Users/Vane/Documents/";
-
-		} finally {
-			f.delete();
 		}
 
-		System.out.println(this.path);
+		logger.info(this.path);
 	}
 
 	private String getFileName(Presupuesto presupuesto) {

@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -24,7 +25,9 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 public class Diagnostico {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@SequenceGenerator(name = "diagnostico_id_seq", sequenceName = "diagnostico_id_seq", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "diagnostico_id_seq")
+	// @GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
 	@ManyToOne(optional = false, cascade = CascadeType.MERGE)
@@ -40,12 +43,16 @@ public class Diagnostico {
 
 	private boolean iniciado;
 	private boolean finalizado;
+	@Temporal(TemporalType.DATE)
 	private Date diagnosticado;
+	@Temporal(TemporalType.DATE)
 	private Date fechaFin;
+	@Temporal(TemporalType.DATE)
 	private Date fechaInicio;
 	private float precio;
 	private float pagado;
 	private short pieza;
+	@Temporal(TemporalType.DATE)
 	private Date lastChange;
 
 	@Temporal(TemporalType.TIMESTAMP)

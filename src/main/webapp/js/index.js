@@ -30,20 +30,33 @@ function populateTable(dataset) {
 	});
 	$("#ultimosPacientesBody").append(trHTML);
 
-	searchTable = $('#tableUltimosPacientes').DataTable({
-		"retrieve" : false,
-		"paging" : false,
-		"searching" : false,
-		"info" : false,
-		"columnDefs" : [ {
-			"targets" : [ 0, 1 ],
-			"visible" : false
-		} ],
-		"order" : [ [ 1, "asc" ] ],
-		"language" : {
-			"search" : "Buscar:"
-		}
-	});
+	searchTable = $('#tableUltimosPacientes')
+			.DataTable(
+					{
+						"retrieve" : false,
+						"paging" : false,
+						"searching" : false,
+						"info" : false,
+						"columnDefs" : [ {
+							"targets" : [ 0, 1 ],
+							"visible" : false
+						} ],
+						"order" : [ [ 1, "asc" ] ],
+						"language" : {
+							"search" : "Buscar:",
+							"sLengthMenu" : "Mostrar _MENU_ registros",
+							"sZeroRecords" : "No se encontraron resultados",
+							"sEmptyTable" : "Ningún dato disponible en esta tabla",
+							"sInfo" : "Mostrando registros del _START_ al _END_ de un total de _TOTAL_",
+							"sInfoEmpty" : "Mostrando registros del 0 al 0 de un total de 0 registros",
+							"oPaginate" : {
+								"sFirst" : "Primero",
+								"sLast" : "Último",
+								"sNext" : "Siguiente",
+								"sPrevious" : "Anterior"
+							}
+						}
+					});
 
 	$('#tableUltimosPacientes tbody').on('click', 'button', function() {
 		var data = searchTable.row($(this).parents('tr')).data();

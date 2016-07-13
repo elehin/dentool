@@ -1,8 +1,8 @@
 package com.dentool.model;
 
-import java.util.Date;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -21,7 +22,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 public class Paciente {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@SequenceGenerator(name = "paciente_id_seq", sequenceName = "paciente_id_seq", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "paciente_id_seq")
+	// @GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "paciente", fetch = FetchType.EAGER)
@@ -33,19 +36,22 @@ public class Paciente {
 	private String telefono;
 	private String direccion;
 	private String notas;
+
+	@Temporal(TemporalType.DATE)
 	private Date fechaNacimiento;
 	private String dni;
 	private String nameNormalized;
 	private String apellidosNormalized;
 	private boolean alergico = false;
 	private boolean enfermoGrave = false;
+	@Temporal(TemporalType.DATE)
 	private Date alta;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastChangeTs;
+	@Temporal(TemporalType.DATE)
 	private Date lastChange;
-
 	private float saldo = 0;
+	private boolean pacienteAnteriorADentool = false;
 
 	public Long getId() {
 		return id;
@@ -144,13 +150,17 @@ public class Paciente {
 			String n = "";
 			String fecha = Calendar.getInstance().get(Calendar.DATE) + "-" + Calendar.getInstance().get(Calendar.MONTH)
 					+ "-" + Calendar.getInstance().get(Calendar.YEAR);
-			if (!"".equals(this.getNotas())) {
-				n = this.getNotas() + "\n";
+			if (this.getNotas() != null) {
+				if (!"".equals(this.getNotas())) {
+					n = this.getNotas() + "\n";
+				}
 				n += fecha + ": Depositado saldo por " + (origen.getSaldo() - this.getSaldo()) + " €";
 			}
 			this.setNotas(n);
 		}
 		this.setSaldo(origen.getSaldo());
+		this.setPacienteAnteriorADentool(origen.isPacienteAnteriorADentool());
+
 	}
 
 	public boolean isAlergico() {
@@ -217,4 +227,13 @@ public class Paciente {
 		this.lastChangeTs = lastChangeTs;
 		this.setLastChange(lastChangeTs);
 	}
+
+	public boolean isPacienteAnteriorADentool() {
+		return pacienteAnteriorADentool;
+	}
+
+	public void setPacienteAnteriorADentool(boolean pacienteAnteriorADentool) {
+		this.pacienteAnteriorADentool = pacienteAnteriorADentool;
+	}
+
 }

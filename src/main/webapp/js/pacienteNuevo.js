@@ -6,6 +6,8 @@ $(document).ready(function() {
 		createPaciente();
 		return false;
 	});
+	
+	$("#name").focus();
 
 });
 
@@ -48,7 +50,8 @@ function formToJSON() {
 		"notas" : $('#notas').val(),
 		"dni" : $('#dni').val(),
 		"alergico" : $('#alergico').prop('checked'),
-		"enfermoGrave" : $('#enfermoGrave').prop('checked')
+		"enfermoGrave" : $('#enfermoGrave').prop('checked'),
+		"pacienteAnteriorADentool" : $('#anteriorADentool').prop('checked')
 	});
 }
 

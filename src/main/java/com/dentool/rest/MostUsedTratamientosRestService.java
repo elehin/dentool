@@ -12,7 +12,7 @@ import javax.ws.rs.core.Response;
 
 import com.dentool.filter.Secured;
 import com.dentool.model.TratamientoTop;
-import com.dentool.rest.service.MostUsedTratamientosService;
+import com.dentool.service.MostUsedTratamientosService;
 
 @Path("/tratamientoTop")
 public class MostUsedTratamientosRestService {

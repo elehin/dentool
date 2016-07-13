@@ -5,10 +5,13 @@ import java.util.Calendar;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import com.dentool.model.Paciente;
+import com.dentool.model.Parametro;
+import com.dentool.service.ParametroService;
 import com.dentool.utils.Utils;
 
 @Stateless
@@ -17,11 +20,24 @@ public class PacienteService {
 	@PersistenceContext
 	private EntityManager entityManager;
 
+	@Inject
+	private ParametroService parametroService;
+
 	public Paciente create(Paciente paciente) {
 		Date now = new Date(Calendar.getInstance().getTimeInMillis());
 		paciente.setAlta(now);
 		paciente.setLastChangeTs(now);
 		entityManager.persist(paciente);
+
+		if (paciente.isPacienteAnteriorADentool()) {
+			Parametro p = this.parametroService.getParametro(Parametro.PACIENTES_ANTERIORES_DENTOOL);
+			if (p != null) {
+				int pacientesAntiguos = Integer.parseInt(p.getValue());
+				pacientesAntiguos--;
+				p.setValue(String.valueOf(pacientesAntiguos));
+			}
+		}
+
 		return paciente;
 	}
 

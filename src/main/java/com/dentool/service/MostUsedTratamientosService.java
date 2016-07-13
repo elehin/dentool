@@ -1,4 +1,4 @@
-package com.dentool.rest.service;
+package com.dentool.service;
 
 import java.util.List;
 
