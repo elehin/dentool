@@ -16,30 +16,34 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 @Entity
-@JsonIdentityInfo(property = "@id", generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Diagnostico {
 
 	@Id
 	@SequenceGenerator(name = "diagnostico_id_seq", sequenceName = "diagnostico_id_seq", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "diagnostico_id_seq")
-	// @GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
 	@ManyToOne(optional = false, cascade = CascadeType.MERGE)
 	@JoinColumn(name = "paciente", referencedColumnName = "id")
-	@JsonBackReference
+	@JsonIgnore
 	private Paciente paciente;
 
 	@ManyToOne(fetch = FetchType.EAGER, optional = false, cascade = CascadeType.MERGE)
 	private Tratamiento tratamiento;
 
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER, targetEntity = Presupuesto.class, mappedBy = "diagnosticos")
+	@JsonIgnore
 	private List<Presupuesto> presupuestos;
+
+	@ManyToOne(optional = true, cascade = CascadeType.MERGE)
+	@JoinColumn(name = "factura", referencedColumnName = "id")
+	@JsonIgnore
+	private Factura factura;
 
 	private boolean iniciado;
 	private boolean finalizado;
@@ -98,10 +102,12 @@ public class Diagnostico {
 		}
 	}
 
+	@JsonIgnore
 	public Paciente getPaciente() {
 		return paciente;
 	}
 
+	@JsonProperty(value = "paciente", access = Access.WRITE_ONLY)
 	public void setPaciente(Paciente paciente) {
 		this.paciente = paciente;
 	}
@@ -194,6 +200,24 @@ public class Diagnostico {
 	public void setLastChangeTs(Date lastChangeTs) {
 		this.lastChangeTs = lastChangeTs;
 		this.setLastChange(lastChangeTs);
+	}
+
+	@JsonIgnore
+	public Factura getFactura() {
+		return factura;
+	}
+
+	public void setFactura(Factura factura) {
+		this.factura = factura;
+	}
+
+	@JsonIgnore
+	public List<Presupuesto> getPresupuestos() {
+		return presupuestos;
+	}
+
+	public void setPresupuestos(List<Presupuesto> presupuestos) {
+		this.presupuestos = presupuestos;
 	}
 
 }

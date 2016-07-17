@@ -16,7 +16,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.dentool.utils.Utils;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 public class Paciente {
@@ -28,7 +27,6 @@ public class Paciente {
 	private long id;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "paciente", fetch = FetchType.EAGER)
-	@JsonManagedReference
 	private Collection<Diagnostico> diagnosticos;
 
 	private String name;

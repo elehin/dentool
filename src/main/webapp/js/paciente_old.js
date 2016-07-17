@@ -455,8 +455,7 @@ function renderPagosPendientes() {
 
 function populateLastDiagnosticos() {
 	// console.log('populateLastDiagnosticos');
-	// getDiagnosticosByPaciente(currentPaciente.id);
-	renderTableDiagnosticos(currentPaciente.diagnosticos);
+	getDiagnosticosByPaciente(currentPaciente.id);
 
 }
 

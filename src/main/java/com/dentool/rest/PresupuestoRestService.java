@@ -26,18 +26,18 @@ public class PresupuestoRestService {
 
 	@Inject
 	private PresupuestoService presupuestoService;
-	//
-	// @GET
-	// @Secured
-	// @Path("/{id:[0-9][0-9]*}")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// public Response lookupPagoById(@PathParam("id") long id) {
-	// Pago pago = pagoService.find(id);
-	// if (pago == null) {
-	// throw new WebApplicationException(Response.Status.NOT_FOUND);
-	// }
-	// return Response.ok(pago).build();
-	// }
+
+	@GET
+	@Secured
+	@Path("/{id:[0-9][0-9]*}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response lookupPagoById(@PathParam("id") long id) {
+		Presupuesto presupuesto = this.presupuestoService.getPresupuesto(id);
+		if (presupuesto == null) {
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}
+		return Response.ok(presupuesto).build();
+	}
 
 	@GET
 	@Secured
@@ -96,21 +96,4 @@ public class PresupuestoRestService {
 		return response.build();
 	}
 
-	// @POST
-	// @Secured
-	// @Path("/update")
-	// @Consumes(MediaType.APPLICATION_JSON)
-	// public Response update(Pago p) {
-	// this.pagoService.update(p);
-	// return Response
-	// .created(UriBuilder.fromResource(PresupuestoRestService.class).path(String.valueOf(p.getId())).build())
-	// .build();
-	// }
-	//
-	// @DELETE
-	// @Secured
-	// @Path("/delete/{id}")
-	// public void delete(@PathParam("id") long id) {
-	// this.pagoService.delete(id);
-	// }
 }

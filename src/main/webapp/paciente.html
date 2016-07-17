@@ -176,12 +176,14 @@
 							saldo</button>
 					</div>
 
-					<!-- ------------ Tabs para Notas y presupuestos ----------------------- -->
+					<!-- ------------ Tabs para Notas, facturas y presupuestos ----------------------- -->
 
 					<ul class="nav nav-tabs margin-top-5">
 						<li class="active"><a data-toggle="tab" href="#notasTab">Notas</a></li>
 						<li><a id="linkPresupuestosTab" data-toggle="tab"
 							href="#presupuestosTab">Presupuestos</a></li>
+						<li><a id="linkFacturasTab" data-toggle="tab"
+							href="#tableFacturas">Facturas</a></li>
 					</ul>
 
 					<div class="tab-content">
@@ -193,6 +195,11 @@
 						</div>
 						<div id="presupuestosTab" class="tab-pane fade">
 							<table id="tablePresupuestos" style="width: 100%"
+								class="table table-striped table-hover display responsive">
+							</table>
+						</div>
+						<div id="facturasTab" class="tab-pane fade">
+							<table id="tableFacturas" style="width: 100%"
 								class="table table-striped table-hover display responsive">
 							</table>
 						</div>

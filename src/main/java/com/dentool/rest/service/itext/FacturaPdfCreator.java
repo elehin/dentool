@@ -17,8 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dentool.model.Diagnostico;
+import com.dentool.model.Factura;
 import com.dentool.model.Paciente;
-import com.dentool.model.Presupuesto;
 import com.dentool.rest.service.DiagnosticoService;
 import com.dentool.rest.service.PacienteService;
 import com.dentool.utils.Utils;
@@ -40,12 +40,11 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfWriter;
 
-public class PresupuestoPdfCreator {
+public class FacturaPdfCreator {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private String path;
 	private Paciente paciente;
-	private String sFecha;
 	private float precioTotal = 0f;
 	private String fileName;
 
@@ -54,10 +53,8 @@ public class PresupuestoPdfCreator {
 
 	PdfWriter writer;
 
-	public PresupuestoPdfCreator() {
+	public FacturaPdfCreator() {
 		this.checkFilePath();
-
-		this.sFecha = Utils.getCurrentFormattedDate();
 
 		Context context = null;
 		try {
@@ -83,27 +80,39 @@ public class PresupuestoPdfCreator {
 
 	/**
 	 * 
-	 * Crea el documento pdf con los datos del Presupuesto que recibe.
+	 * Crea el documento pdf con los datos de la Factura que recibe.
 	 * 
-	 * @param presupuesto
+	 * @param factura
 	 * @return Un String con el nombre del fichero que se crea
 	 */
-	public String createPresupuestoPdf(Presupuesto presupuesto) {
+	public String createFacturaPdf(Factura factura) {
 		// ------- Creación y configuración del documento -------
-		Document document = this.prepareDocument(presupuesto);
+		Document document = this.prepareDocument(factura);
 
 		// ------- Datos bajo el encabezado -------
 		this.setDatosBajoHeader(document);
 
 		try {
+			// ------- Tabla datos Factura -------
+			PdfPTable tablefactura = new PdfPTable(new float[] { 9f, 6f });
+			tablefactura.setWidthPercentage(90);
+			String lineFactura = "Número de factura:;\n     " + factura.getNumero() + ";Fecha:;\n      "
+					+ Utils.formatAsFecha(factura.getFecha());
+			this.processHeader(tablefactura, lineFactura, 40f);
+			tablefactura.setSpacingBefore(5);
+
+			document.add(tablefactura);
+			// ------- ./ Tabla datos Factura -------
+
 			// ------- Tabla Header -------
-			paciente = pacienteService.find(presupuesto.getPacienteId());
+			paciente = pacienteService.find(factura.getPacienteId());
 
 			PdfPTable tableHeader = new PdfPTable(new float[] { 9f, 6f });
 			tableHeader.setWidthPercentage(90);
-			String line = "Paciente:;\n     " + paciente.getName() + " " + paciente.getApellidos() + ";Fecha:;\n      "
-					+ sFecha;
-			this.processHeader(tableHeader, line);
+			String line = "Paciente:;\n     " + paciente.getName() + " " + paciente.getApellidos() + "\n     NIF: "
+					+ paciente.getDni() + ";Emisor:;\n      Clínicas OSLO, S.L.P.\n      CIF: B­85935443";
+
+			this.processHeader(tableHeader, line, 55f);
 			tableHeader.setSpacingBefore(5);
 
 			document.add(tableHeader);
@@ -121,7 +130,7 @@ public class PresupuestoPdfCreator {
 			int diagnosticos = 0;
 
 			List<Long> diagnosticosIds = new ArrayList<Long>();
-			for (Diagnostico d : presupuesto.getDiagnosticos()) {
+			for (Diagnostico d : factura.getDiagnosticos()) {
 				diagnosticosIds.add(d.getId());
 			}
 
@@ -160,7 +169,7 @@ public class PresupuestoPdfCreator {
 			// ------- ./ Tabla Totalizador -------
 
 			// ------- Decoración -------
-			if (diagnosticos <= 22 || rows > 27) {
+			if (diagnosticos <= 20 || rows > 25) {
 				this.renderDecoration(document);
 			}
 
@@ -189,10 +198,11 @@ public class PresupuestoPdfCreator {
 					fontSubHeader);
 			document.add(datos);
 
-			Font presupuestoLineFont = FontFactory.getFont(FontFactory.COURIER_BOLDOBLIQUE, 14.0f);
-			Paragraph presupuestoLine = new Paragraph("Presupuesto", presupuestoLineFont);
-			presupuestoLine.setIndentationLeft(350.0f);
-			document.add(presupuestoLine);
+			Font facturaLineFont = FontFactory.getFont(FontFactory.COURIER_BOLDOBLIQUE, 14.0f);
+			Paragraph facturaLine = new Paragraph("Factura", facturaLineFont);
+			facturaLine.setIndentationLeft(350.0f);
+			document.add(facturaLine);
+
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			e.printStackTrace();
@@ -205,17 +215,17 @@ public class PresupuestoPdfCreator {
 	 * Crea el documento, establece márgenes y añade el evento para la creación
 	 * del header y el footer
 	 * 
-	 * @param presupuesto
+	 * @param factura
 	 * @return un Document
 	 */
-	private Document prepareDocument(Presupuesto presupuesto) {
+	private Document prepareDocument(Factura factura) {
 		// ------- Creación y configuración del documento -------
 		Document document = new Document();
-		document.setMargins(20, 20, 70, 70);
+		document.setMargins(20, 20, 70, 50);
 
 		OutputStream fos;
 		try {
-			fos = new FileOutputStream(this.getFileName(presupuesto));
+			fos = new FileOutputStream(this.getFileName(factura));
 			this.writer = PdfWriter.getInstance(document, fos);
 		} catch (FileNotFoundException | DocumentException e) {
 			logger.error(e.getMessage());
@@ -242,13 +252,13 @@ public class PresupuestoPdfCreator {
 		logger.info(this.path);
 	}
 
-	private String getFileName(Presupuesto presupuesto) {
-		this.fileName = path + "presupuesto_" + presupuesto.getId() + "_" + Calendar.getInstance().getTimeInMillis()
+	private String getFileName(Factura factura) {
+		this.fileName = this.path + "factura_" + factura.getId() + "_" + Calendar.getInstance().getTimeInMillis()
 				+ ".pdf";
 		return this.fileName;
 	}
 
-	private void processHeader(PdfPTable table, String line) {
+	public void processHeader(PdfPTable table, String line, float height) {
 		StringTokenizer tokenizer = new StringTokenizer(line, ";");
 
 		// Create a PdfFont
@@ -256,7 +266,7 @@ public class PresupuestoPdfCreator {
 		Font fontHeaderTitulo = FontFactory.getFont(FontFactory.COURIER, 8.0f);
 
 		PdfPCell cell1 = new PdfPCell();
-		cell1.setFixedHeight(40f);
+		cell1.setFixedHeight(height);
 		cell1.setPaddingTop(-2);
 		Chunk titular1 = new Chunk(tokenizer.nextToken(), fontHeaderTitulo);
 		Chunk nombre = new Chunk(tokenizer.nextToken(), fontHeader);
@@ -267,7 +277,7 @@ public class PresupuestoPdfCreator {
 		table.addCell(cell1);
 
 		PdfPCell cell2 = new PdfPCell();
-		cell2.setFixedHeight(40f);
+		cell2.setFixedHeight(height);
 		cell2.setPaddingTop(-2);
 		Chunk titular2 = new Chunk(tokenizer.nextToken(), fontHeaderTitulo);
 		Chunk fecha = new Chunk(tokenizer.nextToken(), fontHeader);
@@ -276,7 +286,6 @@ public class PresupuestoPdfCreator {
 		p2.add(fecha);
 		cell2.addElement(p2);
 		table.addCell(cell2);
-
 	}
 
 	public void processBody(PdfPTable table, String line, boolean isHeader, boolean isBordered) {
@@ -368,18 +377,18 @@ public class PresupuestoPdfCreator {
 		// -------- ./ Información adicional ---------
 
 		// -------- Decoración cúbica ---------
-		PdfContentByte canvas = this.writer.getDirectContent();
+		PdfContentByte canvas = writer.getDirectContent();
 		// state 1:
 		canvas.setRGBColorFill(0xFF, 0x45, 0x00);
 		// fill a rectangle in state 1
-		canvas.rectangle(10, 80, 60, 60);
+		canvas.rectangle(10, 60, 60, 60);
 		canvas.fill();
 		canvas.saveState();
 		// state 2;
 		canvas.setLineWidth(3);
 		canvas.setRGBColorFill(0x8B, 0x00, 0x00);
 		// fill and stroke a rectangle in state 2
-		canvas.rectangle(40, 90, 60, 60);
+		canvas.rectangle(40, 70, 60, 60);
 		canvas.fillStroke();
 		canvas.saveState();
 		// state 3:
@@ -387,16 +396,16 @@ public class PresupuestoPdfCreator {
 		canvas.setRGBColorStroke(0xFF, 0x45, 0x00);
 		canvas.setRGBColorFill(0x20, 0x20, 0xFF);
 		// fill and stroke a rectangle in state 3
-		canvas.rectangle(70, 100, 60, 60);
+		canvas.rectangle(70, 80, 60, 60);
 		canvas.fillStroke();
 		canvas.restoreState();
 		// stroke a rectangle in state 2
-		canvas.rectangle(100, 110, 60, 60);
+		canvas.rectangle(100, 90, 60, 60);
 		canvas.stroke();
 		canvas.restoreState();
 		// fill and stroke a rectangle in state 1
 		canvas.setRGBColorFill(0x00, 0x00, 0xAA);
-		canvas.rectangle(130, 120, 60, 60);
+		canvas.rectangle(130, 100, 60, 60);
 		canvas.fillStroke();
 	}
 
@@ -445,9 +454,7 @@ public class PresupuestoPdfCreator {
 			cb.setRGBColorFill(0x00, 0x00, 0x00);
 
 			String pagoString = "El pago de los importes se realizará en el momento de la realización del tratamiento. ";
-			String pagoString2 = "Los importes podrán variar en función de las necesidades del tratamiento.\n";
 			Phrase pago = new Phrase(pagoString, ffont);
-			Phrase pago2 = new Phrase(pagoString2, ffont);
 
 			Chunk dudas = new Chunk("Para cualquier aclaración no dude en llamar al teléfono ", ffont);
 			Chunk telefono = new Chunk("91 689 00 70 ", ffont);
@@ -457,10 +464,8 @@ public class PresupuestoPdfCreator {
 			Paragraph footer = new Paragraph();
 			footer.add(llamar);
 
-			ColumnText.showTextAligned(cb, Element.ALIGN_JUSTIFIED, pago, document.leftMargin(), document.bottom() - 10,
+			ColumnText.showTextAligned(cb, Element.ALIGN_JUSTIFIED, pago, document.leftMargin(), document.bottom() - 20,
 					0);
-			ColumnText.showTextAligned(cb, Element.ALIGN_JUSTIFIED, pago2, document.leftMargin(),
-					document.bottom() - 20, 0);
 			ColumnText.showTextAligned(cb, Element.ALIGN_JUSTIFIED, footer, document.leftMargin(),
 					document.bottom() - 40, 0);
 
