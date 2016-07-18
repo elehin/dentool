@@ -12,7 +12,6 @@ import javax.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dentool.model.Paciente;
 import com.dentool.model.Presupuesto;
 import com.dentool.rest.service.itext.PresupuestoPdfCreator;
 
@@ -27,8 +26,8 @@ public class PresupuestoService {
 	@Inject
 	private DiagnosticoService diagnosticoService;
 
-	@Inject
-	private PacienteService pacienteService;
+	// @Inject
+	// private PacienteService pacienteService;
 
 	public Presupuesto create(Presupuesto presupuesto) {
 
@@ -46,13 +45,12 @@ public class PresupuestoService {
 
 		// ------ Añade una nota en el paciente diciendo que se da presupuesto
 		// -------
-		Paciente p = this.pacienteService.find(presupuesto.getPacienteId());
-
-		String fecha = Calendar.getInstance().get(Calendar.DATE) + "-" + Calendar.getInstance().get(Calendar.MONTH)
-				+ "-" + Calendar.getInstance().get(Calendar.YEAR);
-
-		p.setNotas(p.getNotas() + "\n" + fecha + ": Creado presupuesto por " + presupuesto.getPrecio() + " €");
-		this.pacienteService.updatePaciente(p);
+		// Paciente p = this.pacienteService.find(presupuesto.getPacienteId());
+		//
+		// p.setNotas(p.getNotas() + "\n" + Utils.getCurrentFormattedDate() + ":
+		// Creado presupuesto por "
+		// + presupuesto.getPrecio() + " €");
+		// this.pacienteService.updatePaciente(p);
 
 		return presupuesto;
 	}

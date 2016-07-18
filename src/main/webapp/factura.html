@@ -87,7 +87,31 @@
 
 	<!-- Page Content -->
 	<div class="container" id="ContentContainer">
-
+		<div id="contentRow0" class="row collapse">
+			<div class="alert alert-warning">
+				<strong>Atención!</strong> Hay datos necesarios para la factura sin
+				completar.
+			</div>
+			<div class="col-md-12">
+				<form id="pacienteForm" role="form">
+					<div class="col-md-4">
+						<label for="name">Nombre:</label> <input type="text"
+							class="form-control" id="name" name="name" required />
+					</div>
+					<div class="col-md-4">
+						<label>Apellidos:</label> <input type="text" class="form-control"
+							id="apellidos" name="apellidos" />
+						<button id="btnSave"
+							class="btn btn-primary btn-block margin-top-25 ">Modificar</button>
+					</div>
+					<div class="col-md-4">
+						<label for="dni">NIF:</label> <input type="text"
+							class="form-control" id="dni" name="dni" />
+					</div>
+				</form>
+			</div>
+		</div>
+		<hr />
 		<div id="contentRow1" class="row">
 			<div class="col-md-3">
 				<h2 id="pacienteHeader">
@@ -104,9 +128,33 @@
 				</button>
 			</div>
 			<div class="col-md-6">
+				<!-- Mensajes de éxito y error al modificar datos del paciente -->
+				<div class="alert alert-success collapse fade margin-top-25 "
+					id="success-alert">
+					<p>
+						<button type="button" class="close" data-dismiss="alert">x</button>
+						<span class="glyphicon glyphicon-ok"></span><strong> OK!
+						</strong> El paciente ha sido modificado.
+					</p>
+				</div>
+
+				<div class="alert alert-danger collapse margin-top-25 "
+					id="error-alert">
+					<strong>Error!</strong> Ha ocurrido algún tipo de error.
+				</div>
+				<!-- ./ mensajes -->
+				
 				<table id="tableDiagnosticos"
 					class="table table-striped table-hover display responsive">
 				</table>
+			</div>
+			<div class="col-md-3">
+				<form id="cambioDatosForm" role="form">
+					<label for="name">Cambier nombre:</label> <input type="text"
+						class="form-control" id="otherName" name="name" /> <label
+						for="dni" class="margin-top-15">Cambiar NIF:</label> <input
+						type="text" class="form-control" id="otherDni" name="dni" />
+				</form>
 			</div>
 		</div>
 	</div>

@@ -54,6 +54,17 @@ public class DiagnosticoService {
 		return lista;
 	}
 
+	public List<Diagnostico> getDiagnosticosNoFacturadosByPaciente(Long pacienteId) {
+		Paciente p = entityManager.find(Paciente.class, pacienteId);
+
+		String query = "SELECT d FROM Diagnostico d WHERE d.paciente = :paciente AND d.finalizado = :finalizado AND d.factura IS EMPTY "
+				+ "ORDER BY d.finalizado, d.iniciado DESC, d.diagnosticado DESC, d.fechaInicio, d.fechaFin DESC";
+		@SuppressWarnings("unchecked")
+		List<Diagnostico> lista = entityManager.createQuery(query).setParameter("paciente", p)
+				.setParameter("finalizado", true).getResultList();
+		return lista;
+	}
+
 	public List<Diagnostico> getDiagnosticosNotStartedByPaciente(Long pacienteId) {
 		Paciente p = entityManager.find(Paciente.class, pacienteId);
 

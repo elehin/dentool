@@ -113,7 +113,7 @@
 					<label>Dirección:</label> <input type="text" class="form-control"
 						id="direccion" name="direccion" /> <label>Teléfono:</label> <input
 						type="tel" class="form-control" id="telefono" name="telefono" />
-					<label for="dni">DNI:</label> <input type="text"
+					<label for="dni">NIF:</label> <input type="text"
 						class="form-control" id="dni" name="dni" /> <label>Fecha
 						Nacimiento:</label> <input type="date" class="form-control"
 						id="fechaNacimiento" name="fechaNacimiento" />
@@ -183,7 +183,7 @@
 						<li><a id="linkPresupuestosTab" data-toggle="tab"
 							href="#presupuestosTab">Presupuestos</a></li>
 						<li><a id="linkFacturasTab" data-toggle="tab"
-							href="#tableFacturas">Facturas</a></li>
+							href="#facturasTab">Facturas</a></li>
 					</ul>
 
 					<div class="tab-content">
@@ -199,6 +199,9 @@
 							</table>
 						</div>
 						<div id="facturasTab" class="tab-pane fade">
+							<a id="btnCreateFactura" href="f"
+								class="btn btn-primary btn-block margin-top-5 hidden-xs hidden-sm">Emitir
+								factura</a>
 							<table id="tableFacturas" style="width: 100%"
 								class="table table-striped table-hover display responsive">
 							</table>

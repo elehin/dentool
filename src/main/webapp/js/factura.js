@@ -1,12 +1,18 @@
 var rows_selected;
+var paciente;
 var pacienteId;
 
 $(document).ready(
 		function() {
 
-			$("#btnCreaPresupuesto").click(function() {
-				console.log(formToJSON());
-				createPresupuesto();
+			$("#btnCreaFactura").click(function() {
+				// console.log(formToJSON());
+				createFactura();
+				return false;
+			});
+
+			$("#btnSave").click(function() {
+				updatePaciente();
 				return false;
 			});
 
@@ -19,14 +25,27 @@ $(document).ready(
 
 			rows_selected = [];
 
-			findDiagnosticosParaPresupuesto(pacienteId);
+			findDiagnosticosParaFactura(pacienteId);
 
 		});
 
-function findDiagnosticosParaPresupuesto(paciente) {
+function checkNombreAndNif() {
+	if (!paciente.name || !paciente.apellidos || !paciente.dni) {
+		$('#contentRow0').addClass('in');
+		$('#name').val(paciente.name);
+		$('#apellidos').val(paciente.apellidos);
+		$('#dni').val(paciente.dni);
+	} else {
+		if ($('#contentRow0').hasClass('in')) {
+			$('#contentRow0').removeClass('in');
+		}
+	}
+}
+
+function findDiagnosticosParaFactura(paciente) {
 	$.ajax({
 		type : 'GET',
-		url : diagnosticoURL + "notStarted/paciente/" + paciente,
+		url : diagnosticoURL + "noFacturados/paciente/" + paciente,
 		success : function(data) {
 			populateTable(data);
 			updateTotalPanel(data);
@@ -51,53 +70,70 @@ function populateTable(diagnosticos) {
 		rows_selected.push(item.id);
 	});
 
-	diagsTable = $('#tableDiagnosticos').DataTable({
-		"retrieve" : true,
-		"paging" : false,
-		"searching" : false,
-		"info" : false,
-		"ordering" : false,
-		"data" : dataset,
-		"columns" : [ {
-			"title" : "id"
-		}, {
-			"title" : ""
-		}, {
-			"title" : "Tratamiento"
-		}, {
-			"title" : "Pieza"
-		}, {
-			"title" : "Precio"
-		} ],
-		"columnDefs" : [ {
-			"className" : "never",
-			"targets" : [ 0 ],
-			"visible" : false
-		}, {
-			'targets' : 1,
-			'searchable' : false,
-			'orderable' : false,
-			'width' : '1%',
-			'className' : 'dt-body-center',
-			'render' : function(data, type, full, meta) {
-				return '<input type="checkbox">';
-			}
-		} ],
-		"select" : {
-			"style" : "os",
-			"selector" : "td:first-child"
-		},
-		'rowCallback' : function(row, data, dataIndex) {
-			// Get row ID
-			var rowId = data[0];
+	diagsTable = $('#tableDiagnosticos')
+			.DataTable(
+					{
+						"retrieve" : true,
+						"paging" : false,
+						"searching" : false,
+						"info" : false,
+						"ordering" : false,
+						"data" : dataset,
+						"columns" : [ {
+							"title" : "id"
+						}, {
+							"title" : ""
+						}, {
+							"title" : "Tratamiento"
+						}, {
+							"title" : "Pieza"
+						}, {
+							"title" : "Precio"
+						} ],
+						"columnDefs" : [ {
+							"className" : "never",
+							"targets" : [ 0 ],
+							"visible" : false
+						}, {
+							'targets' : 1,
+							'searchable' : false,
+							'orderable' : false,
+							'width' : '1%',
+							'className' : 'dt-body-center',
+							'render' : function(data, type, full, meta) {
+								return '<input type="checkbox">';
+							}
+						} ],
+						"select" : {
+							"style" : "os",
+							"selector" : "td:first-child"
+						},
+						"language" : {
+							"search" : "Buscar:",
+							"sLengthMenu" : "Mostrar _MENU_ registros",
+							"sZeroRecords" : "No se encontraron resultados",
+							"sEmptyTable" : "No hay ningún tratamiento para facturar",
+							"sInfo" : "Mostrando registros del _START_ al _END_ de un total de _TOTAL_",
+							"sInfoEmpty" : "Mostrando facturas de la 0 a la 0 de un total de 0 facturas",
+							"oPaginate" : {
+								"sFirst" : "Primero",
+								"sLast" : "Último",
+								"sNext" : "Siguiente",
+								"sPrevious" : "Anterior"
+							}
+						},
+						'rowCallback' : function(row, data, dataIndex) {
+							// Get row ID
+							var rowId = data[0];
 
-			// If row ID is in the list of selected row IDs
-			if ($.inArray(rowId, rows_selected) !== -1) {
-				$(row).find('input[type="checkbox"]').prop('checked', true);
-				$(row).removeClass('selected');
-			}
-		}
-	});
+							// If row ID is in the list of selected row IDs
+							if ($.inArray(rowId, rows_selected) !== -1) {
+								$(row).find('input[type="checkbox"]').prop(
+										'checked', true);
+								$(row).removeClass('selected');
+							}
+						}
+					});
 
 	$('input[type="checkbox"]').prop('checked', true);
 
@@ -175,11 +211,11 @@ function updateTotalPanel(data, action) {
 	}
 }
 
-function createPresupuesto() {
+function createFactura() {
 	$.ajax({
 		type : 'PUT',
 		contentType : 'application/json',
-		url : presupuestoURL,
+		url : facturaURL + 'createandprint',
 		dataType : 'native',
 		data : formToJSON(),
 		xhrFields : {
@@ -212,8 +248,10 @@ function findPaciente(id) {
 		type : 'GET',
 		url : pacienteURL + id,
 		success : function(data) {
-			var paciente = data.name + ' ' + data.apellidos;
-			$('#backArrowLink').after(paciente);
+			paciente = data;
+			var nombrePaciente = paciente.name + ' ' + paciente.apellidos;
+			$('#backArrowLink').after(nombrePaciente);
+			checkNombreAndNif();
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			if (errorThrown == 'Unauthorized') {
@@ -227,18 +265,99 @@ function findPaciente(id) {
 	});
 }
 
-function formToJSON() {
-
-	var diagnosticos = new Array();
-
-	$.each(rows_selected, function(i, item) {
-		var diagnostico = {};
-		diagnostico['id'] = item;
-		diagnosticos.push(diagnostico);
+function updatePaciente() {
+	$.ajax({
+		type : 'POST',
+		contentType : 'application/json',
+		url : pacienteURL + 'update',
+		data : formToJSON('modificar'),
+		success : function(rdata, textStatus, jqXHR) {
+			showSuccessMessage();
+			findPacienteByUrl(jqXHR.getResponseHeader('Location'));
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			} else {
+				showErrorMessage(textStatus);
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
+		}
 	});
+}
 
-	return JSON.stringify({
-		"diagnosticos" : diagnosticos,
-		"pacienteId" : pacienteId
+function findPacienteByUrl(url) {
+	$.ajax({
+		type : 'GET',
+		url : url,
+		success : function(data) {
+			paciente = data;
+			checkNombreAndNif();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
+		}
 	});
+}
+
+function formToJSON(action) {
+	if (action == 'modificar') {
+		return JSON.stringify({
+			"id" : paciente.id,
+			"name" : $('#name').val(),
+			"apellidos" : $('#apellidos').val(),
+			"direccion" : paciente.direccion,
+			"telefono" : paciente.telefono,
+			"fechaNacimiento" : paciente.fechaNacimiento,
+			"notas" : paciente.notas,
+			"dni" : $('#dni').val(),
+			"alergico" : paciente.alergico,
+			"enfermoGrave" : paciente.enfermoGrave,
+			"saldo" : paciente.saldo,
+			"pacienteAnteriorADentool" : paciente.pacienteAnteriorADentool
+		});
+	} else {
+
+		var diagnosticos = new Array();
+
+		$.each(rows_selected, function(i, item) {
+			var diagnostico = {};
+			diagnostico['id'] = item;
+			diagnosticos.push(diagnostico);
+		});
+
+		return JSON.stringify({
+			"diagnosticos" : diagnosticos,
+			"pacienteId" : pacienteId,
+			"nombreFactura" : $('#otherName').val(),
+			"nifFactura" : $('#otherDni').val()
+		});
+	}
+}
+
+function showSuccessMessage() {
+	$("#success-alert").alert();
+	window.setTimeout(function() {
+		$("#success-alert").fadeTo(2000, 500).slideUp(500, function() {
+			$("#success-alert").hide();
+		});
+	}, 0);
+}
+
+function showErrorMessage(error) {
+	$("#error-alert").alert();
+	window.setTimeout(function() {
+		$("#error-alert").fadeTo(2000, 500).slideUp(500, function() {
+			$("#error-alert").hide();
+		});
+	}, 0);
 }

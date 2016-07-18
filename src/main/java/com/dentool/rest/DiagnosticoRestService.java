@@ -63,6 +63,18 @@ public class DiagnosticoRestService {
 
 	@GET
 	@Secured
+	@Path("/noFacturados/paciente/{paciente}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getDiagnosticosNoFacturadosByPaciente(@PathParam("paciente") long id) {
+		List<Diagnostico> lista = diagnosticoService.getDiagnosticosNoFacturadosByPaciente(id);
+		if (lista == null) {
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}
+		return Response.ok(lista).build();
+	}
+
+	@GET
+	@Secured
 	@Path("/pagosPendientes/{paciente}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getPagosPendientes(@PathParam("paciente") long id) {

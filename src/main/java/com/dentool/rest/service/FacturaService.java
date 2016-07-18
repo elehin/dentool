@@ -17,7 +17,6 @@ import com.dentool.model.Diagnostico;
 import com.dentool.model.Factura;
 import com.dentool.model.Paciente;
 import com.dentool.rest.service.itext.FacturaPdfCreator;
-import com.dentool.utils.Utils;
 
 @Stateless
 public class FacturaService {
@@ -40,15 +39,19 @@ public class FacturaService {
 		// ------ Si viene nombre en la petición se emite la factura a ese
 		// nombre.
 		// ------ En caso contrario se usan los datos del paciente.
-		Paciente p = this.pacienteService.find(factura.getPacienteId());
+		Paciente p = null;
 
-		if (factura.getNombreFactura() == null) {
+		if (factura.getNombreFactura() == null || "".equals(factura.getNombreFactura())) {
+			p = this.pacienteService.find(factura.getPacienteId());
 			factura.setNombreFactura(p.getName() + " " + p.getApellidos());
 		}
 
 		// ------ Si viene nif en la petición se emite la factura a ese nif.
 		// ------ En caso contrario se usan los datos del paciente.
-		if (factura.getNifFactura() == null) {
+		if (factura.getNifFactura() == null || "".equals(factura.getNifFactura())) {
+			if (p == null) {
+				p = this.pacienteService.find(factura.getPacienteId());
+			}
 			factura.setNifFactura(p.getDni());
 		}
 
@@ -86,14 +89,15 @@ public class FacturaService {
 
 		// ------ Añade una nota en el paciente diciendo que se emite factura
 		// -------
-		p.setNotas(p.getNotas() + "\n" + Utils.getCurrentFormattedDate() + ": Emitida factura número " + f.getNumero());
-		this.pacienteService.updatePaciente(p);
+		// p.setNotas(p.getNotas() + "\n" + Utils.getCurrentFormattedDate() + ":
+		// Emitida factura número " + f.getNumero());
+		// this.pacienteService.updatePaciente(p);
 
 		return f;
 	}
 
 	public List<Factura> getFacturasByPaciente(long pacienteId) {
-		String query = "SELECT f FROM Factura f WHERE f.paciente.id = :pacienteId ORDER BY f.creada DESC";
+		String query = "SELECT f FROM Factura f WHERE f.pacienteId = :pacienteId ORDER BY f.creada DESC";
 		@SuppressWarnings("unchecked")
 		List<Factura> lista = this.entityManager.createQuery(query).setParameter("pacienteId", pacienteId)
 				.getResultList();

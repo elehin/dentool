@@ -18,9 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import com.dentool.model.Diagnostico;
 import com.dentool.model.Factura;
-import com.dentool.model.Paciente;
 import com.dentool.rest.service.DiagnosticoService;
-import com.dentool.rest.service.PacienteService;
 import com.dentool.utils.Utils;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
@@ -44,11 +42,11 @@ public class FacturaPdfCreator {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private String path;
-	private Paciente paciente;
+	// private Paciente paciente;
 	private float precioTotal = 0f;
 	private String fileName;
 
-	private PacienteService pacienteService;
+	// private PacienteService pacienteService;
 	private DiagnosticoService diagnosticoService;
 
 	PdfWriter writer;
@@ -60,7 +58,8 @@ public class FacturaPdfCreator {
 		try {
 			context = new InitialContext();
 
-			pacienteService = (PacienteService) context.lookup("java:global/ROOT/PacienteService");
+			// pacienteService = (PacienteService)
+			// context.lookup("java:global/ROOT/PacienteService");
 			diagnosticoService = (DiagnosticoService) context.lookup("java:global/ROOT/DiagnosticoService");
 
 		} catch (NamingException e) {
@@ -68,7 +67,8 @@ public class FacturaPdfCreator {
 			try {
 				context = new InitialContext();
 
-				pacienteService = (PacienteService) context.lookup("java:global/dentool/PacienteService");
+				// pacienteService = (PacienteService)
+				// context.lookup("java:global/dentool/PacienteService");
 				diagnosticoService = (DiagnosticoService) context.lookup("java:global/dentool/DiagnosticoService");
 			} catch (NamingException e1) {
 				logger.error("PresupuestoPdfCreator() ---- Error al obtener stub para paciente o diagnostico ----");
@@ -105,12 +105,12 @@ public class FacturaPdfCreator {
 			// ------- ./ Tabla datos Factura -------
 
 			// ------- Tabla Header -------
-			paciente = pacienteService.find(factura.getPacienteId());
+			// paciente = pacienteService.find(factura.getPacienteId());
 
 			PdfPTable tableHeader = new PdfPTable(new float[] { 9f, 6f });
 			tableHeader.setWidthPercentage(90);
-			String line = "Paciente:;\n     " + paciente.getName() + " " + paciente.getApellidos() + "\n     NIF: "
-					+ paciente.getDni() + ";Emisor:;\n      Clínicas OSLO, S.L.P.\n      CIF: B­85935443";
+			String line = "Paciente:;\n     " + factura.getNombreFactura() + "\n     NIF: " + factura.getNifFactura()
+					+ ";Emisor:;\n      Clínicas OSLO, S.L.P.\n      CIF: B­85935443";
 
 			this.processHeader(tableHeader, line, 55f);
 			tableHeader.setSpacingBefore(5);

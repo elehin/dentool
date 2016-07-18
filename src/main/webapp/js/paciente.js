@@ -91,9 +91,18 @@ $(document).ready(
 
 			$("#btnCreatePresupuesto").click(
 					function() {
-						// console.log('$("#btnAddSaldo").click');
+						// console.log('$("#btnCreatePresupuesto").click');
 						window.location.replace(serverURL
 								+ 'presupuesto.html?paciente='
+								+ getUrlParameter("paciente"));
+						return false;
+					});
+
+			$("#btnCreateFactura").click(
+					function() {
+						// console.log('$("#btnCreateFactura").click');
+						window.location.replace(serverURL
+								+ 'factura.html?paciente='
 								+ getUrlParameter("paciente"));
 						return false;
 					});
@@ -106,6 +115,7 @@ $(document).ready(
 			getTratamientosList();
 			getTratamientosTop();
 			getPresupuestos();
+			getFacturas();
 
 			// $("#addSaldoLink").click(function() {
 			// $('html, body').animate({
@@ -194,6 +204,114 @@ function renderTablePresupuestos(presupuestos) {
 			descargaPresupuesto(data);
 		}
 	});
+}
+
+function getFacturas() {
+	$.ajax({
+		type : 'GET',
+		url : facturaURL + "paciente/" + getUrlParameter("paciente"),
+		success : function(data) {
+			renderTableFacturas(data);
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
+		}
+	});
+}
+
+function renderTableFacturas(facturas) {
+	var dataset = [];
+
+	$.each(facturas, function(i, item) {
+
+		dataset.push([ item.id, descarga, item.numero, item.fecha,
+				item.importe + ' €' ]);
+	});
+
+	facturasTable = $('#tableFacturas')
+			.DataTable(
+					{
+						"retrieve" : true,
+						"paging" : false,
+						"searching" : false,
+						"info" : false,
+						"ordering" : false,
+						"data" : dataset,
+						"columns" : [ {
+							"title" : "id"
+						}, {
+							"title" : "&nbsp;"
+						}, {
+							"title" : "Factura"
+						}, {
+							"title" : "Fecha"
+						}, {
+							"title" : "Importe"
+						} ],
+						"columnDefs" : [ {
+							"className" : "never",
+							"targets" : [ 0 ],
+							"visible" : false
+						} ],
+						"order" : [ [ 2, "desc" ] ],
+						"language" : {
+							"search" : "Buscar:",
+							"sLengthMenu" : "Mostrar _MENU_ registros",
+							"sZeroRecords" : "No se encontraron resultados",
+							"sEmptyTable" : "No hay ninguna factura para este paciente",
+							"sInfo" : "Mostrando registros del _START_ al _END_ de un total de _TOTAL_",
+							"sInfoEmpty" : "Mostrando registros del 0 al 0 de un total de 0 registros",
+							"oPaginate" : {
+								"sFirst" : "Primero",
+								"sLast" : "Último",
+								"sNext" : "Siguiente",
+								"sPrevious" : "Anterior"
+							}
+						}
+					});
+
+	$('#tableFacturas tbody tr').off('click');
+	$('#tableFacturas tbody tr').on('click', 'button', function(evt) {
+		evt.stopPropagation();
+		evt.preventDefault();
+
+		row = $(this).parents('tr');
+
+		if ($(this).hasClass("detalle")) {
+			var data = facturasTable.row($(this).parents('tr')).data();
+			descargaFactura(data);
+		}
+	});
+}
+
+function descargaFactura(data) {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', facturaURL + 'pdf/' + data[0], true);
+	xhr.setRequestHeader('Authorization', 'Bearer ' + $.cookie('restTokenC'));
+	xhr.responseType = 'blob';
+	xhr.onload = function(e) {
+		if (this.status == 200) {
+			var myBlob = this.response;
+			var blob = new Blob([ myBlob ]);
+			var link = document.createElement('a');
+			var fileName = this.getResponseHeader('Content-Disposition');
+			fileName = fileName.substring(fileName.lastIndexOf("=") + 1,
+					fileName.length).trim();
+			link.href = window.URL.createObjectURL(blob);
+			link.download = fileName;
+			link.click();
+		}
+		if (this.status == 401) {
+			window.location.replace(serverURL + 'login.html');
+		}
+	};
+	xhr.send();
 }
 
 function getTratamientosTop() {
@@ -962,7 +1080,8 @@ function formToJSON(action, data) {
 			"dni" : $('#dni').val(),
 			"alergico" : $('#alergico').prop('checked'),
 			"enfermoGrave" : $('#enfermoGrave').prop('checked'),
-			"saldo" : newSaldo
+			"saldo" : newSaldo,
+			"pacienteAnteriorADentool" : currentPaciente.pacienteAnteriorADentool
 		});
 	}
 }
