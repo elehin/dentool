@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import com.dentool.filter.Secured;
-import com.dentool.model.Pago;
+import com.dentool.model.entities.Pago;
 import com.dentool.rest.service.PagoService;
 
 @Path("/pago")

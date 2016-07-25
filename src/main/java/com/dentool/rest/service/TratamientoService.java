@@ -6,7 +6,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import com.dentool.model.Tratamiento;
+import com.dentool.model.entities.Tratamiento;
 import com.dentool.utils.Utils;
 
 @Stateless

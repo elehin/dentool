@@ -11,7 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.dentool.filter.Secured;
-import com.dentool.model.TratamientoTop;
+import com.dentool.model.entities.TratamientoTop;
 import com.dentool.service.MostUsedTratamientosService;
 
 @Path("/tratamientoTop")

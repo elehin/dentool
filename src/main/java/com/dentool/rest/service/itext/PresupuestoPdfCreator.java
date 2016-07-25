@@ -16,9 +16,9 @@ import javax.naming.NamingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dentool.model.Diagnostico;
-import com.dentool.model.Paciente;
-import com.dentool.model.Presupuesto;
+import com.dentool.model.entities.Diagnostico;
+import com.dentool.model.entities.Paciente;
+import com.dentool.model.entities.Presupuesto;
 import com.dentool.rest.service.DiagnosticoService;
 import com.dentool.rest.service.PacienteService;
 import com.dentool.utils.Utils;

@@ -14,7 +14,7 @@ import javax.xml.bind.DatatypeConverter;
 
 import com.dentool.filter.KeyStoreService;
 import com.dentool.model.Credenciales;
-import com.dentool.model.Usuario;
+import com.dentool.model.entities.Usuario;
 import com.dentool.utils.Utils;
 
 import io.jsonwebtoken.JwtBuilder;

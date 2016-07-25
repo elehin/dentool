@@ -9,8 +9,8 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import com.dentool.model.Paciente;
-import com.dentool.model.Parametro;
+import com.dentool.model.entities.Paciente;
+import com.dentool.model.entities.Parametro;
 import com.dentool.service.ParametroService;
 import com.dentool.utils.Utils;
 

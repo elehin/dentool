@@ -17,7 +17,7 @@ import javax.ws.rs.core.UriBuilder;
 import com.dentool.filter.Secured;
 import com.dentool.model.Credenciales;
 import com.dentool.model.LoginResponse;
-import com.dentool.model.Usuario;
+import com.dentool.model.entities.Usuario;
 import com.dentool.rest.service.UsuarioService;
 
 @Path("/authentication")

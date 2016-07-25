@@ -1,4 +1,4 @@
-package com.dentool.model;
+package com.dentool.model.entities;
 
 import java.util.Date;
 
@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import com.dentool.model.Credenciales;
 
 @Entity
 public class Usuario {

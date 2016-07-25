@@ -9,9 +9,9 @@ import javax.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dentool.model.Diagnostico;
-import com.dentool.model.Paciente;
-import com.dentool.model.Pago;
+import com.dentool.model.entities.Diagnostico;
+import com.dentool.model.entities.Paciente;
+import com.dentool.model.entities.Pago;
 
 @Stateless
 public class PagoService {

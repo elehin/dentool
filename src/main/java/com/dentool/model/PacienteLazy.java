@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.dentool.model.entities.Paciente;
 import com.dentool.utils.Utils;
 
 public class PacienteLazy {

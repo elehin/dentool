@@ -30,11 +30,25 @@ $(document).ready(
 		});
 
 function checkNombreAndNif() {
+	$('#name').removeClass("has-error has-feedback");
+	$('#apellidos').removeClass("has-error has-feedback");
+	$('#dni').removeClass("has-error has-feedback");
+
 	if (!paciente.name || !paciente.apellidos || !paciente.dni) {
 		$('#contentRow0').addClass('in');
 		$('#name').val(paciente.name);
 		$('#apellidos').val(paciente.apellidos);
 		$('#dni').val(paciente.dni);
+
+		if (!paciente.name) {
+			$('#nameDiv').addClass("has-error has-feedback");
+		}
+		if (!paciente.apellidos) {
+			$('#apellidosDiv').addClass("has-error has-feedback");
+		}
+		if (!paciente.dni) {
+			$('#nifDiv').addClass("has-error has-feedback");
+		}
 	} else {
 		if ($('#contentRow0').hasClass('in')) {
 			$('#contentRow0').removeClass('in');

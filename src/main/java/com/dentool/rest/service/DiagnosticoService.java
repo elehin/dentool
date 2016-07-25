@@ -1,6 +1,7 @@
 package com.dentool.rest.service;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -11,10 +12,11 @@ import javax.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dentool.model.Diagnostico;
-import com.dentool.model.Paciente;
-import com.dentool.model.Pago;
-import com.dentool.model.Tratamiento;
+import com.dentool.model.DiagnosticosNoFacturado;
+import com.dentool.model.entities.Diagnostico;
+import com.dentool.model.entities.Paciente;
+import com.dentool.model.entities.Pago;
+import com.dentool.model.entities.Tratamiento;
 
 @Stateless
 public class DiagnosticoService {
@@ -187,5 +189,51 @@ public class DiagnosticoService {
 			return resultFloat;
 		}
 		return 0f;
+	}
+
+	public List<DiagnosticosNoFacturado> getDiagnosticosNoFacturados() {
+		String query = "SELECT p.id AS pacienteId, p.name AS name, p.apellidos AS apellidos, p.dni AS dni, sum(d.pagado) AS importe"
+				+ " FROM Diagnostico d JOIN d.paciente as p "
+				+ "WHERE d.finalizado = true AND d.factura IS EMPTY AND d.pagado = d.precio  "
+				+ "AND p.name IS NOT NULL AND (p.apellidos IS NOT NULL AND p.apellidos <> '') "
+				+ "AND (p.dni IS NOT NULL AND p.dni <> '') GROUP BY p.id, p.name, p.apellidos, p.dni";
+		@SuppressWarnings("unchecked")
+		List<Object[]> lista = this.entityManager.createQuery(query).getResultList();
+
+		List<DiagnosticosNoFacturado> returnList = new ArrayList<DiagnosticosNoFacturado>();
+		for (Object[] o : lista) {
+			DiagnosticosNoFacturado dn = new DiagnosticosNoFacturado();
+			dn.setPacienteId(Long.valueOf(String.valueOf(o[0])));
+			dn.setName(String.valueOf(o[1]));
+			dn.setApellidos(String.valueOf(o[2]));
+			dn.setDni(String.valueOf(o[3]));
+			dn.setImporte(Float.valueOf(String.valueOf(o[4])));
+			returnList.add(dn);
+		}
+
+		return returnList;
+	}
+
+	public List<DiagnosticosNoFacturado> getDiagnosticosNoFacturables() {
+		String query = "SELECT p.id AS pacienteId, p.name AS name, p.apellidos AS apellidos, p.dni AS dni, sum(d.pagado) AS importe"
+				+ " FROM Diagnostico d JOIN d.paciente as p "
+				+ "WHERE d.finalizado = true AND d.factura IS EMPTY AND d.pagado = d.precio  "
+				+ "AND (p.name IS NULL OR p.name = '' OR p.apellidos IS NULL OR p.apellidos = '' "
+				+ "OR p.dni IS NULL OR p.dni = '') GROUP BY p.id, p.name, p.apellidos, p.dni";
+		@SuppressWarnings("unchecked")
+		List<Object[]> lista = this.entityManager.createQuery(query).getResultList();
+
+		List<DiagnosticosNoFacturado> returnList = new ArrayList<DiagnosticosNoFacturado>();
+		for (Object[] o : lista) {
+			DiagnosticosNoFacturado dn = new DiagnosticosNoFacturado();
+			dn.setPacienteId(Long.valueOf(String.valueOf(o[0])));
+			dn.setName(String.valueOf(o[1]));
+			dn.setApellidos(String.valueOf(o[2]));
+			dn.setDni(String.valueOf(o[3]));
+			dn.setImporte(Float.valueOf(String.valueOf(o[4])));
+			returnList.add(dn);
+		}
+
+		return returnList;
 	}
 }

@@ -1,4 +1,4 @@
-package com.dentool.model;
+package com.dentool.model.entities;
 
 import java.util.Date;
 

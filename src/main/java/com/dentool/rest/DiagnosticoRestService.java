@@ -16,7 +16,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import com.dentool.filter.Secured;
-import com.dentool.model.Diagnostico;
+import com.dentool.model.DiagnosticosNoFacturado;
+import com.dentool.model.entities.Diagnostico;
 import com.dentool.rest.service.DiagnosticoService;
 
 @Path("/diagnostico")
@@ -67,6 +68,30 @@ public class DiagnosticoRestService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getDiagnosticosNoFacturadosByPaciente(@PathParam("paciente") long id) {
 		List<Diagnostico> lista = diagnosticoService.getDiagnosticosNoFacturadosByPaciente(id);
+		if (lista == null) {
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}
+		return Response.ok(lista).build();
+	}
+
+	@GET
+	@Secured
+	@Path("/noFacturados")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getDiagnosticosNoFacturados() {
+		List<DiagnosticosNoFacturado> lista = diagnosticoService.getDiagnosticosNoFacturados();
+		if (lista == null) {
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}
+		return Response.ok(lista).build();
+	}
+
+	@GET
+	@Secured
+	@Path("/noFacturables")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getDiagnosticosNoFacturables() {
+		List<DiagnosticosNoFacturado> lista = diagnosticoService.getDiagnosticosNoFacturables();
 		if (lista == null) {
 			throw new WebApplicationException(Response.Status.NOT_FOUND);
 		}

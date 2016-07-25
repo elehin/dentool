@@ -9,8 +9,8 @@ import javax.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dentool.model.Tratamiento;
-import com.dentool.model.TratamientoTop;
+import com.dentool.model.entities.Tratamiento;
+import com.dentool.model.entities.TratamientoTop;
 
 @Stateless
 public class MostUsedTratamientosService {

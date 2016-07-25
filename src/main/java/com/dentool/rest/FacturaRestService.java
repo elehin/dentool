@@ -6,6 +6,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -16,7 +17,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.dentool.filter.Secured;
-import com.dentool.model.Factura;
+import com.dentool.model.ImportesFacturados;
+import com.dentool.model.entities.Factura;
 import com.dentool.rest.service.FacturaService;
 
 @Path("/factura")
@@ -49,6 +51,30 @@ public class FacturaRestService {
 			throw new WebApplicationException(Response.Status.NOT_FOUND);
 		}
 		return Response.ok(lista).build();
+	}
+
+	@GET
+	@Secured
+	@Path("/lastFacturas")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getLastFacturas() {
+		List<Factura> lista = this.facturaService.getLastFacturas();
+		if (lista == null) {
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}
+		return Response.ok(lista).build();
+	}
+
+	@GET
+	@Secured
+	@Path("/importesFacturados")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getImportesFacturados() {
+		ImportesFacturados ifs = this.facturaService.getImportesFacturados();
+		if (ifs == null) {
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}
+		return Response.ok(ifs).build();
 	}
 
 	@GET
@@ -107,6 +133,75 @@ public class FacturaRestService {
 		return response.build();
 	}
 
+	@GET
+	@Secured
+	@Path("/pdf/mes/{mes}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces("application/pdf")
+	public Response getPdfMes(@PathParam("mes") int mes) {
+
+		File file = this.facturaService.getZipFacturasMes(mes);
+
+		if (file == null) {
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}
+
+		ResponseBuilder response = Response.ok((Object) file);
+		String fileName = file.getName().substring(file.getName().lastIndexOf('/') + 1, file.getName().length());
+		response.header("Content-Disposition", "attachment; filename=" + fileName);
+		return response.build();
+	}
+
+	@GET
+	@Secured
+	@Path("/pdf/trimestre/{mes}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces("application/pdf")
+	public Response getPdfTrimestre(@PathParam("mes") int mes) {
+
+		File file = this.facturaService.getZipFacturasTrimestre(mes);
+
+		if (file == null) {
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}
+
+		ResponseBuilder response = Response.ok((Object) file);
+		String fileName = file.getName().substring(file.getName().lastIndexOf('/') + 1, file.getName().length());
+		response.header("Content-Disposition", "attachment; filename=" + fileName);
+		return response.build();
+	}
+
+	@GET
+	@Secured
+	@Path("/pdf/year/{year}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces("application/pdf")
+	public Response getPdfYear(@PathParam("year") int year) {
+
+		File file = this.facturaService.getZipFacturasYear(year);
+
+		if (file == null) {
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}
+
+		ResponseBuilder response = Response.ok((Object) file);
+		String fileName = file.getName().substring(file.getName().lastIndexOf('/') + 1, file.getName().length());
+		response.header("Content-Disposition", "attachment; filename=" + fileName);
+		return response.build();
+	}
+
+	@POST
+	@Secured
+	@Path("/emiteFacturas")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response emiteFacturas(List<Long> pacientes) {
+		int response = this.facturaService.emitirFacturas(pacientes);
+		if (response < 1) {
+			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+		}
+		return Response.ok().build();
+	}
+
 	// @GET
 	// @Secured
 	// @Path("/pdf/{id}")
@@ -131,16 +226,6 @@ public class FacturaRestService {
 	// return response.build();
 	// }
 
-	// @POST
-	// @Secured
-	// @Path("/update")
-	// @Consumes(MediaType.APPLICATION_JSON)
-	// public Response update(Pago p) {
-	// this.pagoService.update(p);
-	// return Response
-	// .created(UriBuilder.fromResource(PresupuestoRestService.class).path(String.valueOf(p.getId())).build())
-	// .build();
-	// }
 	//
 	// @DELETE
 	// @Secured

@@ -15,7 +15,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import com.dentool.filter.Secured;
-import com.dentool.model.Tratamiento;
+import com.dentool.model.entities.Tratamiento;
 import com.dentool.rest.service.TratamientoService;
 
 @Path("/tratamiento")

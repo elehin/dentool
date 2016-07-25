@@ -16,8 +16,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import com.dentool.filter.Secured;
-import com.dentool.model.Paciente;
 import com.dentool.model.PacienteLazy;
+import com.dentool.model.entities.Paciente;
 import com.dentool.rest.service.PacienteService;
 
 @Path("/paciente")

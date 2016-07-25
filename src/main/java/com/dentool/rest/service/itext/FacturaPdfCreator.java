@@ -16,8 +16,8 @@ import javax.naming.NamingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dentool.model.Diagnostico;
-import com.dentool.model.Factura;
+import com.dentool.model.entities.Diagnostico;
+import com.dentool.model.entities.Factura;
 import com.dentool.rest.service.DiagnosticoService;
 import com.dentool.utils.Utils;
 import com.itextpdf.text.BaseColor;
@@ -42,11 +42,9 @@ public class FacturaPdfCreator {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private String path;
-	// private Paciente paciente;
 	private float precioTotal = 0f;
 	private String fileName;
 
-	// private PacienteService pacienteService;
 	private DiagnosticoService diagnosticoService;
 
 	PdfWriter writer;
@@ -58,8 +56,6 @@ public class FacturaPdfCreator {
 		try {
 			context = new InitialContext();
 
-			// pacienteService = (PacienteService)
-			// context.lookup("java:global/ROOT/PacienteService");
 			diagnosticoService = (DiagnosticoService) context.lookup("java:global/ROOT/DiagnosticoService");
 
 		} catch (NamingException e) {
@@ -67,8 +63,6 @@ public class FacturaPdfCreator {
 			try {
 				context = new InitialContext();
 
-				// pacienteService = (PacienteService)
-				// context.lookup("java:global/dentool/PacienteService");
 				diagnosticoService = (DiagnosticoService) context.lookup("java:global/dentool/DiagnosticoService");
 			} catch (NamingException e1) {
 				logger.error("PresupuestoPdfCreator() ---- Error al obtener stub para paciente o diagnostico ----");

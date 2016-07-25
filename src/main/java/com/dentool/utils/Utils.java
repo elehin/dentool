@@ -7,7 +7,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.Date;
 
-import com.dentool.model.Paciente;
+import org.apache.commons.lang3.StringUtils;
+
+import com.dentool.model.entities.Paciente;
 
 public class Utils {
 
@@ -98,5 +100,9 @@ public class Utils {
 		String fecha = dia + "-" + mes + "-" + year;
 
 		return fecha;
+	}
+
+	public static String capitalize(String string) {
+		return StringUtils.capitalize(string);
 	}
 }

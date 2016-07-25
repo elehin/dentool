@@ -12,7 +12,7 @@ import javax.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dentool.model.Presupuesto;
+import com.dentool.model.entities.Presupuesto;
 import com.dentool.rest.service.itext.PresupuestoPdfCreator;
 
 @Stateless

@@ -6,7 +6,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import com.dentool.model.Parametro;
+import com.dentool.model.entities.Parametro;
 
 @Stateless
 public class ParametroService {

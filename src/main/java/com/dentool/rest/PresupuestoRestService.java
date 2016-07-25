@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.dentool.filter.Secured;
-import com.dentool.model.Presupuesto;
+import com.dentool.model.entities.Presupuesto;
 import com.dentool.rest.service.PresupuestoService;
 
 @Path("/presupuesto")
