@@ -33,8 +33,6 @@ public class KeyStoreService {
 
 	private String getKey() {
 
-		logger.info("@@@@@@@@@@@@@@@@@@@@@@@@@@ getkey() @@@@@@@@@@@@@@@@@@@@@@@@@");
-
 		String path = System.getenv("OPENSHIFT_DATA_DIR");
 		if (path == null) {
 			path = "c:";

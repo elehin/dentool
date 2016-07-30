@@ -241,6 +241,8 @@ public class FacturaPdfCreator {
 		if (this.path == null) {
 			logger.info("Ejecución en entorno no OpenShift, se crearán los ficheros en ruta absoluta.");
 			this.path = "C:/Users/Vane/Documents/";
+		} else {
+			path += "facturas/";
 		}
 
 		logger.info(this.path);
@@ -353,11 +355,9 @@ public class FacturaPdfCreator {
 		try {
 			Font fontInfo = FontFactory.getFont(FontFactory.COURIER, 12.0f);
 
-			Phrase p1 = new Phrase("Horario de apertura: 10:00 - 13:00\n", fontInfo);
-			Phrase p2 = new Phrase("17:00 - 20:30", fontInfo);
+			Phrase p1 = new Phrase("Factura exenta de I.V.A. según ley 37/92", fontInfo);
 			Paragraph info = new Paragraph();
 			info.add(p1);
-			info.add(p2);
 
 			info.setAlignment(Element.ALIGN_RIGHT);
 			info.setIndentationRight(30f);

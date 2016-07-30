@@ -237,6 +237,8 @@ public class PresupuestoPdfCreator {
 		if (this.path == null) {
 			logger.info("Ejecución en entorno no OpenShift, se crearán los ficheros en ruta absoluta.");
 			this.path = "C:/Users/Vane/Documents/";
+		} else {
+			path += "presupuestos/";
 		}
 
 		logger.info(this.path);

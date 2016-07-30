@@ -12,6 +12,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import javax.xml.bind.DatatypeConverter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 
@@ -26,6 +29,8 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 	@Inject
 	private KeyStoreService keyStoreService;
 
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	/**
 	 * @see ContainerRequestFilter#filter(ContainerRequestContext)
 	 */
@@ -34,6 +39,8 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 		// Get the HTTP Authorization header from the request
 		String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 		
+		logger.info(requestContext.getUriInfo().getAbsolutePath().getPath());
+
 		try {
 			// Check if the HTTP Authorization header is present and formatted
 			// correctly
@@ -53,17 +60,9 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 		} catch (Exception e) {
 			requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
 		}
-	}
 
-	// private void validateToken(String token) throws Exception {
-	// if (token == null || token.equals("")) {
-	// throw new Exception();
-	// }
-	// Usuario u = usuarioService.validaToken(token);
-	// if (u == null) {
-	// throw new Exception();
-	// }
-	// }
+		
+	}
 
 	private void validateToken(String jwt) throws Exception {
 		String encodedKey = this.keyStoreService.getEncodedKey();
@@ -76,10 +75,10 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 		if (Calendar.getInstance().getTime().after(claims.getExpiration())) {
 			throw new Exception();
 		}
-		System.out.println("ID: " + claims.getId());
-		System.out.println("Subject: " + claims.getSubject());
-		System.out.println("Issuer: " + claims.getIssuer());
-		System.out.println("Expiration: " + claims.getExpiration());
+		// System.out.println("ID: " + claims.getId());
+		// System.out.println("Subject: " + claims.getSubject());
+		// System.out.println("Issuer: " + claims.getIssuer());
+		// System.out.println("Expiration: " + claims.getExpiration());
 	}
 
 }

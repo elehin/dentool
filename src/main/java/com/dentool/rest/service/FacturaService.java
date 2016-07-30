@@ -26,11 +26,13 @@ import com.dentool.model.entities.Diagnostico;
 import com.dentool.model.entities.Factura;
 import com.dentool.model.entities.Paciente;
 import com.dentool.rest.service.itext.FacturaPdfCreator;
+import com.dentool.rest.service.poi.GeneradorInformeFacturacion;
 
 @Stateless
 public class FacturaService {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private String path;
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -40,6 +42,10 @@ public class FacturaService {
 
 	@Inject
 	private PacienteService pacienteService;
+
+	public FacturaService() {
+		this.checkFilePath();
+	}
 
 	public Factura create(Factura factura) {
 
@@ -158,6 +164,15 @@ public class FacturaService {
 		Calendar desde = Calendar.getInstance();
 		Calendar hasta = Calendar.getInstance();
 
+		this.getMesesDelTrimestre(mes, desde, hasta);
+
+		@SuppressWarnings("unchecked")
+		List<Factura> lista = this.entityManager.createQuery(query).setParameter("desde", desde.getTime())
+				.setParameter("hasta", hasta.getTime()).getResultList();
+		return lista;
+	}
+
+	private void getMesesDelTrimestre(int mes, Calendar desde, Calendar hasta) {
 		int mesDesde = 0;
 		int mesHasta = 2;
 
@@ -193,16 +208,12 @@ public class FacturaService {
 		desde.set(Calendar.DATE, 1);
 		hasta.set(Calendar.MONTH, mesHasta);
 		hasta.set(Calendar.DATE, hasta.getActualMaximum(Calendar.DATE));
-
-		@SuppressWarnings("unchecked")
-		List<Factura> lista = this.entityManager.createQuery(query).setParameter("desde", desde.getTime())
-				.setParameter("hasta", hasta.getTime()).getResultList();
-		return lista;
 	}
 
 	public File getZipFacturasTrimestre(int mes) {
 		FileOutputStream fos = null;
 		ZipOutputStream zos = null;
+		GeneradorInformeFacturacion gif = new GeneradorInformeFacturacion();
 
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.MONTH, mes);
@@ -221,8 +232,22 @@ public class FacturaService {
 					File file = new File(f.getFileName());
 					this.addToZipFile(file, zos);
 				}
-
 			}
+
+			Calendar desde = Calendar.getInstance();
+			Calendar hasta = Calendar.getInstance();
+			this.getMesesDelTrimestre(mes, desde, hasta);
+
+			String informeFileName = "informe_trimestre_"
+					+ desde.getDisplayName(Calendar.MONTH, Calendar.LONG_FORMAT, new Locale("es", "ES")) + "_"
+					+ hasta.getDisplayName(Calendar.MONTH, Calendar.LONG_FORMAT, new Locale("es", "ES"));
+			String titulo = "Resumen facturas "
+					+ desde.getDisplayName(Calendar.MONTH, Calendar.LONG_FORMAT, new Locale("es", "ES")) + "-"
+					+ hasta.getDisplayName(Calendar.MONTH, Calendar.LONG_FORMAT, new Locale("es", "ES"));
+
+			File informe = gif.creaInforme(titulo, informeFileName, facturas);
+			this.addToZipFile(informe, zos);
+
 		} catch (FileNotFoundException e) {
 			logger.error(e.getMessage());
 			e.printStackTrace();
@@ -260,6 +285,7 @@ public class FacturaService {
 	public File getZipFacturasMes(int mes) {
 		FileOutputStream fos = null;
 		ZipOutputStream zos = null;
+		GeneradorInformeFacturacion gif = new GeneradorInformeFacturacion();
 
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.MONTH, mes);
@@ -278,8 +304,16 @@ public class FacturaService {
 					File file = new File(f.getFileName());
 					this.addToZipFile(file, zos);
 				}
-
 			}
+
+			String informeFileName = "informe_mes_"
+					+ cal.getDisplayName(Calendar.MONTH, Calendar.LONG_FORMAT, new Locale("es", "ES"));
+			String titulo = "Resumen facturas "
+					+ cal.getDisplayName(Calendar.MONTH, Calendar.LONG_FORMAT, new Locale("es", "ES"));
+
+			File informe = gif.creaInforme(titulo, informeFileName, facturas);
+			this.addToZipFile(informe, zos);
+
 		} catch (FileNotFoundException e) {
 			logger.error(e.getMessage());
 			e.printStackTrace();
@@ -319,14 +353,13 @@ public class FacturaService {
 	public File getZipFacturasYear(int year) {
 		FileOutputStream fos = null;
 		ZipOutputStream zos = null;
+		GeneradorInformeFacturacion gif = new GeneradorInformeFacturacion();
 
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.YEAR, year);
 		List<Factura> facturas = this.getFacturasYear(year);
 
-		String zipFileName = "zip_año_"
-				+ cal.getDisplayName(Calendar.YEAR, Calendar.SHORT_FORMAT, new Locale("es", "ES")) + "_"
-				+ cal.getTimeInMillis() + ".zip";
+		String zipFileName = "zip_año_" + cal.get(Calendar.YEAR) + "_" + cal.getTimeInMillis() + ".zip";
 
 		try {
 			fos = new FileOutputStream(zipFileName);
@@ -337,7 +370,11 @@ public class FacturaService {
 					File file = new File(f.getFileName());
 					this.addToZipFile(file, zos);
 				}
+				String informeFileName = "informe_año_" + cal.get(Calendar.YEAR);
+				String titulo = "Resumen facturas " + cal.get(Calendar.YEAR);
 
+				File informe = gif.creaInforme(titulo, informeFileName, facturas);
+				this.addToZipFile(informe, zos);
 			}
 		} catch (FileNotFoundException e) {
 			logger.error(e.getMessage());
@@ -475,4 +512,15 @@ public class FacturaService {
 		return ifs;
 	}
 
+	private void checkFilePath() {
+		this.path = System.getenv("OPENSHIFT_DATA_DIR");
+		if (this.path == null) {
+			logger.info("Ejecución en entorno no OpenShift, se crearán los ficheros en ruta absoluta.");
+			this.path = "C:/Users/Vane/Documents/";
+		} else {
+			path += "facturas/";
+		}
+
+		logger.info(this.path);
+	}
 }
