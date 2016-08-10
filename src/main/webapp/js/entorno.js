@@ -8,6 +8,8 @@ var pagosURL = 'https://dentool-elehin.rhcloud.com/service/pago/';
 var authenticationURL = 'https://dentool-elehin.rhcloud.com/service/authentication/';
 var presupuestoURL = 'https://dentool-elehin.rhcloud.com/service/presupuesto/';
 var facturaURL = 'https://dentool-elehin.rhcloud.com/service/factura/';
+var datosComercialesURL = 'https://dentool-elehin.rhcloud.com/service/datosComerciales/';
+var reportIngresosURL = 'https://dentool-elehin.rhcloud.com/service/ingresosMes/';
 
 // var rootURL = 'http://localhost:8080/service/tratamiento/';
 // var diagnosticoURL = 'http://localhost:8080/service/diagnostico/';
@@ -19,6 +21,8 @@ var facturaURL = 'https://dentool-elehin.rhcloud.com/service/factura/';
 // var authenticationURL = 'http://localhost:8080/service/authentication/';
 // var presupuestoURL = 'http://localhost:8080/service/presupuesto/';
 // var facturaURL = 'http://localhost:8080/service/factura/';
+// var datosComercialesURL = 'http://localhost:8080/service/datosComerciales/';
+// var reportIngresosURL = 'http://localhost:8080/service/ingresosMes/';
 
 $(document).ready(function() {
 	$('.dropdown-toggle').dropdown();
@@ -43,3 +47,7 @@ function formatCurrency(value) {
 	// object as second parameter:
 	return accounting.formatMoney(value, "€", 2, ".", ",", "%v %s");
 }
+
+var meses_es = [ 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+		'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre' ];
+var meses = meses_es;

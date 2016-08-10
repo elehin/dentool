@@ -1,5 +1,6 @@
 package com.dentool.rest.service;
 
+import java.util.Calendar;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dentool.model.entities.Diagnostico;
+import com.dentool.model.entities.IngresosMes;
 import com.dentool.model.entities.Paciente;
 import com.dentool.model.entities.Pago;
 
@@ -91,5 +93,74 @@ public class PagoService {
 		this.entityManager.remove(p);
 
 		this.actualizarPagos(diagnosticoId);
+	}
+
+	public void executeIngresosReport() {
+
+		List<IngresosMes> backup = this.clearDatosIngresos();
+
+		try {
+
+			String query = "SELECT SUM(p.cantidad) FROM Pago p WHERE p.fecha BETWEEN :desde AND :hasta";
+
+			Calendar desde = Calendar.getInstance();
+			Calendar hasta = Calendar.getInstance();
+
+			desde.set(Calendar.DATE, desde.getActualMinimum(Calendar.DATE));
+			hasta.set(Calendar.DATE, hasta.getActualMaximum(Calendar.DATE));
+
+			int i = 0;
+
+			do {
+				i++;
+				Object result = this.entityManager.createQuery(query).setParameter("desde", desde.getTime())
+						.setParameter("hasta", hasta.getTime()).getSingleResult();
+
+				if (result == null) {
+					desde.add(Calendar.MONTH, -1);
+					hasta.add(Calendar.MONTH, -1);
+					hasta.set(Calendar.DATE, hasta.getActualMaximum(Calendar.DATE));
+					continue;
+				}
+				float ingresos = Float.valueOf(result.toString());
+				IngresosMes im = new IngresosMes();
+				im.setFecha(hasta.getTime());
+				im.setIngresos(ingresos);
+
+				desde.add(Calendar.MONTH, -1);
+				hasta.add(Calendar.MONTH, -1);
+				hasta.set(Calendar.DATE, hasta.getActualMaximum(Calendar.DATE));
+
+				this.entityManager.persist(im);
+
+			} while (i < 24);
+		} catch (Exception e) {
+			logger.error(
+					"#####################################################################################################");
+			logger.error(
+					"Error al ejecutar la actualización en PagoService.executeIngresosReport(). Se ejecuta restore.");
+			logger.error(e.getMessage());
+			for (IngresosMes im : backup) {
+				entityManager.merge(im);
+			}
+
+		}
+	}
+
+	public List<IngresosMes> clearDatosIngresos() {
+		@SuppressWarnings("unchecked")
+		List<IngresosMes> antiguos = entityManager.createQuery("SELECT im FROM IngresosMes im").getResultList();
+		for (IngresosMes im : antiguos) {
+			entityManager.detach(im);
+		}
+		entityManager.createQuery("DELETE FROM IngresosMes im").executeUpdate();
+		return antiguos;
+	}
+
+	public List<IngresosMes> getReportIngresos() {
+		@SuppressWarnings("unchecked")
+		List<IngresosMes> lista = entityManager.createQuery("SELECT im FROM IngresosMes im").getResultList();
+
+		return lista;
 	}
 }

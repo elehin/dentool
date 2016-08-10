@@ -15,6 +15,9 @@ import javax.xml.bind.DatatypeConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dentool.model.entities.Usuario;
+import com.dentool.rest.service.UsuarioService;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 
@@ -23,8 +26,8 @@ import io.jsonwebtoken.Jwts;
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationFilter implements ContainerRequestFilter {
 
-	// @Inject
-	// private UsuarioService usuarioService;
+	@Inject
+	private UsuarioService usuarioService;
 
 	@Inject
 	private KeyStoreService keyStoreService;
@@ -38,7 +41,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
 		// Get the HTTP Authorization header from the request
 		String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
-		
+
 		logger.info(requestContext.getUriInfo().getAbsolutePath().getPath());
 
 		try {
@@ -57,11 +60,11 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 				// Validate the token
 				this.validateToken(token);
 			}
+
 		} catch (Exception e) {
 			requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
 		}
 
-		
 	}
 
 	private void validateToken(String jwt) throws Exception {
@@ -75,10 +78,11 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 		if (Calendar.getInstance().getTime().after(claims.getExpiration())) {
 			throw new Exception();
 		}
-		// System.out.println("ID: " + claims.getId());
-		// System.out.println("Subject: " + claims.getSubject());
-		// System.out.println("Issuer: " + claims.getIssuer());
-		// System.out.println("Expiration: " + claims.getExpiration());
-	}
 
+		// Comprobar si el usuario está activo o se ha desactivado
+		Usuario u = this.usuarioService.find(Long.valueOf(claims.getId()));
+		if (!u.isActivo()) {
+			throw new Exception();
+		}
+	}
 }

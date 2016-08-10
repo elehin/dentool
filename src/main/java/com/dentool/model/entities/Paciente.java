@@ -139,7 +139,7 @@ public class Paciente {
 		this.setFechaNacimiento(origen.getFechaNacimiento());
 		this.setAlergico(origen.isAlergico());
 		this.setDni(origen.getDni());
-		this.setAlta(origen.getAlta());
+//		this.setAlta(origen.getAlta());
 		this.setLastChangeTs(new Date(Calendar.getInstance().getTimeInMillis()));
 		this.setDiagnosticos(origen.getDiagnosticos());
 		this.setEnfermoGrave(origen.isEnfermoGrave());

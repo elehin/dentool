@@ -36,36 +36,31 @@ public class UsuarioService {
 		Date now = new Date(Calendar.getInstance().getTimeInMillis());
 		usuario.setFechaAlta(now);
 		usuario.setPassword(Utils.md5Hash(usuario.getPassword()));
-		usuario.setActivo(true);
-		/*
-		 * usuario.setToken(this.issueToken());
-		 * 
-		 * Calendar c = Calendar.getInstance(); c.add(Calendar.DATE, 3); Date
-		 * expirationDate = new Date(c.getTimeInMillis());
-		 * 
-		 * usuario.setTokenExpirationDate(expirationDate);
-		 */
 
 		entityManager.persist(usuario);
 		return usuario;
 	}
 
 	public Usuario find(Credenciales credenciales) {
-		String query = "SELECT u FROM Usuario u WHERE u.username = :username";
+		String query = "SELECT u FROM Usuario u WHERE u.username = :username AND u.activo = :activo";
 
 		String password = Utils.md5Hash(credenciales.getPassword());
 
 		Usuario u = null;
 		try {
 			u = (Usuario) entityManager.createQuery(query).setParameter("username", credenciales.getUsername())
-					.getSingleResult();
-			if (!u.getPassword().equals(password)) {
+					.setParameter("activo", true).getSingleResult();
+			if (u == null || !u.getPassword().equals(password)) {
 				return null;
 			}
 		} catch (Exception e) {
 			return null;
 		}
 		return u;
+	}
+
+	public Usuario find(long id) {
+		return this.entityManager.find(Usuario.class, id);
 	}
 
 	/**
@@ -123,8 +118,10 @@ public class UsuarioService {
 	public Usuario updateUsuario(Usuario u) {
 		Usuario lu = entityManager.find(Usuario.class, u.getId());
 
-		lu.setPassword(Utils.md5Hash(u.getPassword()));
-		lu.setActivo(u.isActivo());
+		if (u.getPassword() != null && !"".equals(u.getPassword())) {
+			u.setPassword(Utils.md5Hash(u.getPassword()));
+		}
+		lu.update(u);
 
 		return lu;
 	}

@@ -86,6 +86,7 @@ $(document).ready(
 				// console.log('$("#btnAddSaldo").click');
 				updatePaciente();
 				$('#addSaldoDiv').toggleClass("in");
+				$("#cantidadSaldo").focus();
 				return false;
 			});
 

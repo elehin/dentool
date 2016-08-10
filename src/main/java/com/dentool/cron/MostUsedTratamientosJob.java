@@ -12,7 +12,7 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dentool.service.MostUsedTratamientosService;
+import com.dentool.rest.service.MostUsedTratamientosService;
 
 public class MostUsedTratamientosJob implements Job {
 

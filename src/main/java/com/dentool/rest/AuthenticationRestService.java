@@ -8,6 +8,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -57,11 +58,26 @@ public class AuthenticationRestService {
 		return loginResponse;
 	}
 
+	@POST
+	@Secured
+	@Path("/update")
+	@Produces("application/json")
+	@Consumes("application/json")
+	public Response updateUser(Usuario usuario) {
+
+		Usuario u = this.usuarioService.updateUsuario(usuario);
+		if (u == null) {
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}
+
+		return Response.ok(u).build();
+	}
+
 	@GET
 	@Secured
 	@Path("/lastUsers")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response lookupPacienteByLastChange() {
+	public Response lookupUsuarioByLastChange() {
 		List<Usuario> lista = usuarioService.findLastCreated();
 		if (lista == null) {
 			throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -70,11 +86,34 @@ public class AuthenticationRestService {
 		return Response.ok(lista).build();
 	}
 
+	@GET
+	@Secured
+	@Path("/{id:[0-9][0-9]*}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response lookupUsuarioById(@PathParam("id") long id) {
+		Usuario usuario = usuarioService.find(id);
+		if (usuario == null) {
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}
+
+		return Response.ok(usuario).build();
+	}
+
+	// @PUT
+	// @Secured
+	// @Consumes(MediaType.APPLICATION_JSON)
+	// public Response createUser(Credenciales c) {
+	// Usuario u = new Usuario(c);
+	// u = usuarioService.create(u);
+	// return Response.created(
+	// UriBuilder.fromResource(AuthenticationRestService.class).path(String.valueOf(u.getUsername())).build())
+	// .build();
+	// }
+
 	@PUT
 	@Secured
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response createUser(Credenciales c) {
-		Usuario u = new Usuario(c);
+	public Response createUser(Usuario u) {
 		u = usuarioService.create(u);
 		return Response.created(
 				UriBuilder.fromResource(AuthenticationRestService.class).path(String.valueOf(u.getUsername())).build())

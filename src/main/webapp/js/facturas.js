@@ -29,7 +29,17 @@ $(document).ready(function() {
 
 function setCombosValues() {
 	$("#mesesDropdown").val(currentDate.getMonth());
-	$("#trimestreDropdown").val(Math.floor(currentDate.getMonth()));
+
+	var q = 0;
+	if (currentDate.getMonth() >= 3 && currentDate.getMonth() <= 5) {
+		q = 3;
+	} else if (currentDate.getMonth() >= 6 && currentDate.getMonth() <= 8) {
+		q = 6;
+	} else if (currentDate.getMonth() >= 9 && currentDate.getMonth() <= 11) {
+		q = 9;
+	}
+	$("#trimestreDropdown").val(q);
+	
 	$('#yearDropdown').append(
 			$('<option>').text(currentDate.getFullYear()).attr('value',
 					currentDate.getFullYear()));

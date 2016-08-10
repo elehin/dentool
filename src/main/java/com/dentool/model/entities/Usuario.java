@@ -22,7 +22,7 @@ public class Usuario {
 	@Column(unique = true)
 	private String username;
 	private String password;
-	
+
 	@Temporal(TemporalType.DATE)
 	private Date fechaAlta;
 	private boolean activo;
@@ -92,5 +92,16 @@ public class Usuario {
 
 	public void setActivo(boolean activo) {
 		this.activo = activo;
+	}
+
+	public void update(Usuario origen) {
+		this.setUsername(origen.getUsername());
+		if (origen.getPassword() != null && !"".equals(origen.getPassword())) {
+			this.setPassword(origen.getPassword());
+		}
+		this.setFechaAlta(origen.getFechaAlta());
+		this.setActivo(origen.isActivo());
+		this.setNombre(origen.getNombre());
+		this.setApellidos(origen.getApellidos());
 	}
 }

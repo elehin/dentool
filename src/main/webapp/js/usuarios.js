@@ -1,4 +1,3 @@
-
 // ################### document.ready() ##################################
 $(document).ready(function() {
 
@@ -30,20 +29,33 @@ function populateTable(dataset) {
 	});
 	$("#tableUsuariosBody").append(trHTML);
 
-	searchTable = $('#tableUsuarios').DataTable({
-		"retrieve" : false,
-		"paging" : true,
-		"searching" : false,
-		"info" : true,
-		"columnDefs" : [ {
-			"targets" : [ 0 ],
-			"visible" : false
-		} ],
-		"order" : [ 3, "asc" ],
-		"language" : {
-			"search" : "Buscar:"
-		}
-	});
+	searchTable = $('#tableUsuarios')
+			.DataTable(
+					{
+						"retrieve" : false,
+						"paging" : true,
+						"searching" : true,
+						"info" : true,
+						"columnDefs" : [ {
+							"targets" : [ 0 ],
+							"visible" : false
+						} ],
+						"order" : [ 3, "asc" ],
+						"language" : {
+							"search" : "Buscar:",
+							"sLengthMenu" : "Mostrar _MENU_ registros",
+							"sZeroRecords" : "No se encontraron usuarios",
+							"sEmptyTable" : "No hay ningún usuario",
+							"sInfo" : "Mostrando usuarios del _START_ al _END_ de un total de _TOTAL_",
+							"sInfoEmpty" : "Mostrando usuarios del 0 al 0 de un total de 0 usuarios",
+							"oPaginate" : {
+								"sFirst" : "Primero",
+								"sLast" : "Último",
+								"sNext" : "Siguiente",
+								"sPrevious" : "Anterior"
+							}
+						}
+					});
 
 	$('#tableUsuariosBody').on('click', 'button', function() {
 		var data = searchTable.row($(this).parents('tr')).data();

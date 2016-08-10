@@ -17,6 +17,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import com.dentool.filter.Secured;
 import com.dentool.model.PacienteLazy;
+import com.dentool.model.entities.ReportPacientesMes;
 import com.dentool.model.entities.Paciente;
 import com.dentool.rest.service.PacienteService;
 
@@ -137,6 +138,19 @@ public class PacienteRestService {
 		}
 
 		return Response.ok(listaLazy).build();
+	}
+
+	@GET
+	@Secured
+	@Path("/datosMensuales")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getDatosAltasMes() {
+		List<ReportPacientesMes> lista = pacienteService.getDatosAltasMes();
+		if (lista == null) {
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}
+
+		return Response.ok(lista).build();
 	}
 
 	@GET

@@ -28,6 +28,8 @@ $(document).ready(function() {
 		checkPasswordConfirmation();
 		return false;
 	})
+	
+	$("#activo").prop('checked', true);
 
 });
 
@@ -109,10 +111,10 @@ function createUser() {
 function formToJSON() {
 	return JSON.stringify({
 		"username" : $('#username').val(),
-		"password" : $('#password').val()
-	// "nombre" : $('#nombre').val(),
-	// "apellidos" : $('#lname').val()
-
+		"password" : $('#password').val(),
+		"nombre" : $('#nombre').val(),
+		"apellidos" : $('#apellidos').val(),
+		"activo" : $('#activo').prop('checked'),
 	});
 }
 
