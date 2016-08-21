@@ -2,7 +2,7 @@
 $(document).ready(function() {
 	getDatosComerciales();
 	getDatosIngresosMes();
-
+	getSiguientesCitas();
 });
 
 // ###################### Funciones #######################################
@@ -208,6 +208,72 @@ function renderChartIngresos(dataFromServer) {
 			label : currentDate.getFullYear() - 2,
 			showLabel : true
 		} ]
+	});
+
+}
+
+// ----------------------- Lista de citas -------------------------------
+// ----------------------------------------------------------------------
+
+function getSiguientesCitas() {
+	$.ajax({
+		type : 'GET',
+		url : citaURL + 'siguientes',
+		success : function(data) {
+			renderTableCitas(data);
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
+		}
+	});
+}
+
+function renderTableCitas(citas) {
+
+	var dataset = [];
+	var currentDate = new Date(citas[0].inicio);
+
+	$('#siguienesFecha').text(formatDate(currentDate, 'complete'));
+
+	$.each(citas, function(i, item) {
+		var desde = new Date(item.inicio);
+		var hasta = new Date(item.fin);
+
+		dataset.push([
+				item.id,
+				formatDate(desde, 'hora') + ' - ' + formatDate(hasta, 'hora'),
+				'<a href="pacienteMultiple.html?key=' + item.nombre + '">'
+						+ item.nombre + '</a>' ]);
+	});
+
+	pagosTable = $('#tableCitas').DataTable({
+		"retrieve" : true,
+		"paging" : false,
+		"searching" : false,
+		"info" : false,
+		"ordering" : false,
+		"data" : dataset,
+		"columns" : [ {
+			"title" : "id"
+		}, {
+			"title" : "Hora"
+		}, {
+			"title" : "Paciente"
+		} ],
+		"columnDefs" : [ {
+			"className" : "never",
+			"targets" : [ 0 ],
+			"visible" : false
+		}, {
+			"className" : "dt-left",
+			"targets" : [ 2 ]
+		} ],
 	});
 
 }

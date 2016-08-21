@@ -14,7 +14,7 @@ $(document).ready(function() {
 		}
 	});
 
-	getDatosIngresosMes(); 
+	getDatosIngresosMes();
 });
 
 // ###################### Funciones #######################################
@@ -101,8 +101,8 @@ function getLastChangedPacientes() {
 	});
 }
 
-//------------------------- Datos de altas -----------------------------
-//----------------------------------------------------------------------
+// ------------------------- Datos de altas -----------------------------
+// ----------------------------------------------------------------------
 function getDatosIngresosMes() {
 	// console.log('getTratamientosTop');
 	$.ajax({
@@ -110,6 +110,7 @@ function getDatosIngresosMes() {
 		url : pacienteURL + 'datosMensuales',
 		success : function(data) {
 			renderChartAltas(data);
+			renderChartPacTratados(data);
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			if (errorThrown == 'Unauthorized') {
@@ -123,8 +124,8 @@ function getDatosIngresosMes() {
 	});
 }
 
-//----------------------- Gráfico de altas -----------------------------
-//----------------------------------------------------------------------
+// ----------------------- Gráfico de altas -----------------------------
+// ----------------------------------------------------------------------
 function renderChartAltas(dataFromServer) {
 
 	$.jqplot.config.enablePlugins = true;
@@ -184,6 +185,101 @@ function renderChartAltas(dataFromServer) {
 			},
 			yaxis : {
 				label : "Altas mensuales",
+				tickOptions : {
+					formatString : '%d pacs.'
+				},
+				min : 0
+			}
+		},
+		highlighter : {
+			sizeAdjust : 10,
+			tooltipLocation : 'n',
+			tooltipAxes : 'y',
+			useAxesFormatters : true
+		},
+		legend : {
+			show : true,
+			renderer : $.jqplot.EnhancedLegendRenderer,
+			placement : 'outside',
+			rendererOptions : {
+				numberRows : 3
+			},
+			location : 'se'
+		},
+		series : [ {
+			label : currentDate.getFullYear(),
+			showLabel : true
+		}, {
+			label : currentDate.getFullYear() - 1,
+			showLabel : true
+		}, {
+			label : currentDate.getFullYear() - 2,
+			showLabel : true
+		} ]
+	});
+}
+
+// -------------- Gráfico de pacientes atendidos ------------------------
+// ----------------------------------------------------------------------
+function renderChartPacTratados(dataFromServer) {
+
+	$.jqplot.config.enablePlugins = true;
+
+	var currentDate = new Date();
+
+	var currentYearData = new Array();
+	var previousYearData = new Array();
+	var firstYearData = new Array();
+
+	for (var i = 0; i < 12; i++) {
+		currentYearData[i] = 0;
+		previousYearData[i] = 0;
+		firstYearData[i] = 0;
+	}
+
+	$.each(dataFromServer, function(i, item) {
+		itemDate = new Date(item.fecha);
+		if (itemDate.getFullYear() == currentDate.getFullYear()) {
+			currentYearData[itemDate.getMonth()] = item.pacientesTratados;
+		} else if (itemDate.getFullYear() == currentDate.getFullYear() - 1) {
+			previousYearData[itemDate.getMonth()] = item.pacientesTratados;
+		} else if (itemDate.getFullYear() == currentDate.getFullYear() - 2) {
+			firstYearData[itemDate.getMonth()] = item.pacientesTratados;
+		}
+	});
+
+	var xticks = new Array();
+
+	$.each(meses, function(i, item) {
+		xticks.push(item);
+	});
+
+	$.jqplot('chartPacientesAtendidos', [ currentYearData, previousYearData,
+			firstYearData ], {
+		seriesColors : [ "#3366CC", "#5B7290", "#79BEDB", "#10C8CD" ],
+		grid : {
+			background : '#f9f9f9'
+		},
+		title : 'Pacientes tratados',
+		axesDefaults : {
+			labelRenderer : $.jqplot.CanvasAxisLabelRenderer
+		},
+		seriesDefaults : {
+			rendererOptions : {
+				smooth : true
+			}
+		},
+		axes : {
+			xaxis : {
+				renderer : $.jqplot.CategoryAxisRenderer,
+				ticks : xticks,
+				tickOptions : {
+					angle : -30
+				},
+				tickRenderer : $.jqplot.CanvasAxisTickRenderer
+			},
+			yaxis : {
+				label : "Pacientes tratados al mes",
 				tickOptions : {
 					formatString : '%d pacs.'
 				},

@@ -1,0 +1,238 @@
+#doctor {
+	width: 90%;
+	border-color: #ddd;
+	border-style: solid;
+	border-collapse: separate;
+	border-width: thin;
+	margin-bottom: 10px;
+	-webkit-border-radius: 5px;
+	text-align: center;
+	font-weight: bold;
+	box-shadow: 2px 2px 2px 0px gray;
+}
+
+div .withDoctor {
+	font-weight: bold;
+}
+
+div .withoutDoctor {
+	font-style: italic;
+	color: gray;
+}
+
+#editableDr {
+	width: 295px;
+	margin: 0 auto;
+}
+
+#calendar tr {
+	height: 20px;
+	border: #ddd thin solid;
+}
+
+.agenda-caption {
+	background-color: #2433C2;
+	height: 40px;
+	padding: 8px;
+	border-style: solid;
+	border-width: thin;
+	border-color: #ddd;
+	color: white;
+	font-weight: bolder;
+	font-family: sans-serif;
+	font-size: 16px;
+	box-shadow: 2px 2px 2px 0px gray;
+}
+
+.agenda-caption a:link {
+	color: white;
+	font-weight: bolder;
+	font-family: sans-serif;
+	font-size: 14px;
+}
+
+.agenda-caption a:visited {
+	color: white;
+	font-weight: bolder;
+	font-family: sans-serif;
+	font-size: 14px;
+}
+
+.agenda-caption a:hover {
+	color: white;
+	font-weight: bolder;
+	font-family: sans-serif;
+	font-size: 14px;
+}
+
+.agenda-caption a:active {
+	color: white;
+	font-weight: bolder;
+	font-family: sans-serif;
+	font-size: 14px;
+}
+
+.navegacion {
+	width: 20%;
+	padding-left: 8px;
+}
+
+.fecha {
+	width: 60%;
+	text-align: center;
+}
+
+.noborder {
+	border: none
+}
+
+.hora {
+	color: #31708f;
+	border: thin solid #ddd;
+	width: 13%;
+	padding: 10px 18px;
+}
+
+.hueco {
+	border: #ddd thin solid;
+	width: 29%;
+	padding-left: 3px;
+	height: 20px;
+}
+
+.hueco-top {
+	border-bottom-color: #eee !important;
+	border-bottom-style: solid;
+}
+
+.hueco-izda {
+	border-right-color: #ddd;
+}
+
+.libre_void {
+	border-color: #ddd;
+}
+
+.ocupado {
+	background: url('../images/stripe_right.png');
+}
+
+.miniCalendar {
+	width: 100%;
+	border: thin solid #ddd;
+	margin-bottom: 10px;
+	box-shadow: 2px 2px 2px 0px gray;
+}
+
+.miniCalendar td {
+	width: 14%;
+	border: none;
+	text-align: center;
+}
+
+.miniCalendar th {
+	width: 14%;
+	border: none;
+	text-align: center;
+}
+
+a:link.conCitas {
+	font-weight: bold;
+	color: black;
+}
+
+a:hover.conCitas {
+	font-weight: bold;
+	color: black;
+}
+
+a:active.conCitas {
+	font-weight: bold;
+	color: black;
+}
+
+a:visited.conCitas {
+	font-weight: bold;
+	color: black;
+}
+
+a:link.sinCitas {
+	color: black;
+	text-decoration: none;
+}
+
+a:hover.sinCitas {
+	color: black;
+	text-decoration: none;
+}
+
+a:active.sinCitas {
+	color: black;
+	text-decoration: none;
+}
+
+a:visited.sinCitas {
+	color: black;
+	text-decoration: none;
+}
+
+a:link.conDoctora {
+	color: black;
+	text-decoration: underline;
+}
+
+a:hover.conDoctora {
+	color: black;
+	text-decoration: underline;
+}
+
+a:active.conDoctora {
+	color: black;
+	text-decoration: underline;
+}
+
+a:visited.conDoctora {
+	color: black;
+	text-decoration: underline;
+}
+
+#dialog {
+	padding: 5px 2px;
+}
+
+input.dialog {
+	width: 95%;
+}
+
+input.oculto {
+	position: absolute;
+	top: -1000px;
+}
+
+.rangeDuracion {
+	width: 120px;
+}
+
+.highlight {
+	border-color: red;
+}
+
+.unidades-duracion {
+	float: left;
+	padding-top: 6px;
+	padding-left: 4px
+}
+
+.output-value {
+	float: left;
+}
+
+.drop-active {
+	border: 1px solid green;
+	background: green;
+}
+
+.drop-hover {
+	border: 1px solid #dad55e;
+	background: #fffa90;
+}

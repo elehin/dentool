@@ -2,32 +2,40 @@ var rows_selected;
 var paciente;
 var pacienteId;
 
-$(document).ready(
-		function() {
+$(document)
+		.ready(
+				function() {
 
-			$("#btnCreaFactura").click(function() {
-				// console.log(formToJSON());
-				createFactura();
-				return false;
-			});
+					$("#btnCreaFactura").click(function() {
+						// console.log(formToJSON());
+						createFactura();
+						return false;
+					});
 
-			$("#btnSave").click(function() {
-				updatePaciente();
-				return false;
-			});
+					$("#btnSave").click(function() {
+						updatePaciente();
+						return false;
+					});
 
-			if (getUrlParameter("paciente") != '') {
-				pacienteId = getUrlParameter("paciente");
-				findPaciente(pacienteId);
-				$('#backArrowLink').attr("href",
-						serverURL + 'paciente.html?paciente=' + pacienteId);
-			}
+					if (getUrlParameter("paciente") != '') {
+						pacienteId = getUrlParameter("paciente");
+						findPaciente(pacienteId);
+						if (getUrlParameter("origin") !== undefined) {
+							$('#backArrowLink').attr("href",
+									serverURL + getUrlParameter("origin"));
+						} else {
+							$('#backArrowLink').attr(
+									"href",
+									serverURL + 'paciente.html?paciente='
+											+ pacienteId);
+						}
+					}
 
-			rows_selected = [];
+					rows_selected = [];
 
-			findDiagnosticosParaFactura(pacienteId);
+					findDiagnosticosParaFactura(pacienteId);
 
-		});
+				});
 
 function checkNombreAndNif() {
 	$('#name').removeClass("has-error has-feedback");
@@ -287,6 +295,9 @@ function updatePaciente() {
 		data : formToJSON('modificar'),
 		success : function(rdata, textStatus, jqXHR) {
 			showSuccessMessage();
+			if (getUrlParameter("origin") != undefined) {
+				window.location.replace(serverURL + getUrlParameter("origin"));
+			}
 			findPacienteByUrl(jqXHR.getResponseHeader('Location'));
 		},
 		error : function(jqXHR, textStatus, errorThrown) {

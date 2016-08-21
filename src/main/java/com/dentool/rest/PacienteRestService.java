@@ -145,7 +145,7 @@ public class PacienteRestService {
 	@Path("/datosMensuales")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getDatosAltasMes() {
-		List<ReportPacientesMes> lista = pacienteService.getDatosAltasMes();
+		List<ReportPacientesMes> lista = pacienteService.getReportsPacientesMes();
 		if (lista == null) {
 			throw new WebApplicationException(Response.Status.NOT_FOUND);
 		}

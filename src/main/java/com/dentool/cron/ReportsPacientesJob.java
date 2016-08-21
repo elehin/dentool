@@ -20,7 +20,8 @@ public class ReportsPacientesJob implements Job {
 
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
-		logger.info("Ejecutándose actualización de ReportDatosPacientes: " + Calendar.getInstance().getTime().toString());
+		logger.info(
+				"Ejecutándose actualización de ReportDatosPacientes: " + Calendar.getInstance().getTime().toString());
 		Context context = null;
 		PacienteService pacienteService = null;
 		try {
@@ -41,7 +42,7 @@ public class ReportsPacientesJob implements Job {
 		if (pacienteService == null) {
 			throw new JobExecutionException("pacienteService es null");
 		}
-		pacienteService.executeAltasReport();
+		pacienteService.executeReportsPacientesMes();
 
 	}
 }

@@ -117,8 +117,9 @@ function populateTable(diagnosticos) {
 					});
 
 	$('input[type="checkbox"]').prop('checked', true);
-
+	
 	// Handle click on checkbox
+	$('#tablePacientes tbody tr').off('click');
 	$('#tablePacientes tbody').on('click', 'input[type="checkbox"]',
 			function(e) {
 				var $row = $(this).closest('tr');
@@ -156,6 +157,21 @@ function populateTable(diagnosticos) {
 				// Prevent click event from propagating to parent
 				e.stopPropagation();
 			});
+	
+	$('#tablePacientes tbody')
+			.on(
+					'click',
+					'button',
+					function(e) {
+						var data = pacientesTable
+								.row($(this).parents('tr')).data();
+						url = serverURL + 'factura.html?paciente=' + data[0]
+								+ '&origin=emitirFacturas.html';
+						window.location.replace(url);
+
+						// Prevent click event from propagating to parent
+						e.stopPropagation();
+					});
 }
 
 function renderDiagTableRow(item) {
@@ -192,7 +208,7 @@ function checkNoFacturables() {
 		type : 'GET',
 		url : diagnosticoURL + "noFacturables",
 		success : function(data) {
-			if (data !== undefined) {
+			if (data !== undefined && data.length > 0) {
 				showNoFactMessage();
 				populateNoFacturablesTable(data);
 			}
@@ -254,14 +270,20 @@ function populateNoFacturablesTable(diagnosticos) {
 					});
 
 	$('#tableNoFacturables tbody tr').off('click');
-	$('#tableNoFacturables tbody').on('click', 'button', function(e) {
-		var data = noFacturablesTable.row($(this).parents('tr')).data();
-		url = serverURL + 'factura.html?paciente=' + data[0];
-		window.location.replace(url);
+	$('#tableNoFacturables tbody')
+			.on(
+					'click',
+					'button',
+					function(e) {
+						var data = noFacturablesTable
+								.row($(this).parents('tr')).data();
+						url = serverURL + 'factura.html?paciente=' + data[0]
+								+ '&origin=emitirFacturas.html';
+						window.location.replace(url);
 
-		// Prevent click event from propagating to parent
-		e.stopPropagation();
-	});
+						// Prevent click event from propagating to parent
+						e.stopPropagation();
+					});
 }
 
 function renderNoFacturablesTableRow(item) {

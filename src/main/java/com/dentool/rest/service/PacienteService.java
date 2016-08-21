@@ -117,9 +117,9 @@ public class PacienteService {
 		}
 	}
 
-	public void executeAltasReport() {
+	public void executeReportsPacientesMes() {
 
-		List<ReportPacientesMes> backup = this.clearDatosAltas();
+		List<ReportPacientesMes> backup = this.clearReportsPacientesMes();
 
 		try {
 
@@ -139,11 +139,9 @@ public class PacienteService {
 				i++;
 				isPersistible = false;
 
-				//TODO revisar por qué no hay altas en junio
 				Object resultAltas = this.entityManager.createQuery(queryAltas).setParameter("desde", desde.getTime())
 						.setParameter("hasta", hasta.getTime()).getSingleResult();
 
-				//TODO revisar por qué no hay pacientes tratados
 				Object resultPacientesTratados = this.entityManager.createQuery(queryPacientesTratados)
 						.setParameter("desde", desde.getTime()).setParameter("hasta", hasta.getTime())
 						.getSingleResult();
@@ -161,7 +159,7 @@ public class PacienteService {
 				if (resultPacientesTratados != null) {
 					int pacientesTratados = Integer.parseInt(resultPacientesTratados.toString());
 					am.setFecha(hasta.getTime());
-					am.setAltas(pacientesTratados);
+					am.setPacientesTratados(pacientesTratados);
 					isPersistible = true;
 				}
 
@@ -187,7 +185,7 @@ public class PacienteService {
 		}
 	}
 
-	public List<ReportPacientesMes> clearDatosAltas() {
+	public List<ReportPacientesMes> clearReportsPacientesMes() {
 		@SuppressWarnings("unchecked")
 		List<ReportPacientesMes> antiguos = entityManager.createQuery("SELECT r FROM ReportPacientesMes r")
 				.getResultList();
@@ -198,7 +196,7 @@ public class PacienteService {
 		return antiguos;
 	}
 
-	public List<ReportPacientesMes> getDatosAltasMes() {
+	public List<ReportPacientesMes> getReportsPacientesMes() {
 		@SuppressWarnings("unchecked")
 		List<ReportPacientesMes> lista = entityManager.createQuery("SELECT r FROM ReportPacientesMes r")
 				.getResultList();

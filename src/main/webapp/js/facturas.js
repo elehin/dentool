@@ -39,7 +39,7 @@ function setCombosValues() {
 		q = 9;
 	}
 	$("#trimestreDropdown").val(q);
-	
+
 	$('#yearDropdown').append(
 			$('<option>').text(currentDate.getFullYear()).attr('value',
 					currentDate.getFullYear()));
@@ -153,8 +153,17 @@ function updatePanels() {
 		type : 'GET',
 		url : facturaURL + "importesFacturados",
 		success : function(data) {
-			$("#sMesCurso").text(data.stringMesCurso);
-			$("#sMesAnterior").text(data.stringMesAnterior);
+			var currenDate = new Date();
+			if (data.stringMesCurso == undefined) {
+				$("#sMesCurso").text(meses[currenDate.getMonth()]);
+			} else {
+				$("#sMesCurso").text(data.stringMesCurso);
+			}
+			if (data.stringMesAnterior == undefined) {
+				$("#sMesAnterior").text(meses[currenDate.getMonth(-1)]);
+			} else {
+				$("#sMesAnterior").text(data.stringMesAnterior);
+			}
 
 			if (data.mes < data.mesAnterior) {
 				$("#hmPanel").removeClass('text-success');

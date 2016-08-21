@@ -70,11 +70,20 @@ public class MostUsedTratamientosService {
 					topt.setFacturadoLastYear(0f);
 				}
 
-				Object[] oMes = (Object[]) this.entityManager.createQuery(queryMes)
+				@SuppressWarnings("unchecked")
+				List<Object[]> results = this.entityManager.createQuery(queryMes)
 						.setParameter("idTratamiento", t.getId()).setParameter("fechaInicio", cal.getTime())
-						.getSingleResult();
-				topt.setCountLastMonth(Integer.valueOf(oMes[1].toString()));
-				topt.setFacturadoLastMonth(Float.valueOf(oMes[2].toString()));
+						.getResultList();
+
+				Object[] oMes;
+				if (!results.isEmpty()) {
+					oMes = results.get(0);
+					topt.setCountLastMonth(Integer.valueOf(oMes[1].toString()));
+					topt.setFacturadoLastMonth(Float.valueOf(oMes[2].toString()));
+				} else {
+					topt.setCountLastMonth(0);
+					topt.setFacturadoLastMonth(0f);
+				}
 
 				topt.setTotalLastYear(diagsLastYear);
 				float porcentaje = (float) topt.getCount() / diagsLastYear * 100;
@@ -95,6 +104,8 @@ public class MostUsedTratamientosService {
 			logger.error(
 					"Error al ejecutar la actualización de MostUsedTratamientosService.executeReport(). Se ejecuta restore.");
 			logger.error(e.getMessage());
+			e.printStackTrace();
+			this.clearResults();
 			for (TratamientoTop t : backup) {
 				entityManager.merge(t);
 			}
@@ -106,9 +117,11 @@ public class MostUsedTratamientosService {
 		@SuppressWarnings("unchecked")
 		List<TratamientoTop> antiguos = entityManager.createQuery("SELECT t FROM TratamientoTop t").getResultList();
 		for (TratamientoTop t : antiguos) {
-			entityManager.detach(t);
+			entityManager.remove(t);
 		}
-		entityManager.createQuery("DELETE FROM TratamientoTop t").executeUpdate();
+		// entityManager.createQuery("DELETE FROM TratamientoTop
+		// t").executeUpdate();
+		entityManager.flush();
 		return antiguos;
 	}
 
