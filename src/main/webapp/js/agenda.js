@@ -54,7 +54,16 @@ $(document)
 															.getMonth() + 1);
 										}
 										getMiniCalendario('navegacion');
-									})
+									});
+
+					$("#fechaMobile").change(
+							function() {
+								var target = new Date($("#fechaMobile").val());
+
+								window.location.replace(serverURL
+										+ 'agenda.html?fecha='
+										+ formatDate(target, 'short'));
+							})
 				});
 
 var huecoClicado;
@@ -82,6 +91,10 @@ function checkCurrentDate() {
 	}
 	$('#hoyLink').attr('href',
 			'agenda.html?fecha=' + formatDate(new Date(), 'short'));
+	$("#fechaMobile").val(
+			currentDate.getFullYear() + '-'
+					+ paddingLeft(currentDate.getMonth() + 1, 2) + '-'
+					+ currentDate.getDate());
 }
 
 function initBarraNavegacion() {
@@ -107,6 +120,7 @@ function getCitas() {
 		success : function(data) {
 			currentCitas = data;
 			renderAgenda(data);
+			populateMobileTable(data);
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			if (errorThrown == 'Unauthorized') {
@@ -921,4 +935,73 @@ function calculaHuecosLibres(huecoClicado, horaInicio) {
 	}
 
 	return huecosLibres;
+}
+
+// #########################################################################
+// #########################################################################
+// Funcionalidad para mobile
+
+function renderAgendaMobileTableRow(item) {
+	var fechaInicio = new Date(item.inicio);
+	var fechaFin = new Date(item.fin);
+
+	var inicio = formatDate(fechaInicio, 'hora');
+	var fin = formatDate(fechaFin, 'hora');
+
+	row = [ item.id, inicio + '-' + fin, item.nombre, item.telefono ];
+
+	return row;
+}
+
+function populateMobileTable(citas) {
+	var dataset = [];
+
+	$.each(citas, function(i, item) {
+		dataset.push(renderAgendaMobileTableRow(item));
+	});
+
+	agendaMobileTable = $('#agendaTableMobile')
+			.DataTable(
+					{
+						"retrieve" : true,
+						"paging" : false,
+						"searching" : false,
+						"info" : false,
+						"ordering" : false,
+						"data" : dataset,
+						"columns" : [ {
+							"title" : "id"
+						}, {
+							"title" : "hora"
+						}, {
+							"title" : "nombre"
+						}, {
+							"title" : "telefono"
+						} ],
+						"columnDefs" : [ {
+							"className" : "never",
+							"targets" : [ 0 ],
+							"visible" : false
+						} ],
+						"language" : {
+							"search" : "Buscar:",
+							"sLengthMenu" : "Mostrar _MENU_ registros",
+							"sZeroRecords" : "No se encontraron resultados",
+							"sEmptyTable" : "No hay tratamientos aún",
+							"sInfo" : "Mostrando registros del _START_ al _END_ de un total de _TOTAL_",
+							"sInfoEmpty" : "Mostrando registros del 0 al 0 de un total de 0 registros",
+							"oPaginate" : {
+								"sFirst" : "Primero",
+								"sLast" : "Último",
+								"sNext" : "Siguiente",
+								"sPrevious" : "Anterior"
+							}
+						}
+					});
+
+	// $('#tableTratamientos tbody').on('click', 'button', function() {
+	// var data = searchTable.row($(this).parents('tr')).data();
+	// url = serverURL + 'tratamiento.html?tratamiento=' + data[0];
+	// window.location.replace(url);
+	// });
 }
