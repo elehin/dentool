@@ -31,7 +31,7 @@ public class CitaService {
 	}
 
 	public List<Cita> getCitas(Calendar date) {
-		String query = "SELECT c FROM Cita c WHERE c.inicio BETWEEN :desde AND :hasta";
+		String query = "SELECT c FROM Cita c WHERE c.inicio BETWEEN :desde AND :hasta ORDER BY c.inicio";
 
 		Calendar desde = Calendar.getInstance();
 		desde.setTime(date.getTime());

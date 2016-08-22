@@ -85,7 +85,10 @@ function checkCurrentDate() {
 		var year = fechaParameter.substr(fechaParameter.lastIndexOf('-') + 1,
 				fechaParameter.length);
 
-		currentDate = new Date(year, mes - 1, dia, 0, 0, 0, 0);
+		currentDate = new Date();
+		currentDate.setYear(year);
+		currentDate.setMonth(mes - 1);
+		currentDate.setDate(dia);
 	} else {
 		currentDate = new Date();
 	}
