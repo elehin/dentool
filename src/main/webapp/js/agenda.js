@@ -971,6 +971,7 @@ function populateMobileTable(citas) {
 						"searching" : false,
 						"info" : false,
 						"ordering" : false,
+						"order" : [ [ 1, "asc" ] ],
 						"data" : dataset,
 						"columns" : [ {
 							"title" : "id"
