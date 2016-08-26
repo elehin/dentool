@@ -36,6 +36,7 @@ $(document)
 															.getMonth() - 1);
 										}
 										getMiniCalendario('navegacion');
+										return false;
 									})
 					$("#mesSiguienteButton")
 							.on(
@@ -54,16 +55,11 @@ $(document)
 															.getMonth() + 1);
 										}
 										getMiniCalendario('navegacion');
+										return false;
 									});
 
-					$("#fechaMobile").change(
-							function() {
-								var target = new Date($("#fechaMobile").val());
+					initMobileObjects();
 
-								window.location.replace(serverURL
-										+ 'agenda.html?fecha='
-										+ formatDate(target, 'short'));
-							})
 				});
 
 var huecoClicado;
@@ -71,6 +67,7 @@ var currentDate;
 var ultimaHora = 20;
 var currentCitas;
 var fechaMiniCalendarioNav;
+var agendaMobileTable
 
 // ###################### Funciones #######################################
 
@@ -92,12 +89,12 @@ function checkCurrentDate() {
 	} else {
 		currentDate = new Date();
 	}
-	$('#hoyLink').attr('href',
+	$('#hoyLink, #hoyLinkMobile').attr('href',
 			'agenda.html?fecha=' + formatDate(new Date(), 'short'));
 	$("#fechaMobile").val(
 			currentDate.getFullYear() + '-'
 					+ paddingLeft(currentDate.getMonth() + 1, 2) + '-'
-					+ currentDate.getDate());
+					+ paddingLeft(currentDate.getDate(), 2));
 }
 
 function initBarraNavegacion() {
@@ -388,8 +385,10 @@ function initDiagNuevaCita() {
 												+ '-'
 												+ paddingLeft(
 														(fecha.getMonth() + 1),
-														2) + '-'
-												+ fecha.getDate());
+														2)
+												+ '-'
+												+ paddingLeft(fecha.getDate(),
+														2));
 
 						var huecosLibres = calculaHuecosLibres(huecoClicado,
 								horaInicio);
@@ -426,15 +425,26 @@ $("#anularDialog").dialog({
 	}
 });
 
-function createCita() {
+function createCita(origen) {
+	if (origen === undefined) {
+		origen = 'create';
+	}
 	$.ajax({
 		type : 'PUT',
 		contentType : 'application/json',
 		url : citaURL,
-		data : formToJSON('create'),
+		data : formToJSON(origen),
 		success : function(rdata, textStatus, jqXHR) {
-			getCitas();
-			$("#dialog").dialog("close");
+
+			if (origen === 'crearMobile') {
+				findCitaByUrl(jqXHR.getResponseHeader('Location'));
+				$("#addCitaMobileDiv").toggleClass("in");
+				$("#addCitaMobileForm")[0].reset();
+			} else {
+				getCitas();
+				$("#dialog").dialog("close");
+			}
+
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			if (errorThrown == 'Unauthorized') {
@@ -455,7 +465,7 @@ function findCitaByUrl(url) {
 		type : 'GET',
 		url : url,
 		success : function(data) {
-			renderAgenda([ data ]);
+			insertaCitaMobile(data);
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			if (errorThrown == 'Unauthorized') {
@@ -694,7 +704,7 @@ function renderMiniCalendario(miniCalendario, object) {
 	}
 
 	for (i; i < 9; i++) {
-		if (miniCalendario.diasCita.indexOf(i) != -1) {
+		if (miniCalendario.diasCita.indexOf(j) != -1) {
 			row += '<td>' + '<a class="conCitas" href="agenda.html?fecha=' + j
 					+ '-' + (fecha.getMonth() + 1) + '-' + fecha.getFullYear()
 					+ '">' + j + '</a>' + '</td>';
@@ -759,6 +769,29 @@ function formToJSON(action, event) {
 			"nombre" : $('#name').val(),
 			// "pacienteId" : $('#apellidos').val(),
 			"telefono" : $('#telefono').val(),
+			"inicio" : inicio,
+			"fin" : fin
+		});
+	} else if (action == 'crearMobile') {
+
+		var horaInicio = $("#inicioMobile").val().toString();
+		var hora = horaInicio.substr(0, horaInicio.indexOf(':'));
+		var minutos = horaInicio.substr(horaInicio.indexOf(':') + 1,
+				horaInicio.length);
+		var inicio = new Date(currentDate.getFullYear(),
+				currentDate.getMonth(), currentDate.getDate(), hora, minutos,
+				0, 0);
+
+		var horafin = $("#finMobile").val().toString();
+		hora = horafin.substr(0, horafin.indexOf(':'));
+		minutos = horafin.substr(horafin.indexOf(':') + 1, horafin.length);
+		var fin = new Date(currentDate.getFullYear(), currentDate.getMonth(),
+				currentDate.getDate(), hora, minutos, 0, 0);
+
+		return JSON.stringify({
+			"nombre" : $('#pacienteMobile').val(),
+			// "pacienteId" : $('#apellidos').val(),
+			"telefono" : $('#telefonoMobile').val(),
 			"inicio" : inicio,
 			"fin" : fin
 		});
@@ -951,7 +984,8 @@ function renderAgendaMobileTableRow(item) {
 	var inicio = formatDate(fechaInicio, 'hora');
 	var fin = formatDate(fechaFin, 'hora');
 
-	row = [ item.id, inicio + '-' + fin, item.nombre, item.telefono ];
+	row = [ item.id, paddingLeft(inicio, 5) + ' - ' + paddingLeft(fin, 5),
+			item.nombre, item.telefono ];
 
 	return row;
 }
@@ -970,7 +1004,7 @@ function populateMobileTable(citas) {
 						"paging" : false,
 						"searching" : false,
 						"info" : false,
-						"ordering" : false,
+						"ordering" : true,
 						"order" : [ [ 1, "asc" ] ],
 						"data" : dataset,
 						"columns" : [ {
@@ -1003,9 +1037,64 @@ function populateMobileTable(citas) {
 						}
 					});
 
+	agendaMobileTable.draw();
+
 	// $('#tableTratamientos tbody').on('click', 'button', function() {
 	// var data = searchTable.row($(this).parents('tr')).data();
 	// url = serverURL + 'tratamiento.html?tratamiento=' + data[0];
 	// window.location.replace(url);
 	// });
 }
+
+function insertaCitaMobile(cita) {
+	agendaMobileTable.row.add(renderAgendaMobileTableRow(cita));
+	agendaMobileTable.draw();
+	return false;
+}
+
+function initMobileObjects() {
+	$("#fechaMobile").change(
+			function() {
+				var target = new Date($("#fechaMobile").val());
+
+				window.location.replace(serverURL + 'agenda.html?fecha='
+						+ formatDate(target, 'short'));
+				return false;
+			});
+
+	$('.clockpicker').clockpicker({
+		'default' : 'now',
+		autoclose : true,
+		placement : 'bottom',
+		align : 'left',
+	});
+
+	$('#btnAddCitaMobile').on('click', function() {
+		createCita('crearMobile');
+		return false;
+	});
+
+	return false;
+}
+
+// $('#inicioMobileDiv').clockpicker(
+// afterDone : function() {
+// var horaInicio = $("#inicioMobile").val().toString();
+// var hora = horaInicio.substr(0, horaInicio.indexOf(':'));
+// var minutos = horaInicio.substr(
+// horaInicio.indexOf(':') + 1, horaInicio.length);
+// var currentTime = new Date(currentDate.getFullYear(),
+// currentDate.getMonth(), currentDate.getDate(),
+// hora, minutos, 0, 0);
+// currentTime.setMinutes(currentTime.getMinutes() + 30);
+// $("#finMobile").val(
+// currentTime.getHours() + ':'
+// + currentTime.getMinutes());
+// }
+
+// $('#finMobileDiv').clockpicker({
+// 'default' : 'now',
+// autoclose : true,
+// placement : 'bottom',
+// align : 'left'
+// });
