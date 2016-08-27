@@ -12,11 +12,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import javax.xml.bind.DatatypeConverter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
-import com.dentool.model.entities.Usuario;
-import com.dentool.rest.service.UsuarioService;
+//import com.dentool.model.entities.Usuario;
+//import com.dentool.rest.service.UsuarioService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -26,13 +26,13 @@ import io.jsonwebtoken.Jwts;
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationFilter implements ContainerRequestFilter {
 
-	@Inject
-	private UsuarioService usuarioService;
+	// @Inject
+	// private UsuarioService usuarioService;
 
 	@Inject
 	private KeyStoreService keyStoreService;
 
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	// private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * @see ContainerRequestFilter#filter(ContainerRequestContext)
@@ -42,7 +42,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 		// Get the HTTP Authorization header from the request
 		String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 
-		logger.info(requestContext.getUriInfo().getAbsolutePath().getPath());
+		// logger.info(requestContext.getUriInfo().getAbsolutePath().getPath());
 
 		try {
 			// Check if the HTTP Authorization header is present and formatted
@@ -80,9 +80,9 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 		}
 
 		// Comprobar si el usuario está activo o se ha desactivado
-		Usuario u = this.usuarioService.find(Long.valueOf(claims.getId()));
-		if (!u.isActivo()) {
-			throw new Exception();
-		}
+		// Usuario u = this.usuarioService.find(Long.valueOf(claims.getId()));
+		// if (!u.isActivo()) {
+		// throw new Exception();
+		// }
 	}
 }
