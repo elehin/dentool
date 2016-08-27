@@ -22,10 +22,10 @@ public class QuartzListener extends QuartzInitializerListener {
 		ServletContext ctx = sce.getServletContext();
 		StdSchedulerFactory factory = (StdSchedulerFactory) ctx.getAttribute(QUARTZ_FACTORY_KEY);
 
-		String scheduleTratamientosTop = "0 0 3 * * ? *";
-		String scheduleDatosComerciales = "0 10 3 * * ? *";
-		String scheduleReportIngresos = "0 20 3 * * ? *";
-		String scheduleReportPacientes = "0 25 3 * * ? *";
+		String scheduleTratamientosTop = "0 0 21 * * ? *";
+		String scheduleDatosComerciales = "0 10 21 * * ? *";
+		String scheduleReportIngresos = "0 20 21 * * ? *";
+		String scheduleReportPacientes = "0 25 21 * * ? *";
 
 		// --------------- Schedules para pruebas ------------------------------
 		// String scheduleTratamientosTop = "0/30 * * * * ? *";
