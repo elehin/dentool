@@ -23,13 +23,13 @@ public class QuartzListener extends QuartzInitializerListener {
 		StdSchedulerFactory factory = (StdSchedulerFactory) ctx.getAttribute(QUARTZ_FACTORY_KEY);
 
 		String scheduleTratamientosTop = "0 0 3 * * ? *";
-		String scheduleDatosComerciales = "0 10 3 * * ? *";
+		// String scheduleDatosComerciales = "0 10 3 * * ? *";
 		String scheduleReportIngresos = "0 20 3 * * ? *";
 		String scheduleReportPacientes = "0 25 3 * * ? *";
 
 		// --------------- Schedules para pruebas ------------------------------
 		// String scheduleTratamientosTop = "0/30 * * * * ? *";
-		// String scheduleDatosComerciales = "10/40 * * * * ? *";
+		String scheduleDatosComerciales = "10/40 * * * * ? *";
 		// String scheduleReportIngresos = "20/49 * * * * ? *";
 		// String scheduleReportPacientes = "25/55 * * * * ? *";
 

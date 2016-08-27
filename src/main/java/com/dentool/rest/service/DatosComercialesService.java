@@ -37,26 +37,58 @@ public class DatosComercialesService {
 		Object[] resultDiagnosticado = (Object[]) this.entityManager.createQuery(qPacientesDiagnosticados)
 				.setParameter("fechaInicio", cal.getTime()).setParameter("iniciado", false).getSingleResult();
 
-		datosComerciales.setClientesDiagnosticados(Integer.parseInt(resultDiagnosticado[0].toString()));
-		datosComerciales.setDiagnosticado(Float.valueOf(resultDiagnosticado[1].toString()));
+		if (resultDiagnosticado[0] != null) {
+			datosComerciales.setClientesDiagnosticados(Integer.parseInt(resultDiagnosticado[0].toString()));
+		} else {
+			datosComerciales.setClientesDiagnosticados(0);
+		}
+		if (resultDiagnosticado[1] != null) {
+			datosComerciales.setDiagnosticado(Float.valueOf(resultDiagnosticado[1].toString()));
+		} else {
+			datosComerciales.setDiagnosticado(0f);
+		}
 
 		Object[] resultPresupuestado = (Object[]) this.entityManager.createQuery(qPacientesPresupuestado)
 				.setParameter("fechaInicio", cal.getTime()).setParameter("iniciado", false).getSingleResult();
 
-		datosComerciales.setClientesPresupuestados(Integer.parseInt(resultPresupuestado[0].toString()));
-		datosComerciales.setPresupuestado(Float.valueOf(resultPresupuestado[1].toString()));
+		if (resultPresupuestado[0] != null) {
+			datosComerciales.setClientesPresupuestados(Integer.parseInt(resultPresupuestado[0].toString()));
+		} else {
+			datosComerciales.setClientesPresupuestados(0);
+		}
+		if (resultPresupuestado[1] != null) {
+			datosComerciales.setPresupuestado(Float.valueOf(resultPresupuestado[1].toString()));
+		} else {
+			datosComerciales.setPresupuestado(0f);
+		}
 
 		Object[] resultIniciado = (Object[]) this.entityManager.createQuery(qPacientesIniciados)
 				.setParameter("fechaInicio", cal.getTime()).setParameter("iniciado", true).getSingleResult();
 
-		datosComerciales.setClientesIniciadosSinPagar(Integer.parseInt(resultIniciado[0].toString()));
-		datosComerciales.setIniciadoSinPagar(Float.valueOf(resultIniciado[1].toString()));
+		if (resultIniciado[0] != null) {
+			datosComerciales.setClientesIniciadosSinPagar(Integer.parseInt(resultIniciado[0].toString()));
+		} else {
+			datosComerciales.setClientesIniciadosSinPagar(0);
+		}
+		if (resultIniciado[1] != null) {
+			datosComerciales.setIniciadoSinPagar(Float.valueOf(resultIniciado[1].toString()));
+		} else {
+			datosComerciales.setIniciadoSinPagar(0f);
+		}
 
 		Object[] resultTratados = (Object[]) this.entityManager.createQuery(qPacientesTratados)
 				.setParameter("fechaInicio", cal.getTime()).getSingleResult();
 
-		datosComerciales.setClientesTratados(Integer.parseInt(resultTratados[0].toString()));
-		datosComerciales.setIngresos(Float.valueOf(resultTratados[1].toString()));
+		if (resultTratados[0] != null) {
+			datosComerciales.setClientesTratados(Integer.parseInt(resultTratados[0].toString()));
+		} else {
+			datosComerciales.setClientesTratados(0);
+		}
+		if (resultTratados[1] != null) {
+			datosComerciales.setIngresos(Float.valueOf(resultTratados[1].toString()));
+		} else {
+			datosComerciales.setIngresos(0f);
+		}
 
 		entityManager.persist(datosComerciales);
 
@@ -65,7 +97,8 @@ public class DatosComercialesService {
 	public List<DatosComerciales> getDatosComerciales() {
 		@SuppressWarnings("unchecked")
 		List<DatosComerciales> lista = entityManager
-				.createQuery("SELECT d FROM DatosComerciales d ORDER BY d.fecha DESC, d.id DESC").setMaxResults(1).getResultList();
+				.createQuery("SELECT d FROM DatosComerciales d ORDER BY d.fecha DESC, d.id DESC").setMaxResults(1)
+				.getResultList();
 		return lista;
 	}
 }
