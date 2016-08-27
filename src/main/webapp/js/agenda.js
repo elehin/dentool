@@ -72,22 +72,11 @@ var agendaMobileTable
 // ###################### Funciones #######################################
 
 function checkCurrentDate() {
+	currentDate = new TzDate();
+
 	if (getUrlParameter("fecha") !== undefined
 			&& getUrlParameter("fecha") != '') {
-		var fechaParameter = getUrlParameter("fecha");
-		var dia = fechaParameter.substr(0, fechaParameter.indexOf('-'));
-		var mes = fechaParameter.substr(fechaParameter.indexOf('-') + 1,
-				fechaParameter.lastIndexOf('-') - fechaParameter.indexOf('-')
-						- 1);
-		var year = fechaParameter.substr(fechaParameter.lastIndexOf('-') + 1,
-				fechaParameter.length);
-
-		currentDate = new Date();
-		currentDate.setYear(year);
-		currentDate.setMonth(mes - 1);
-		currentDate.setDate(dia);
-	} else {
-		currentDate = new Date();
+		currentDate.setFecha(getUrlParameter("fecha"))
 	}
 	$('#hoyLink, #hoyLinkMobile').attr('href',
 			'agenda.html?fecha=' + formatDate(new Date(), 'short'));
@@ -96,6 +85,32 @@ function checkCurrentDate() {
 					+ paddingLeft(currentDate.getMonth() + 1, 2) + '-'
 					+ paddingLeft(currentDate.getDate(), 2));
 }
+
+// function checkCurrentDate() {
+// if (getUrlParameter("fecha") !== undefined
+// && getUrlParameter("fecha") != '') {
+// var fechaParameter = getUrlParameter("fecha");
+// var dia = fechaParameter.substr(0, fechaParameter.indexOf('-'));
+// var mes = fechaParameter.substr(fechaParameter.indexOf('-') + 1,
+// fechaParameter.lastIndexOf('-') - fechaParameter.indexOf('-')
+// - 1);
+// var year = fechaParameter.substr(fechaParameter.lastIndexOf('-') + 1,
+// fechaParameter.length);
+//
+// currentDate = new Date();
+// currentDate.setYear(year);
+// currentDate.setMonth(mes - 1);
+// currentDate.setDate(dia);
+// } else {
+// currentDate = new Date();
+// }
+// $('#hoyLink, #hoyLinkMobile').attr('href',
+// 'agenda.html?fecha=' + formatDate(new Date(), 'short'));
+// $("#fechaMobile").val(
+// currentDate.getFullYear() + '-'
+// + paddingLeft(currentDate.getMonth() + 1, 2) + '-'
+// + paddingLeft(currentDate.getDate(), 2));
+// }
 
 function initBarraNavegacion() {
 	$('.fecha').text(formatDate(currentDate));
