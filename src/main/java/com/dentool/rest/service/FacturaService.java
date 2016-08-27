@@ -397,10 +397,10 @@ public class FacturaService {
 
 		FileInputStream fis = null;
 		try {
-			fis = new FileInputStream(file);
-
 			ZipEntry zipEntry = new ZipEntry(file.getName());
 			zos.putNextEntry(zipEntry);
+
+			fis = new FileInputStream(file);
 
 			byte[] bytes = new byte[1024];
 			int length;
@@ -413,7 +413,9 @@ public class FacturaService {
 		} finally {
 			try {
 				zos.closeEntry();
-				fis.close();
+				if (fis != null) {
+					fis.close();
+				}
 			} catch (IOException e) {
 				logger.error(e.getMessage());
 				e.printStackTrace();
