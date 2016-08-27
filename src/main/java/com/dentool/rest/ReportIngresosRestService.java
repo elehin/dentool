@@ -11,20 +11,34 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.dentool.filter.Secured;
-import com.dentool.model.entities.DatosComerciales;
-import com.dentool.rest.service.DatosComercialesService;
+import com.dentool.model.entities.IngresosMes;
+import com.dentool.rest.service.PagoService;
 
-@Path("/datosComerciales")
+//@Path("/datosComerciales")
+@Path("/ingresosMes")
 public class ReportIngresosRestService {
 
 	@Inject
-	private DatosComercialesService datosComercialesService;
+	private PagoService pagoService;
+	// private DatosComercialesService datosComercialesService;
+
+	// @GET
+	// @Secured
+	// @Produces(MediaType.APPLICATION_JSON)
+	// public Response findAll() {
+	// List<DatosComerciales> lista =
+	// datosComercialesService.getDatosComerciales();
+	// if (lista == null) {
+	// throw new WebApplicationException(Response.Status.NOT_FOUND);
+	// }
+	// return Response.ok(lista).build();
+	// }
 
 	@GET
 	@Secured
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response findAll() {
-		List<DatosComerciales> lista = datosComercialesService.getDatosComerciales();
+		List<IngresosMes> lista = pagoService.getReportIngresos();
 		if (lista == null) {
 			throw new WebApplicationException(Response.Status.NOT_FOUND);
 		}
