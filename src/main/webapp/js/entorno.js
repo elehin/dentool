@@ -12,19 +12,19 @@ var datosComercialesURL = 'https://dentool-elehin.rhcloud.com/service/datosComer
 var reportIngresosURL = 'https://dentool-elehin.rhcloud.com/service/ingresosMes/';
 var citaURL = 'https://dentool-elehin.rhcloud.com/service/cita/';
 
-//var rootURL = 'http://localhost:8080/service/tratamiento/';
-//var diagnosticoURL = 'http://localhost:8080/service/diagnostico/';
-//var pacienteURL = 'http://localhost:8080/service/paciente/';
-//var tratamientoURL = 'http://localhost:8080/service/tratamiento/';
-//var tratamientosTopURL = 'http://localhost:8080/service/tratamientoTop';
-//var serverURL = 'http://localhost:8080/';
-//var pagosURL = 'http://localhost:8080/service/pago/';
-//var authenticationURL = 'http://localhost:8080/service/authentication/';
-//var presupuestoURL = 'http://localhost:8080/service/presupuesto/';
-//var facturaURL = 'http://localhost:8080/service/factura/';
-//var datosComercialesURL = 'http://localhost:8080/service/datosComerciales/';
-//var reportIngresosURL = 'http://localhost:8080/service/ingresosMes/';
-//var citaURL = 'http://localhost:8080/service/cita/';
+// var rootURL = 'http://localhost:8080/service/tratamiento/';
+// var diagnosticoURL = 'http://localhost:8080/service/diagnostico/';
+// var pacienteURL = 'http://localhost:8080/service/paciente/';
+// var tratamientoURL = 'http://localhost:8080/service/tratamiento/';
+// var tratamientosTopURL = 'http://localhost:8080/service/tratamientoTop';
+// var serverURL = 'http://localhost:8080/';
+// var pagosURL = 'http://localhost:8080/service/pago/';
+// var authenticationURL = 'http://localhost:8080/service/authentication/';
+// var presupuestoURL = 'http://localhost:8080/service/presupuesto/';
+// var facturaURL = 'http://localhost:8080/service/factura/';
+// var datosComercialesURL = 'http://localhost:8080/service/datosComerciales/';
+// var reportIngresosURL = 'http://localhost:8080/service/ingresosMes/';
+// var citaURL = 'http://localhost:8080/service/cita/';
 
 $(document).ready(function() {
 	$('.dropdown-toggle').dropdown();
@@ -116,25 +116,53 @@ function paddingLeft(number, digits) {
 class TzDate extends Date {
 	constructor(){
 		super();
-		this.setHours(this.getHours() + 6);
+		this.horasDif = 6;
+// this.horasDif = 0;
+		this.setHours(this.getHours() + this.horasDif);
 	}
 	
 	setFecha(fecha){
+		var fechaActual = new Date();
+		
+		this.setHours(fechaActual.getHours());
+		this.setMinutes(fechaActual.getMinutes());
+		this.setSeconds(fechaActual.getSeconds());
+		this.setMilliseconds(fechaActual.getMilliseconds());
+		
 		var dia = fecha.substr(0, fecha.indexOf('-'));
 		var mes = fecha.substr(fecha.indexOf('-') + 1,
 				fecha.lastIndexOf('-') - fecha.indexOf('-')
 						- 1);
+		mes--;
 		var year = fecha.substr(fecha.lastIndexOf('-') + 1,
 				fecha.length);
 		
-		var difYears = year - this.getFullYear();
-		this.setFullYear(this.getFullYear() + difYears);
+		this.setFullYear(year);
+		
+		this.setMonth(mes);
 
-		var difMeses = mes - (this.getMonth() + 1);
-		this.setMonth(this.getMonth() + difMeses);
-
-		var difDias = dia - this.getDate();
-		this.setDate(this.getDate() + difDias);
+		this.setDate(dia);
+		
+		this.setHours(this.getHours() + this.horasDif);
 	}
+
+	
+// setFecha(fecha){
+// var dia = fecha.substr(0, fecha.indexOf('-'));
+// var mes = fecha.substr(fecha.indexOf('-') + 1,
+// fecha.lastIndexOf('-') - fecha.indexOf('-')
+// - 1);
+// var year = fecha.substr(fecha.lastIndexOf('-') + 1,
+// fecha.length);
+//		
+// var difYears = year - this.getFullYear();
+// this.setFullYear(this.getFullYear() + difYears);
+//
+// var difMeses = mes - (this.getMonth() + 1);
+// this.setMonth(this.getMonth() + difMeses);
+//
+// var difDias = dia - this.getDate();
+// this.setDate(this.getDate() + difDias);
+// }
 }
 
