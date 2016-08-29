@@ -63,7 +63,7 @@ $(document)
 				});
 
 var huecoClicado;
-var currentDate;
+var currentDate, displayDate;
 var ultimaHora = 20;
 var currentCitas;
 var fechaMiniCalendarioNav;
@@ -72,18 +72,31 @@ var agendaMobileTable
 // ###################### Funciones #######################################
 
 function checkCurrentDate() {
+	displayDate = new Date();
 	currentDate = new TzDate();
 
 	if (getUrlParameter("fecha") !== undefined
 			&& getUrlParameter("fecha") != '') {
-		currentDate.setFecha(getUrlParameter("fecha"))
+		var fechaParameter = getUrlParameter("fecha");
+		var dia = fechaParameter.substr(0, fechaParameter.indexOf('-'));
+		var mes = fechaParameter.substr(fechaParameter.indexOf('-') + 1,
+				fechaParameter.lastIndexOf('-') - fechaParameter.indexOf('-')
+						- 1);
+		var year = fechaParameter.substr(fechaParameter.lastIndexOf('-') + 1,
+				fechaParameter.length);
+
+		displayDate = new Date();
+		displayDate.setYear(year);
+		displayDate.setMonth(mes - 1);
+		displayDate.setDate(dia);
+		currentDate.setFecha(fechaParameter);
 	}
 	$('#hoyLink, #hoyLinkMobile').attr('href',
 			'agenda.html?fecha=' + formatDate(new Date(), 'short'));
 	$("#fechaMobile").val(
-			currentDate.getFullYear() + '-'
-					+ paddingLeft(currentDate.getMonth() + 1, 2) + '-'
-					+ paddingLeft(currentDate.getDate(), 2));
+			displayDate.getFullYear() + '-'
+					+ paddingLeft(displayDate.getMonth() + 1, 2) + '-'
+					+ paddingLeft(displayDate.getDate(), 2));
 }
 
 // function checkCurrentDate() {
@@ -113,15 +126,15 @@ function checkCurrentDate() {
 // }
 
 function initBarraNavegacion() {
-	$('.fecha').text(formatDate(currentDate));
+	$('.fecha').text(formatDate(displayDate));
 
-	var siguiente = new Date(currentDate);
-	siguiente.setTime(currentDate.getTime() + 86400000);
+	var siguiente = new Date(displayDate);
+	siguiente.setTime(displayDate.getTime() + 86400000);
 
 	$('#linkSiguiente').attr('href',
 			'agenda.html?fecha=' + formatDate(siguiente, 'short'));
 
-	var anterior = new Date(currentDate);
+	var anterior = new Date(displayDate);
 	anterior.setTime(currentDate.getTime() - 86400000);
 
 	$('#linkAnterior').attr('href',
