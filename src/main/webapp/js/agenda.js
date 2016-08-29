@@ -663,7 +663,7 @@ function getMiniCalendario(target) {
 	if (target === undefined || target == 'ambos' || target == 'principal') {
 		$.ajax({
 			type : 'GET',
-			url : citaURL + 'minicalendario/' + currentDate,
+			url : citaURL + 'minicalendario/' + displayDate,
 			success : function(data) {
 				renderMiniCalendario(data, 'miniCalendarTable');
 			},
@@ -682,9 +682,9 @@ function getMiniCalendario(target) {
 	if (target === undefined || target == 'ambos' || target == 'navegacion') {
 		var mesSiguiente;
 		if (fechaMiniCalendarioNav === undefined) {
-			mesSiguiente = new Date(currentDate);
+			mesSiguiente = new Date(displayDate);
 			mesSiguiente.setDate(1);
-			mesSiguiente.setMonth(currentDate.getMonth() + 1);
+			mesSiguiente.setMonth(displayDate.getMonth() + 1);
 			fechaMiniCalendarioNav = new Date(mesSiguiente);
 		} else {
 			mesSiguiente = new Date(fechaMiniCalendarioNav);
