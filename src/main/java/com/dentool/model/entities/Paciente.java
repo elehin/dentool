@@ -139,15 +139,17 @@ public class Paciente {
 		this.setFechaNacimiento(origen.getFechaNacimiento());
 		this.setAlergico(origen.isAlergico());
 		this.setDni(origen.getDni());
-//		this.setAlta(origen.getAlta());
+		// this.setAlta(origen.getAlta());
 		this.setLastChangeTs(new Date(Calendar.getInstance().getTimeInMillis()));
 		this.setDiagnosticos(origen.getDiagnosticos());
 		this.setEnfermoGrave(origen.isEnfermoGrave());
 
+		// Se comprueba si se ha añadido saldo para insertar una nota
 		if (origen.getSaldo() > this.getSaldo()) {
 			String n = "";
-			String fecha = Calendar.getInstance().get(Calendar.DATE) + "-" + Calendar.getInstance().get(Calendar.MONTH)
-					+ "-" + Calendar.getInstance().get(Calendar.YEAR);
+			String fecha = Calendar.getInstance().get(Calendar.DATE) + "-"
+					+ (Calendar.getInstance().get(Calendar.MONTH) + 1) + "-"
+					+ Calendar.getInstance().get(Calendar.YEAR);
 			if (this.getNotas() != null) {
 				if (!"".equals(this.getNotas())) {
 					n = this.getNotas() + "\n";
