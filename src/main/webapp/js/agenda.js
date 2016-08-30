@@ -135,7 +135,7 @@ function initBarraNavegacion() {
 			'agenda.html?fecha=' + formatDate(siguiente, 'short'));
 
 	var anterior = new Date(displayDate);
-	anterior.setTime(currentDate.getTime() - 86400000);
+	anterior.setTime(displayDate.getTime() - 86400000);
 
 	$('#linkAnterior').attr('href',
 			'agenda.html?fecha=' + formatDate(anterior, 'short'));
