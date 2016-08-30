@@ -137,11 +137,9 @@ class TzDate extends Date {
 		var year = fecha.substr(fecha.lastIndexOf('-') + 1,
 				fecha.length);
 		
-		this.setFullYear(year);
-		
-		this.setMonth(mes);
-
 		this.setDate(dia);
+		this.setMonth(mes);
+		this.setFullYear(year);
 		
 		this.setHours(this.getHours() + this.horasDif);
 	}
