@@ -782,7 +782,7 @@ function formToJSON(action, event) {
 	if (action == 'create') {
 
 		var hora = calculaInicio();
-		var inicio = new Date(currentDate);
+		var inicio = new Date(displayDate);
 
 		inicio
 				.setHours(hora.toString().substr(0,
@@ -806,15 +806,15 @@ function formToJSON(action, event) {
 		var hora = horaInicio.substr(0, horaInicio.indexOf(':'));
 		var minutos = horaInicio.substr(horaInicio.indexOf(':') + 1,
 				horaInicio.length);
-		var inicio = new Date(currentDate.getFullYear(),
-				currentDate.getMonth(), currentDate.getDate(), hora, minutos,
+		var inicio = new Date(displayDate.getFullYear(),
+				displayDate.getMonth(), displayDate.getDate(), hora, minutos,
 				0, 0);
 
 		var horafin = $("#finMobile").val().toString();
 		hora = horafin.substr(0, horafin.indexOf(':'));
 		minutos = horafin.substr(horafin.indexOf(':') + 1, horafin.length);
-		var fin = new Date(currentDate.getFullYear(), currentDate.getMonth(),
-				currentDate.getDate(), hora, minutos, 0, 0);
+		var fin = new Date(displayDate.getFullYear(), displayDate.getMonth(),
+				displayDate.getDate(), hora, minutos, 0, 0);
 
 		return JSON.stringify({
 			"nombre" : $('#pacienteMobile').val(),
@@ -827,7 +827,7 @@ function formToJSON(action, event) {
 
 		var hora = calculaInicio(event);
 		if (event !== undefined && event.type == 'drop') {
-			var inicio = new Date(currentDate);
+			var inicio = new Date(displayDate);
 		} else {
 			var inicio = new Date($('#fechaDatePicker').val());
 		}
