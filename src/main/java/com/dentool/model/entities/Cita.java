@@ -21,6 +21,7 @@ public class Cita {
 	private long pacienteId;
 	private String nombre;
 	private String telefono;
+	private String descripcion;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date inicio;
@@ -73,6 +74,14 @@ public class Cita {
 
 	public void setTelefono(String telefono) {
 		this.telefono = telefono;
+	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
 	}
 
 }

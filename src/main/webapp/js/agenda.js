@@ -85,10 +85,10 @@ function checkCurrentDate() {
 		var year = fechaParameter.substr(fechaParameter.lastIndexOf('-') + 1,
 				fechaParameter.length);
 
-		displayDate = new Date();
-		displayDate.setYear(year);
-		displayDate.setMonth(mes - 1);
 		displayDate.setDate(dia);
+		displayDate.setMonth(mes - 1);
+		displayDate.setYear(year);
+
 		currentDate.setFecha(fechaParameter);
 	}
 	$('#hoyLink, #hoyLinkMobile').attr('href',
@@ -212,8 +212,22 @@ function renderAgenda(citas) {
 			$("#" + horaCell + mediasCell + columnCell).addClass('ocupado');
 			$("#" + horaCell + mediasCell + columnCell).removeClass('libre');
 			$("#" + horaCell + mediasCell + columnCell).text(item.nombre);
+			var tooltipDescripcion = '';
+			var tooltipTelefono = '';
+			if (item.descripcion !== undefined && item.descripcion != null
+					&& item.descripcion != '') {
+				tooltipDescripcion = item.descripcion;
+				if (item.telefono !== undefined && item.telefono != null
+						&& item.telefono != '') {
+					tooltipDescripcion += ' - ';
+				}
+			}
+			if (item.telefono !== undefined && item.telefono != null
+					&& item.telefono != '') {
+				tooltipTelefono += 'Telf.: ' + formatTelefono(item.telefono);
+			}
 			$("#" + horaCell + mediasCell + columnCell).attr('title',
-					'Telf.: ' + formatTelefono(item.telefono));
+					tooltipDescripcion + tooltipTelefono);
 			$("#" + horaCell + mediasCell + columnCell).attr('cita', item.id);
 
 			for (i = 0; i < huecosOcupados; i++) {
@@ -401,6 +415,7 @@ function initDiagNuevaCita() {
 						var cita = getCurrentCita($('#citaId').val());
 
 						$('#nameEdit').val(cita.nombre);
+						$('#descripcionEdit').val(cita.descripcion);
 						$('#telefonoEdit').val(cita.telefono);
 						var duracion = Math
 								.ceil((cita.fin - cita.inicio) / 60000);
@@ -774,7 +789,8 @@ function renderMiniCalendario(miniCalendario, object) {
 
 	// row = '<caption class="miniCalendar-caption">' + meses[fecha.getMonth()]
 	// + '</caption>';
-	$('#' + object + 'Caption').text(meses[fecha.getMonth()]);
+	$('#' + object + 'Caption').text(
+			meses[fecha.getMonth()] + ' ' + fecha.getFullYear());
 
 }
 
@@ -796,6 +812,7 @@ function formToJSON(action, event) {
 		return JSON.stringify({
 			"nombre" : $('#name').val(),
 			// "pacienteId" : $('#apellidos').val(),
+			"descripcion" : $("#descripcion").val(),
 			"telefono" : $('#telefono').val(),
 			"inicio" : inicio,
 			"fin" : fin
@@ -819,6 +836,7 @@ function formToJSON(action, event) {
 		return JSON.stringify({
 			"nombre" : $('#pacienteMobile').val(),
 			// "pacienteId" : $('#apellidos').val(),
+			"descripcion" : $("#descripcionMobile").val(),
 			"telefono" : $('#telefonoMobile').val(),
 			"inicio" : inicio,
 			"fin" : fin
@@ -844,6 +862,7 @@ function formToJSON(action, event) {
 		return JSON.stringify({
 			"nombre" : $('#nameEdit').val(),
 			"id" : $('#citaId').val(),
+			"descripcion" : $("#descripcionEdit").val(),
 			"telefono" : $('#telefonoEdit').val(),
 			"inicio" : inicio,
 			"fin" : fin
