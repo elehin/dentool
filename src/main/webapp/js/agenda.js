@@ -967,7 +967,7 @@ function drawTable() {
 function getCurrentCita(citaId) {
 	var cita;
 	$.each(currentCitas, function(i, item) {
-		if (item.id == citaId) {
+		if (item !== undefined && item.id == citaId) {
 			cita = item;
 		}
 	});
