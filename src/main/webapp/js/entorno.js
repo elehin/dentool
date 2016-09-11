@@ -50,6 +50,10 @@ function formatCurrency(value) {
 	return accounting.formatMoney(value, "€", 2, ".", ",", "%v %s");
 }
 
+function formatPorcentaje(value) {
+	return accounting.formatMoney(value, "%", 2, ".", ",", "%v %s");
+}
+
 function formatDate(date, formato) {
 	if (date === undefined) {
 		date = new Date();
