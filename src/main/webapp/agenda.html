@@ -118,73 +118,6 @@
 					<tbody>
 					</tbody>
 				</table>
-
-				<!-- Diálogo de creación de cita -->
-				<!-- ---------------------------- -->
-				<div id="dialog">
-					<form id="nuevaCitaForm" name="nuevaCitaForm" role="form">
-						<input type="text" name="paciente" id="name" class="form-control"
-							placeholder="Paciente" required /> <input type="text"
-							name="descripcion" id="descripcion"
-							class="form-control margin-top-5" placeholder="Descripción..." />
-						<input type="text" name="telefono"
-							class="form-control margin-top-5" id="telefono"
-							placeholder="Teléfono" /> <input type="range" id="duracion"
-							class="rangeDuracion margin-top-5" name="duracion" min="15"
-							max="180" step="15" value="30" />
-						<output for="duracion" id="duracionOutput" class="output-value">30</output>
-						<span class="unidades-duracion"> min.</span>
-						<button id="createCitaButton"
-							class="btn btn-primary btn-block margin-top-5" type="button">
-							<span class="glyphicon glyphicon-floppy-disk"></span> Guardar
-							cita
-						</button>
-					</form>
-				</div>
-
-				<div id="editDialog">
-					<form id="editCitaForm" name="editCitaForm" role="form">
-						<input type="text" name="paciente" id="nameEdit"
-							class="form-control" value="" autofocus placeholder="Paciente"
-							required /> <input type="text" name="descripcionEdit"
-							id="descripcionEdit" class="form-control margin-top-5"
-							placeholder="Descripción..." /> <input type="text"
-							name="telefonoEdit" id="telefonoEdit" placeholder="Teléfono"
-							class="form-control margin-top-5" /> <input type="range"
-							id="duracionEdit" class="rangeDuracion margin-top-5"
-							name="duracionEdit" min="15" max="180" step="15" />
-						<div class="margin-top-minus-5">
-							<output for="duracion" id="duracionOutputEdit"
-								class="output-value">30</output>
-							<span class="unidades-duracion"> min.</span>
-						</div>
-						<input type="date" class="form-control margin-top-35"
-							id="fechaDatePicker" name="fechaDatePicker" required />
-
-
-						<button id="updateCitaButton"
-							class="btn btn-primary btn-block margin-top-5" type="button">
-							<span class="glyphicon glyphicon-floppy-disk"></span> Guardar
-							cita
-						</button>
-						<button id="cancelaCitaButton"
-							class="btn btn-warning btn-block margin-top-5" type="button">
-							<span class="glyphicon glyphicon-remove"></span> Anular cita
-						</button>
-
-						<input id="citaId" name="citaId" type="text"
-							class="form-control collapse" disabled />
-
-					</form>
-				</div>
-
-				<div id="anularDialog">
-					<p>
-						<span class="glyphicon glyphicon-alert"></span> La cita se anulará
-						y se eliminará de la base de datos. ¿Estás segur@?
-					</p>
-				</div>
-
 			</div>
 
 			<div class="col-md-3 hidden-xs hidden-sm">
@@ -243,6 +176,69 @@
 
 	</div>
 	<!-- /.row -->
+
+	<!-- Diálogo de creación de cita -->
+	<!-- ---------------------------- -->
+	<div id="dialog">
+		<form id="nuevaCitaForm" name="nuevaCitaForm" role="form">
+			<input type="text" name="paciente" id="name" class="form-control"
+				placeholder="Paciente" required /> <input type="text"
+				name="descripcion" id="descripcion"
+				class="form-control margin-top-5" placeholder="Descripción..." /> <input
+				type="text" name="telefono" class="form-control margin-top-5"
+				id="telefono" placeholder="Teléfono" /> <input type="range"
+				id="duracion" class="rangeDuracion margin-top-5" name="duracion"
+				min="15" max="180" step="15" value="30" />
+			<output for="duracion" id="duracionOutput" class="output-value">30</output>
+			<span class="unidades-duracion"> min.</span>
+			<button id="createCitaButton"
+				class="btn btn-primary btn-block margin-top-5" type="button">
+				<span class="glyphicon glyphicon-floppy-disk"></span> Guardar cita
+			</button>
+		</form>
+	</div>
+
+	<!-- Diálogo de modificación de cita -->
+	<div id="editDialog">
+		<form id="editCitaForm" name="editCitaForm" role="form">
+			<input type="text" name="paciente" id="nameEdit" class="form-control"
+				value="" autofocus placeholder="Paciente" required /> <input
+				type="text" name="descripcionEdit" id="descripcionEdit"
+				class="form-control margin-top-5" placeholder="Descripción..." /> <input
+				type="text" name="telefonoEdit" id="telefonoEdit"
+				placeholder="Teléfono" class="form-control margin-top-5" /> <input
+				type="range" id="duracionEdit" class="rangeDuracion margin-top-5"
+				name="duracionEdit" min="15" max="180" step="15" />
+			<div class="margin-top-minus-5">
+				<output for="duracion" id="duracionOutputEdit" class="output-value">30</output>
+				<span class="unidades-duracion"> min.</span>
+			</div>
+			<input type="date" class="form-control margin-top-35"
+				id="fechaDatePicker" name="fechaDatePicker" required />
+
+
+			<button id="updateCitaButton"
+				class="btn btn-primary btn-block margin-top-5" type="button">
+				<span class="glyphicon glyphicon-floppy-disk"></span> Guardar cita
+			</button>
+			<button id="cancelaCitaButton"
+				class="btn btn-warning btn-block margin-top-5" type="button">
+				<span class="glyphicon glyphicon-remove"></span> Anular cita
+			</button>
+
+			<input id="citaId" name="citaId" type="text"
+				class="form-control collapse" disabled />
+
+		</form>
+	</div>
+
+	<!-- Diálogo de anulación de cita -->
+	<div id="anularDialog">
+		<p>
+			<span class="glyphicon glyphicon-alert"></span> La cita se anulará y
+			se eliminará de la base de datos. ¿Estás segur@?
+		</p>
+	</div>
 
 	<hr>
 

@@ -109,6 +109,19 @@
 					class="table table-striped table-hover display responsive">
 				</table>
 			</div>
+			<div class="col-md-3">
+				<h3 class="margin-top-25">Aplicar descuento:</h3>
+				<div class="well margin-top-5" id="totalPanel">
+					<form id="descuentoForm" role="form">
+						<input type="number" id="descuentoPorcentual"
+							class="form-control percent" placeholder="%" />
+					</form>
+				</div>
+				<button id="btnAplicaDescuento"
+					class="btn btn-primary btn-block margin-top-25 ">
+					<span class="glyphicon glyphicon-euro"></span> Aplicar
+				</button>
+			</div>
 		</div>
 	</div>
 	<!-- /.row -->
@@ -137,6 +150,9 @@
 	<!-- jQuery native -->
 	<script src="js/jquery-ajax-native.js"></script>
 
+	<!-- jQuery Masked Input 
+	<script src="js/jquery.maskedinput.min.js"></script>-->
+
 	<!--DataTables -->
 	<script type="text/javascript"
 		src="DataTables-1.10.12/js/jquery.dataTables.min.js"></script>
@@ -157,6 +173,9 @@
 	<script type="text/javascript"
 		src="Select-1.2.0/js/dataTables.select.min.js"></script>
 	<script type="text/javascript" src="js/datatables.js"></script>
+
+	<!-- Accounting JavaScript for formatting currency-->
+	<script src="js/accounting.min.js"></script>
 
 	<!-- Bootstrap Core JavaScript -->
 	<script src="js/bootstrap.min.js"></script>

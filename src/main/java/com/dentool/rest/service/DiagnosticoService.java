@@ -32,6 +32,7 @@ public class DiagnosticoService {
 
 		diagnostico.setTratamiento(t);
 		diagnostico.setPrecio(t.getPrecio());
+		diagnostico.setDescuento((1 - diagnostico.getPrecio() / t.getPrecio()) * 100);
 		Date now = new Date(Calendar.getInstance().getTimeInMillis());
 		diagnostico.setDiagnosticado(now);
 		diagnostico.setLastChangeTs(now);
@@ -117,6 +118,9 @@ public class DiagnosticoService {
 		if (ld.getFechaFin() != null && ld.getFechaInicio() == null) {
 			ld.setFechaInicio(ld.getFechaFin());
 		}
+
+		// Se actualiza el descuento aplicado
+		ld.setDescuento((1 - ld.getPrecio() / ld.getTratamiento().getPrecio()) * 100);
 
 		// Se actualiza la fecha de última modificación
 		ld.setLastChangeTs(now);
@@ -236,4 +240,27 @@ public class DiagnosticoService {
 
 		return returnList;
 	}
+
+	public List<Diagnostico> aplicaDescuentoPorcentual(List<Diagnostico> diagnosticos, float descuento) {
+		List<Long> ids = new ArrayList<Long>();
+		for (Diagnostico d : diagnosticos) {
+			ids.add(d.getId());
+		}
+
+		String query = "SELECT d FROM Diagnostico d WHERE d.id IN :lista";
+		@SuppressWarnings("unchecked")
+		List<Diagnostico> lista = entityManager.createQuery(query).setParameter("lista", ids).getResultList();
+
+		for (Diagnostico d : lista) {
+			d.setPrecio(d.getPrecio() - (d.getPrecio() * descuento / 100));
+			d.setDescuento((1 - d.getPrecio() / d.getTratamiento().getPrecio()) * 100);
+		}
+
+		if (lista.isEmpty()) {
+			return null;
+		} else {
+			return getDiagnosticosNotStartedByPaciente(lista.get(0).getPaciente().getId());
+		}
+	}
+
 }

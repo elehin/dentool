@@ -5,8 +5,12 @@ $(document).ready(
 		function() {
 
 			$("#btnCreaPresupuesto").click(function() {
-				console.log(formToJSON());
 				createPresupuesto();
+				return false;
+			});
+
+			$("#btnAplicaDescuento").click(function() {
+				aplicaDescuento();
 				return false;
 			});
 
@@ -16,6 +20,8 @@ $(document).ready(
 				$('#backArrowLink').attr("href",
 						serverURL + 'paciente.html?paciente=' + pacienteId);
 			}
+
+			// $(".percent").mask("9?9%");
 
 			rows_selected = [];
 
@@ -56,7 +62,8 @@ function populateTable(diagnosticos) {
 		"paging" : false,
 		"searching" : false,
 		"info" : false,
-		"ordering" : false,
+		"ordering" : true,
+		"order" : [ [ 0, "asc" ] ],
 		"data" : dataset,
 		"columns" : [ {
 			"title" : "id"
@@ -99,9 +106,12 @@ function populateTable(diagnosticos) {
 		}
 	});
 
+	diagsTable.draw();
+
 	$('input[type="checkbox"]').prop('checked', true);
 
 	// Handle click on checkbox
+	$('#tableDiagnosticos tbody').off('click');
 	$('#tableDiagnosticos tbody').on('click', 'input[type="checkbox"]',
 			function(e) {
 				var $row = $(this).closest('tr');
@@ -150,9 +160,29 @@ function renderDiagTableRow(item) {
 		pieza = item.pieza;
 	}
 
-	row = [ item.id, '', item.tratamiento.nombre, pieza, item.precio + " €" ];
+	row = [ item.id, '', item.tratamiento.nombre, pieza,
+			formatCurrency(item.precio) ];
 
 	return row;
+}
+
+function redrawTable(diagnosticos) {
+	var dataset = [];
+	var rows_selected_aux = rows_selected;
+
+	$.each(diagnosticos, function(i, item) {
+		dataset.push(renderDiagTableRow(item));
+		// TODO los diagnosticos que no se actualicen al aplicar descuento no
+		// deberían marcarse como seleccionados
+		// rows_selected.push(item.id);
+	});
+
+	diagsTable = $('#tableDiagnosticos').DataTable({
+		"retrieve" : true
+	});
+	diagsTable.clear().draw();
+	diagsTable.rows.add(dataset);
+	diagsTable.columns.adjust().draw();
 }
 
 function updateTotalPanel(data, action) {
@@ -162,7 +192,7 @@ function updateTotalPanel(data, action) {
 			total += item.precio;
 		});
 
-		$("#hTotalPanel").text(total + " €");
+		$("#hTotalPanel").text(formatCurrency(total));
 	} else {
 		$.each(data, function(i, item) {
 			var index = $.inArray(item[0], rows_selected);
@@ -171,7 +201,7 @@ function updateTotalPanel(data, action) {
 			}
 		});
 
-		$("#hTotalPanel").text(total + " €");
+		$("#hTotalPanel").text(formatCurrency(total));
 	}
 }
 
@@ -227,18 +257,56 @@ function findPaciente(id) {
 	});
 }
 
-function formToJSON() {
-
-	var diagnosticos = new Array();
-
-	$.each(rows_selected, function(i, item) {
-		var diagnostico = {};
-		diagnostico['id'] = item;
-		diagnosticos.push(diagnostico);
+function aplicaDescuento() {
+	$.ajax({
+		type : 'POST',
+		contentType : 'application/json',
+		url : diagnosticoURL + "aplicaDescuento",
+		data : formToJSON("descuento"),
+		success : function(data) {
+			redrawTable(data);
+			updateTotalPanel(data);
+			return false;
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
+		}
 	});
+}
 
-	return JSON.stringify({
-		"diagnosticos" : diagnosticos,
-		"pacienteId" : pacienteId
-	});
+function formToJSON(action) {
+	if (action === undefined) {
+
+		var diagnosticos = new Array();
+
+		$.each(rows_selected, function(i, item) {
+			var diagnostico = {};
+			diagnostico['id'] = item;
+			diagnosticos.push(diagnostico);
+		});
+
+		return JSON.stringify({
+			"diagnosticos" : diagnosticos,
+			"pacienteId" : pacienteId
+		});
+	} else if (action == "descuento") {
+		var diagnosticos = new Array();
+
+		$.each(rows_selected, function(i, item) {
+			var diagnostico = {};
+			diagnostico['id'] = item;
+			diagnosticos.push(diagnostico);
+		});
+
+		return JSON.stringify({
+			"diagnosticos" : diagnosticos,
+			"descuento" : $("#descuentoPorcentual").val()
+		});
+	}
 }

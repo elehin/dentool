@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import com.dentool.filter.Secured;
+import com.dentool.model.Descuento;
 import com.dentool.model.DiagnosticosNoFacturado;
 import com.dentool.model.entities.Diagnostico;
 import com.dentool.rest.service.DiagnosticoService;
@@ -122,6 +123,20 @@ public class DiagnosticoRestService {
 		return Response
 				.created(UriBuilder.fromResource(DiagnosticoRestService.class).path(String.valueOf(d.getId())).build())
 				.build();
+	}
+
+	@POST
+	@Secured
+	@Path("/aplicaDescuento")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response aplicaDescuento(Descuento descuento) {
+		List<Diagnostico> lista = diagnosticoService.aplicaDescuentoPorcentual(descuento.getDiagnosticos(),
+				descuento.getDescuento());
+		if (lista == null) {
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}
+		return Response.ok(lista).build();
 	}
 
 	@POST

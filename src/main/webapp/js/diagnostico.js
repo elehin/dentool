@@ -229,6 +229,7 @@ function updateTratamiento() {
 		data : formToJSON(),
 		success : function(rdata, textStatus, jqXHR) {
 			showSuccessMessage();
+			findTratamiento(getUrlParameter("diagnostico"));
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			if (errorThrown == 'Unauthorized') {
@@ -292,16 +293,17 @@ function actualizarPagoRestante() {
 	$("#pagoRestante").val("Añadir pago por " + pagoRestante + " €");
 
 	if (pagoRestante == 0) {
-		$("#hPanelPagoRestante").text('+' + currentDiagnostico.precio + ' €');
+		$("#hPanelPagoRestante").text(
+				'+' + formatCurrency(currentDiagnostico.precio));
 		$("#hPanelPagoRestante").removeClass('text-danger');
 		$("#hPanelPagoRestante").addClass('text-success');
 	} else if (pagoRestante < 0) {
 		var saldoPositivo = currentDiagnostico.pagado;
-		$("#hPanelPagoRestante").text('+' + saldoPositivo + ' €');
+		$("#hPanelPagoRestante").text('+' + formatCurrency(saldoPositivo));
 		$("#hPanelPagoRestante").removeClass('text-danger');
 		$("#hPanelPagoRestante").addClass('text-success');
 	} else {
-		$("#hPanelPagoRestante").text('-' + pagoRestante + ' €');
+		$("#hPanelPagoRestante").text('-' + formatCurrency(pagoRestante));
 		$("#hPanelPagoRestante").removeClass('text-success');
 		$("#hPanelPagoRestante").addClass('text-danger');
 	}
@@ -315,6 +317,8 @@ function renderDetails(diagnostico) {
 	$('#fechaFin').val(diagnostico.fechaFin);
 	$('#precio').val(diagnostico.precio);
 	$('#pagado').val(diagnostico.pagado);
+	$('#notas').val(diagnostico.notas);
+	$('#descuento').val(formatPorcentaje(diagnostico.descuento));
 	if (diagnostico.pieza != 0) {
 		$("#piezaBtn" + diagnostico.pieza).addClass("active");
 	}
@@ -341,7 +345,8 @@ function formToJSON(action) {
 			"diagnosticado" : $('#diagnosticado').val(),
 			"fechaInicio" : $('#fechaInicio').val(),
 			"fechaFin" : $('#fechaFin').val(),
-			"pieza" : $(".botonPieza.active").text()
+			"pieza" : $(".botonPieza.active").text(),
+			"notas" : $("#notas").val()
 		});
 	}
 }

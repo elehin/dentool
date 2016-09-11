@@ -62,6 +62,9 @@ public class Diagnostico {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastChangeTs;
 
+	private String notas;
+	private float descuento;
+
 	public float getPrecio() {
 		return precio;
 	}
@@ -100,6 +103,7 @@ public class Diagnostico {
 		if (origen.getPieza() != 0) {
 			this.setPieza(origen.getPieza());
 		}
+		this.setNotas(origen.getNotas());
 	}
 
 	@JsonIgnore
@@ -218,6 +222,22 @@ public class Diagnostico {
 
 	public void setPresupuestos(List<Presupuesto> presupuestos) {
 		this.presupuestos = presupuestos;
+	}
+
+	public String getNotas() {
+		return notas;
+	}
+
+	public void setNotas(String notas) {
+		this.notas = notas;
+	}
+
+	public float getDescuento() {
+		return descuento;
+	}
+
+	public void setDescuento(float descuento) {
+		this.descuento = descuento;
 	}
 
 }

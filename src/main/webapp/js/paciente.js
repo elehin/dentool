@@ -574,8 +574,10 @@ function renderPagosPendientes() {
 
 function populateLastDiagnosticos() {
 	// console.log('populateLastDiagnosticos');
-	// getDiagnosticosByPaciente(currentPaciente.id);
-	renderTableDiagnosticos(currentPaciente.diagnosticos);
+	getDiagnosticosByPaciente(currentPaciente.id);
+	//TODO revisar por qué en diagnosticos aparecen duplicados tras la llamada a findPaciente
+	// se llama a getDiagnosticosByPaciente() para evitar los duplicados, pero no es óptimo
+	// renderTableDiagnosticos(currentPaciente.diagnosticos);
 
 }
 
@@ -898,6 +900,7 @@ function getDiagnosticosByPaciente(paciente) {
 		type : 'GET',
 		url : diagnosticoURL + 'paciente/' + paciente,
 		success : function(data) {
+			currentPaciente.diagnosticos = data;
 			renderTableDiagnosticos(data);
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
@@ -1070,20 +1073,21 @@ function formToJSON(action, data) {
 			newSaldo = parseFloat($("#cantidadSaldo").val())
 					+ parseFloat(currentPaciente.saldo);
 		}
-		return JSON.stringify({
-			"id" : $('#pacienteId').val(),
-			"name" : $('#name').val(),
-			"apellidos" : $('#apellidos').val(),
-			"direccion" : $('#direccion').val(),
-			"telefono" : $('#telefono').val(),
-			"fechaNacimiento" : $('#fechaNacimiento').val(),
-			"notas" : $('#notas').val(),
-			"dni" : $('#dni').val(),
-			"alergico" : $('#alergico').prop('checked'),
-			"enfermoGrave" : $('#enfermoGrave').prop('checked'),
-			"saldo" : newSaldo,
-			"pacienteAnteriorADentool" : currentPaciente.pacienteAnteriorADentool
-		});
+		return JSON
+				.stringify({
+					"id" : $('#pacienteId').val(),
+					"name" : $('#name').val(),
+					"apellidos" : $('#apellidos').val(),
+					"direccion" : $('#direccion').val(),
+					"telefono" : $('#telefono').val(),
+					"fechaNacimiento" : $('#fechaNacimiento').val(),
+					"notas" : $('#notas').val(),
+					"dni" : $('#dni').val(),
+					"alergico" : $('#alergico').prop('checked'),
+					"enfermoGrave" : $('#enfermoGrave').prop('checked'),
+					"saldo" : newSaldo,
+					"pacienteAnteriorADentool" : currentPaciente.pacienteAnteriorADentool
+				});
 	}
 }
 

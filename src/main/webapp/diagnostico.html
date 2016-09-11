@@ -112,7 +112,8 @@
 							class="form-control currency" required />
 					</div>
 
-					<label>Pagado:</label>
+					<label>Descuento:</label> <input type="text" id="descuento"
+						name="descuento" value="0" class="form-control" readonly /> <label>Pagado:</label>
 					<div class="input-group">
 						<span class="input-group-addon">€</span> <input type="number"
 							id="pagado" name="pagado" value="0" min="0" step="1.00"
@@ -145,6 +146,9 @@
 
 			</form>
 			<div class="col-md-4">
+				<div class="panel panel-default">
+					<h1 id="hPanelPagoRestante" class="text-center"></h1>
+				</div>
 				<h3>Pagos</h3>
 
 				<!--  <a href="#addPagoDiv" class="btn btn-info btn-block"
@@ -192,9 +196,7 @@
 			</div>
 
 			<div class="col-md-4">
-				<div class="panel panel-default">
-					<h1 id="hPanelPagoRestante" class="text-center"></h1>
-				</div>
+
 
 				<h3>Pieza:</h3>
 				<!-- Selección de pieza dental para diagnóstico -->
@@ -272,6 +274,11 @@
 				</div>
 				<!-- /.Selección de pieza dental para diagnóstico -->
 
+				<!-- Notas -->
+				<div class="margin-top-15">
+					<label for="notas">Notas:</label>
+					<textarea id="notas" name="notas" class="form-control" rows="15"></textarea>
+				</div>
 
 
 			</div>
@@ -322,6 +329,8 @@
 		src="Select-1.2.0/js/dataTables.select.min.js"></script>
 	<script type="text/javascript" src="js/datatables.js"></script>
 
+	<!-- Accounting JavaScript for formatting currency-->
+	<script src="js/accounting.min.js"></script>
 
 	<!-- Bootstrap Core JavaScript -->
 	<script src="js/bootstrap.min.js"></script>
