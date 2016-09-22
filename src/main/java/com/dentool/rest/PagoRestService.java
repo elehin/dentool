@@ -79,6 +79,14 @@ public class PagoRestService {
 				.build();
 	}
 
+	@POST
+	@Secured
+	@Path("/enviaPagoASaldo/{id}")
+	public Response enviaPagoASaldo(@PathParam("id") long id) {
+		this.pagoService.enviaPagoASaldo(id);
+		return Response.ok().build();
+	}
+
 	@DELETE
 	@Secured
 	@Path("/delete/{id}")

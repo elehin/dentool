@@ -3,7 +3,8 @@ var currentPaciente;
 var activePago;
 var pagosTable;
 
-var suprimir = '<button class="btn btn-warning padding-0-4 eliminar" role="button"><span class="glyphicon glyphicon-remove"></span></button>';
+var suprimir = '<button class="btn btn-danger padding-0-4 eliminar" role="button"><span class="glyphicon glyphicon-remove"></span></button>';
+var devolver = '<button class="btn btn-warning padding-0-4 devolver" role="button"><span class="glyphicon glyphicon-chevron-left"></span></button>';
 
 $(document).ready(
 		function() {
@@ -90,7 +91,8 @@ function addPagoRestante() {
 
 						table.row.add(
 								[ activePago.id, activePago.fecha,
-										activePago.cantidad, '€', suprimir ])
+										activePago.cantidad, '€',
+										suprimir + ' ' + devolver ])
 								.draw(false);
 
 						$.ajax({
@@ -163,7 +165,8 @@ function addPago() {
 
 						table.row.add(
 								[ activePago.id, activePago.fecha,
-										activePago.cantidad, '€', suprimir ])
+										activePago.cantidad, '€',
+										suprimir + ' ' + devolver ])
 								.draw(false);
 						$("#addPagoForm")[0].reset();
 
@@ -425,7 +428,8 @@ function renderTablePagos(pagos) {
 	var dataset = [];
 
 	$.each(pagos, function(i, item) {
-		dataset.push([ item.id, item.fecha, item.cantidad, '€', suprimir ]);
+		dataset.push([ item.id, item.fecha, item.cantidad, '€',
+				suprimir + ' ' + devolver ]);
 	});
 
 	pagosTable = $('#tablePagos').DataTable({
@@ -464,6 +468,8 @@ function renderTablePagos(pagos) {
 		row = $(this).parents('tr');
 		if ($(this).hasClass("eliminar")) {
 			deletePago(row);
+		} else if ($(this).hasClass("devolver")) {
+			devuelvePago(row);
 		}
 
 	});
@@ -476,6 +482,48 @@ function deletePago(row) {
 		type : 'DELETE',
 		contentType : 'application/json',
 		url : pagosURL + 'delete/' + data[0],
+		success : function(rdata, textStatus, jqXHR) {
+			pagosTable.row(row).remove().draw();
+			showPagoSuccessMessage();
+			$.ajax({
+				type : 'GET',
+				url : diagnosticoURL + currentDiagnostico.id,
+				success : function(data) {
+					currentDiagnostico = data;
+					renderDetails(data);
+					actualizarPagoRestante();
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+					if (errorThrown == 'Unauthorized') {
+						window.location.replace(serverURL + 'login.html');
+					}
+				},
+				beforeSend : function(xhr, settings) {
+					xhr.setRequestHeader('Authorization', 'Bearer '
+							+ $.cookie('restTokenC'));
+				}
+			});
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			} else {
+				showErrorMessage(textStatus);
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
+		}
+	});
+}
+
+function devuelvePago(row) {
+	var data = pagosTable.row(row).data();
+	$.ajax({
+		type : 'POST',
+		contentType : 'application/json',
+		url : pagosURL + 'enviaPagoASaldo/' + data[0],
 		success : function(rdata, textStatus, jqXHR) {
 			pagosTable.row(row).remove().draw();
 			showPagoSuccessMessage();

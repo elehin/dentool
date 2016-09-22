@@ -95,6 +95,19 @@ public class PagoService {
 		this.actualizarPagos(diagnosticoId);
 	}
 
+	public void enviaPagoASaldo(long id) {
+		Pago p = entityManager.find(Pago.class, id);
+		long diagnosticoId = p.getDiagnosticoId();
+
+		Diagnostico d = entityManager.find(Diagnostico.class, p.getDiagnosticoId());
+		d.getPaciente().setSaldo(d.getPaciente().getSaldo() + p.getCantidad());
+
+		logger.debug("######################################### Borrando pago " + p.getId());
+		this.entityManager.remove(p);
+
+		this.actualizarPagos(diagnosticoId);
+	}
+
 	public void executeIngresosReport() {
 
 		List<IngresosMes> backup = this.clearDatosIngresos();
