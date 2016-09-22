@@ -106,6 +106,9 @@ public class PagoService {
 		this.entityManager.remove(p);
 
 		this.actualizarPagos(diagnosticoId);
+		if (d.getPagado() == 0) {
+			d.setPrecio(0f);
+		}
 	}
 
 	public void executeIngresosReport() {
