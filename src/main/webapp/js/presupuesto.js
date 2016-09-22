@@ -74,11 +74,15 @@ function populateTable(diagnosticos) {
 		}, {
 			"title" : "Pieza"
 		}, {
+			"title" : "Descuento"
+		}, {
 			"title" : "Precio"
+		}, {
+			"title" : "PrecioNumber"
 		} ],
 		"columnDefs" : [ {
 			"className" : "never",
-			"targets" : [ 0 ],
+			"targets" : [ 0, 6 ],
 			"visible" : false
 		}, {
 			'targets' : 1,
@@ -161,7 +165,8 @@ function renderDiagTableRow(item) {
 	}
 
 	row = [ item.id, '', item.tratamiento.nombre, pieza,
-			formatCurrency(item.precio) ];
+			formatPorcentaje(item.descuento), formatCurrency(item.precio),
+			item.precio ];
 
 	return row;
 }
@@ -197,7 +202,7 @@ function updateTotalPanel(data, action) {
 		$.each(data, function(i, item) {
 			var index = $.inArray(item[0], rows_selected);
 			if (index !== -1) {
-				total += parseInt(item[4]);
+				total += item[6];
 			}
 		});
 

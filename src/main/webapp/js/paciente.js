@@ -113,6 +113,11 @@ $(document).ready(
 			// return false;
 			// });
 
+			$("#cambiarOdontogramaBtn").click(function() {
+				cambiaOdontograma();
+				return false;
+			});
+
 			getTratamientosList();
 			getTratamientosTop();
 			getPresupuestos();
@@ -150,7 +155,8 @@ function renderTablePresupuestos(presupuestos) {
 
 	$.each(presupuestos, function(i, item) {
 
-		dataset.push([ item.id, descarga, item.fecha, item.precio + ' €' ]);
+		dataset.push([ item.id, descarga, item.fecha,
+				formatCurrency(item.precio) ]);
 	});
 
 	presupuestosTable = $('#tablePresupuestos')
@@ -540,6 +546,12 @@ function renderDetails(paciente) {
 	populateLastDiagnosticos();
 	renderSaldo();
 	renderPagosPendientes();
+
+	if (paciente.fechaNacimiento !== undefined
+			&& (new Date().getFullYear())
+					- new Date(paciente.fechaNacimiento).getFullYear() < 12) {
+		cambiaOdontograma();
+	}
 }
 
 function renderPagosPendientes() {
@@ -575,8 +587,10 @@ function renderPagosPendientes() {
 function populateLastDiagnosticos() {
 	// console.log('populateLastDiagnosticos');
 	getDiagnosticosByPaciente(currentPaciente.id);
-	//TODO revisar por qué en diagnosticos aparecen duplicados tras la llamada a findPaciente
-	// se llama a getDiagnosticosByPaciente() para evitar los duplicados, pero no es óptimo
+	// TODO revisar por qué en diagnosticos aparecen duplicados tras la llamada
+	// a findPaciente
+	// se llama a getDiagnosticosByPaciente() para evitar los duplicados, pero
+	// no es óptimo
 	// renderTableDiagnosticos(currentPaciente.diagnosticos);
 
 }
@@ -1167,4 +1181,9 @@ function findPacienteByUrl(url) {
 					+ $.cookie('restTokenC'));
 		}
 	});
+}
+
+function cambiaOdontograma() {
+	$(".botonPieza").removeClass("active");
+	$(".odontograma").toggleClass("in");
 }

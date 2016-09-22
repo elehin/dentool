@@ -110,15 +110,8 @@ public class PresupuestoPdfCreator {
 
 			// ------- ./ Tabla Header -------
 
-			// ------- Tabla Body -------
-			PdfPTable tableBody = new PdfPTable(new float[] { 1f, 10f, 2f, 3f });
-			tableBody.setWidthPercentage(90);
-
-			line = "#; Tratamiento; Pieza; Precio";
-			this.processBody(tableBody, line, true, true);
-
-			int rows = 0;
-			int diagnosticos = 0;
+			// ------- Recuperar todos los datos de los diagnósticos del
+			// presupuesto -------
 
 			List<Long> diagnosticosIds = new ArrayList<Long>();
 			for (Diagnostico d : presupuesto.getDiagnosticos()) {
@@ -127,18 +120,72 @@ public class PresupuestoPdfCreator {
 
 			List<Diagnostico> diagnosticosList = this.diagnosticoService.getDiagnosticos(diagnosticosIds);
 
-			for (Diagnostico d : diagnosticosList) {
-				rows++;
+			boolean tieneDescuentos = this.tieneDescuentos(diagnosticosList);
 
-				if (rows > 22 && rows < 28) {
-					line = " ; ; ; ";
-					this.processBody(tableBody, line, false, false);
-				} else {
-					diagnosticos++;
-					line = diagnosticos + "; " + d.getTratamiento().getNombre() + "; " + d.getPieza() + "; "
-							+ Utils.formatAsCurrency(d.getPrecio());
-					this.processBody(tableBody, line, false, true);
-					this.precioTotal += d.getPrecio();
+			// ------- Tabla Body -------
+			PdfPTable tableBody = null;
+			int rows = 0;
+			int diagnosticos = 0;
+			String pieza = "";
+			String descuento = "";
+
+			if (!tieneDescuentos) {
+				tableBody = new PdfPTable(new float[] { 1f, 10f, 2f, 3f });
+				tableBody.setWidthPercentage(90);
+
+				line = "#; Tratamiento; Pieza; Precio (€)";
+				this.processBody(tableBody, line, true, true);
+
+				for (Diagnostico d : diagnosticosList) {
+					rows++;
+
+					if (rows > 22 && rows < 28) {
+						line = " ; ; ; ";
+						this.processBody(tableBody, line, false, false);
+					} else {
+						diagnosticos++;
+						if (d.getPieza() == 0) {
+							pieza = "";
+						} else {
+							pieza = String.valueOf(d.getPieza());
+						}
+						line = diagnosticos + "; " + d.getTratamiento().getNombre() + "; " + pieza + "; "
+								+ Utils.formatAsCurrency(d.getPrecio());
+						this.processBody(tableBody, line, false, true);
+						this.precioTotal += d.getPrecio();
+					}
+				}
+			} else { // tiene descuentos: se añaden dos columnas a la tabla
+				tableBody = new PdfPTable(new float[] { 1f, 8f, 1.5f, 3f, 2f, 3f });
+				tableBody.setWidthPercentage(90);
+
+				line = "#; Tratamiento; Pieza; Precio (€); Descuento; Importe (€)";
+				this.processBody(tableBody, line, true, true);
+
+				for (Diagnostico d : diagnosticosList) {
+					rows++;
+
+					if (rows > 22 && rows < 28) {
+						line = " ; ; ; ";
+						this.processBody(tableBody, line, false, false);
+					} else {
+						diagnosticos++;
+						if (d.getPieza() == 0) {
+							pieza = "";
+						} else {
+							pieza = String.valueOf(d.getPieza());
+						}
+						if (d.getDescuento() == 0f) {
+							descuento = "";
+						} else {
+							descuento = String.format("%.0f", d.getDescuento()) + "%";
+						}
+						line = diagnosticos + "; " + d.getTratamiento().getNombre() + "; " + pieza + "; "
+								+ Utils.formatAsCurrency(d.getTratamiento().getPrecio()) + "; " + descuento + "; "
+								+ Utils.formatAsCurrency(d.getPrecio());
+						this.processBody(tableBody, line, false, true);
+						this.precioTotal += d.getPrecio();
+					}
 				}
 			}
 
@@ -288,10 +335,10 @@ public class PresupuestoPdfCreator {
 		Font fontHeaderBody = FontFactory.getFont(FontFactory.COURIER_BOLD, 8.0f);
 
 		PdfPCell cell;
-		int column = 0;
+		// int column = 0;
 
 		while (tokenizer.hasMoreTokens()) {
-			column++;
+			// column++;
 			if (isHeader) {
 
 				cell = new PdfPCell();
@@ -305,12 +352,16 @@ public class PresupuestoPdfCreator {
 			} else {
 				String text = tokenizer.nextToken();
 				cell = new PdfPCell(new Phrase(text, fontBody));
-				if (column == 3) {
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-				} else if (column == 4) {
+				if (text.indexOf("€") != -1 || text.indexOf("%") != -1) {
 					cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 					cell.setPaddingRight(10f);
 				}
+				// if (column == 3) {
+				// cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				// } else if (column == 4) {
+				// cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+				// cell.setPaddingRight(10f);
+				// }
 				if (!isBordered) {
 					cell.setBorder(Rectangle.NO_BORDER);
 				}
@@ -471,6 +522,17 @@ public class PresupuestoPdfCreator {
 			cb.lineTo(document.right() - document.rightMargin(), document.bottom() - 30);
 			cb.closePathStroke();
 		}
+	}
+
+	private boolean tieneDescuentos(List<Diagnostico> diagnosticos) {
+		boolean tieneDescuentos = false;
+		for (Diagnostico d : diagnosticos) {
+			if (d.getDescuento() > 0) {
+				tieneDescuentos = true;
+				break;
+			}
+		}
+		return tieneDescuentos;
 	}
 
 }

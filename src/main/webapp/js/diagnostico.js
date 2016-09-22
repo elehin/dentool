@@ -1,4 +1,5 @@
 var currentDiagnostico;
+var currentPaciente;
 var activePago;
 var pagosTable;
 
@@ -49,6 +50,11 @@ $(document).ready(
 				$(this).select();
 				return false;
 			})
+
+			$("#cambiarOdontogramaBtn").click(function() {
+				cambiaOdontograma();
+				return false;
+			});
 		});
 
 function addPagoRestante() {
@@ -250,6 +256,7 @@ function findPaciente(id) {
 		type : 'GET',
 		url : pacienteURL + id,
 		success : function(data) {
+			currentPaciente = data;
 			var paciente = data.name + ' ' + data.apellidos;
 			$('#backArrowLink').after(paciente);
 		},
@@ -320,6 +327,9 @@ function renderDetails(diagnostico) {
 	$('#notas').val(diagnostico.notas);
 	$('#descuento').val(formatPorcentaje(diagnostico.descuento));
 	if (diagnostico.pieza != 0) {
+		if (diagnostico.pieza > 50) {
+			cambiaOdontograma();
+		}
 		$("#piezaBtn" + diagnostico.pieza).addClass("active");
 	}
 }
@@ -500,4 +510,8 @@ function deletePago(row) {
 					+ $.cookie('restTokenC'));
 		}
 	});
+}
+
+function cambiaOdontograma() {
+	$(".odontograma").toggleClass("in");
 }

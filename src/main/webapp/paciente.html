@@ -195,6 +195,10 @@
 							<textarea id="notas" name="notas" class="form-control" rows="15"></textarea>
 						</div>
 						<div id="presupuestosTab" class="tab-pane fade">
+							<!-- Mostrar presupuesto -->
+							<button id="btnCreatePresupuesto"
+								class="btn btn-primary btn-block margin-top-5">Crear
+								Presupuesto</button>
 							<table id="tablePresupuestos" style="width: 100%"
 								class="table table-striped table-hover display responsive">
 							</table>
@@ -214,26 +218,25 @@
 
 			<div class="col-md-4">
 
-				<!-- Mostrar presupuesto -->
-				<button id="btnCreatePresupuesto"
-					class="btn btn-primary btn-block margin-top-5">Crear
-					Presupuesto</button>
-
-				<hr>
-
 				<!-- Pagos Pendientes -->
 				<div class="well well-sm collapse" id="pagosPendientesPanel">
 					<h3 id="hPagosPendientes" class="text-center text-danger"></h3>
 				</div>
 
 				<!-- Nuevo diagnóstico -->
-				<a href="#addDiagDiv" class="btn btn-info btn-block"
+				<a href="#addDiagDiv" class="btn btn-info btn-block margin-top-5"
 					data-toggle="collapse">Añadir tratamiento</a>
 				<div id="addDiagDiv" class="collapse padding-5">
+					<button id="cambiarOdontogramaBtn"
+						class="btn btn-default btn-block margin-top-5">Cambiar
+						odontograma</button>
+
+					<hr>
+
 					<form id="addDiagForm" role="form">
 
 						<!-- Selección de pieza dental para diagnóstico -->
-						<div class="margin-left-5">
+						<div class="margin-left-5 collapse in odontograma">
 							<div class="btn-group btn-group-justified">
 								<button id="piezaBtn18" type="button"
 									class="btn btn-default botonPieza">18</button>
@@ -307,6 +310,82 @@
 							</div>
 						</div>
 						<!-- /.Selección de pieza dental para diagnóstico -->
+
+						<!-- Selección de pieza dental para diagnóstico infantil-->
+						<div class="margin-left-5 collapse odontograma">
+							<div class="btn-group btn-group-justified">
+								<button id="piezaBtn18" type="button"
+									class="btn btn-default botonPieza">18</button>
+								<button id="piezaBtn17" type="button"
+									class="btn btn-default botonPieza">17</button>
+								<button id="piezaBtn16" type="button"
+									class="btn btn-default botonPieza">16</button>
+								<button id="piezaBtn55" type="button"
+									class="btn btn-default botonPieza">55</button>
+								<button id="piezaBtn54" type="button"
+									class="btn btn-default botonPieza">54</button>
+								<button id="piezaBtn53" type="button"
+									class="btn btn-default botonPieza">53</button>
+								<button id="piezaBtn52" type="button"
+									class="btn btn-default botonPieza">52</button>
+								<button id="piezaBtn51" type="button"
+									class="btn btn-default botonPieza">51</button>
+								<button id="piezaBtn61" type="button"
+									class="btn btn-default botonPieza">61</button>
+								<button id="piezaBtn62" type="button"
+									class="btn btn-default botonPieza">62</button>
+								<button id="piezaBtn63" type="button"
+									class="btn btn-default botonPieza">63</button>
+								<button id="piezaBtn64" type="button"
+									class="btn btn-default botonPieza">64</button>
+								<button id="piezaBtn65" type="button"
+									class="btn btn-default botonPieza">65</button>
+								<button id="piezaBtn26" type="button"
+									class="btn btn-default botonPieza">26</button>
+								<button id="piezaBtn27" type="button"
+									class="btn btn-default botonPieza">27</button>
+								<button id="piezaBtn28" type="button"
+									class="btn btn-default botonPieza">28</button>
+							</div>
+							<img class="img-responsive margin-left-minus-5"
+								src="images/odontograma.png" alt="Odontograma" width="100%">
+
+							<div class="btn-group btn-group-justified">
+								<button id="piezaBtn48" type="button"
+									class="btn btn-default botonPieza">48</button>
+								<button id="piezaBtn47" type="button"
+									class="btn btn-default botonPieza">47</button>
+								<button id="piezaBtn46" type="button"
+									class="btn btn-default botonPieza">46</button>
+								<button id="piezaBtn85" type="button"
+									class="btn btn-default botonPieza">85</button>
+								<button id="piezaBtn84" type="button"
+									class="btn btn-default botonPieza">84</button>
+								<button id="piezaBtn83" type="button"
+									class="btn btn-default botonPieza">83</button>
+								<button id="piezaBtn82" type="button"
+									class="btn btn-default botonPieza">82</button>
+								<button id="piezaBtn81" type="button"
+									class="btn btn-default botonPieza">81</button>
+								<button id="piezaBtn71" type="button"
+									class="btn btn-default botonPieza">71</button>
+								<button id="piezaBtn72" type="button"
+									class="btn btn-default botonPieza">72</button>
+								<button id="piezaBtn73" type="button"
+									class="btn btn-default botonPieza">73</button>
+								<button id="piezaBtn74" type="button"
+									class="btn btn-default botonPieza">74</button>
+								<button id="piezaBtn75" type="button"
+									class="btn btn-default botonPieza">75</button>
+								<button id="piezaBtn36" type="button"
+									class="btn btn-default botonPieza">36</button>
+								<button id="piezaBtn37" type="button"
+									class="btn btn-default botonPieza">37</button>
+								<button id="piezaBtn38" type="button"
+									class="btn btn-default botonPieza">38</button>
+							</div>
+						</div>
+						<!-- /.Selección de pieza dental para diagnóstico infantil-->
 
 						<!-- Tratamientos más utilizados -->
 						<div class="input-group margin-top-15">
@@ -442,6 +521,9 @@
 
 	<!-- bootstrap-select JavaScript -->
 	<script src="js/bootstrap-select.min.js"></script>
+
+	<!-- Accounting JavaScript for formatting currency-->
+	<script src="js/accounting.min.js"></script>
 
 	<script src="js/entorno.js"></script>
 	<script src="js/paciente.js"></script>
