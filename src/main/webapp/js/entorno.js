@@ -11,6 +11,8 @@ var facturaURL = 'https://dentool-elehin.rhcloud.com/service/factura/';
 var datosComercialesURL = 'https://dentool-elehin.rhcloud.com/service/datosComerciales/';
 var reportIngresosURL = 'https://dentool-elehin.rhcloud.com/service/ingresosMes/';
 var citaURL = 'https://dentool-elehin.rhcloud.com/service/cita/';
+var personalURL = 'https://dentool-elehin.rhcloud.com/service/personal/';
+var gabineteURL = 'https://dentool-elehin.rhcloud.com/service/gabinete/';
 
 // var rootURL = 'http://localhost:8080/service/tratamiento/';
 // var diagnosticoURL = 'http://localhost:8080/service/diagnostico/';
@@ -25,6 +27,8 @@ var citaURL = 'https://dentool-elehin.rhcloud.com/service/cita/';
 // var datosComercialesURL = 'http://localhost:8080/service/datosComerciales/';
 // var reportIngresosURL = 'http://localhost:8080/service/ingresosMes/';
 // var citaURL = 'http://localhost:8080/service/cita/';
+// var personalURL = 'http://localhost:8080/service/personal/';
+// var gabineteURL = 'http://localhost:8080/service/gabinete/';
 
 $(document).ready(function() {
 	$('.dropdown-toggle').dropdown();
@@ -97,6 +101,7 @@ function formatTelefono(telefono) {
 	}
 }
 
+
 var meses_es = [ 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
 		'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre' ];
 var meses = meses_es;
@@ -121,7 +126,7 @@ class TzDate extends Date {
 	constructor(){
 		super();
 		this.horasDif = 6;
-// this.horasDif = 0;
+		// this.horasDif = 0;
 		this.setHours(this.getHours() + this.horasDif);
 	}
 	

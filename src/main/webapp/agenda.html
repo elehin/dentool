@@ -27,13 +27,17 @@
 	href="Select-1.2.0/css/select.bootstrap.min.css" />
 <link rel="stylesheet" type="text/css" href="css/datatables.min.css" />
 
-<!-- jqPlot -->
+<!-- jqPlot 
 <link rel="stylesheet" type="text/css"
 	href="js/jqPlot/jquery.jqplot.min.css" />
 
 <!-- ClockPicker -->
 <link rel="stylesheet" type="text/css"
 	href="js/bootstrap-clockpicker.min.css" />
+
+<!-- jQuery -->
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-ui.min.js"></script>
 
 <!-- jquery CSS-->
 <link href="js/jquery-ui.min.css" rel="stylesheet" type="text/css" />
@@ -80,6 +84,10 @@
 							class="glyphicon glyphicon-cog"></span> Configuración<span
 							class="caret"></span></a>
 						<ul class="dropdown-menu">
+							<li><a href="plantilla.html"><span
+									class="glyphicon glyphicon-inbox"></span> Personal</a></li>
+							<li><a href="instalaciones.html"><span
+									class="glyphicon glyphicon-home"></span> Instalaciones</a></li>
 							<li><a href="usuarios.html"><span
 									class="glyphicon glyphicon-user"></span> Usuarios</a></li>
 						</ul></li>
@@ -179,7 +187,7 @@
 
 	<!-- Diálogo de creación de cita -->
 	<!-- ---------------------------- -->
-	<div id="dialog">
+	<div id="dialog" class="collapse">
 		<form id="nuevaCitaForm" name="nuevaCitaForm" role="form">
 			<input type="text" name="paciente" id="name" class="form-control"
 				placeholder="Paciente" required /> <input type="text"
@@ -199,7 +207,7 @@
 	</div>
 
 	<!-- Diálogo de modificación de cita -->
-	<div id="editDialog">
+	<div id="editDialog" class="collapse">
 		<form id="editCitaForm" name="editCitaForm" role="form">
 			<input type="text" name="paciente" id="nameEdit" class="form-control"
 				value="" autofocus placeholder="Paciente" required /> <input
@@ -255,16 +263,12 @@
 
 	<!-- /.container -->
 
-	<!-- jQuery -->
-	<script src="js/jquery.min.js"></script>
-	<script src="js/jquery-ui.min.js"></script>
-
 	<!-- jQuery Cookie -->
 	<script src="js/jquery.cookie.js"></script>
 
 	<!-- jqPlot -->
 	<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="js/jqPlot/excanvas.js"></script><![endif]-->
-	<script type="text/javascript" src="js/jqPlot/jquery.jqplot.min.js"></script>
+	<!--<script type="text/javascript" src="js/jqPlot/jquery.jqplot.min.js"></script>
 	<script type="text/javascript"
 		src="js/jqPlot/plugins/jqplot.funnelRenderer.min.js"></script>
 	<script type="text/javascript"
@@ -278,7 +282,7 @@
 	<script type="text/javascript"
 		src="js/jqPlot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
 	<script type="text/javascript"
-		src="js/jqPlot/plugins/jqplot.enhancedLegendRenderer.min.js"></script>
+		src="js/jqPlot/plugins/jqplot.enhancedLegendRenderer.min.js"></script>-->
 
 	<!-- Accounting JavaScript for formatting currency-->
 	<script src="js/accounting.min.js"></script>

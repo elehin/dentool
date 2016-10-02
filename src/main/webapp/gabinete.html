@@ -9,10 +9,26 @@
 <meta name="description" content="">
 <meta name="author" content="">
 
-<title>Dentool - Mantenimiento de usuario</title>
+<title>Dentool - Mantenimiento de gabinete</title>
 
 <!-- Bootstrap Core CSS -->
 <link href="css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Datatables CSS -->
+<link rel="stylesheet" type="text/css"
+	href="DataTables-1.10.12/css/dataTables.bootstrap.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="Buttons-1.2.1/css/buttons.bootstrap.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="FixedHeader-3.1.2/css/fixedHeader.bootstrap.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="Responsive-2.1.0/css/responsive.bootstrap.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="Select-1.2.0/css/select.bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="css/datatables.min.css" />
+
+<!-- jquery CSS-->
+<link href="js/jquery-ui.min.css" rel="stylesheet" type="text/css" />
 
 <!-- Custom CSS -->
 <link href="css/main.css" rel="stylesheet">
@@ -75,54 +91,33 @@
 		<div id="contentRow1" class="row">
 
 
-			<form id="usuarioForm" role="form">
+			<form id="personalForm" role="form">
 				<div class="col-md-3">
-					<label class="collapse">Id:</label> <input id="usuarioId"
-						name="usuarioId" type="text" class="form-control collapse"
+					<label class="collapse">Id:</label> <input id="gabineteId"
+						name="gabineteId" type="text" class="form-control collapse"
 						disabled />
-					<div id="emailDiv" class="form-group">
-						<label for="username">Correo electrónico:</label> <input
-							type="email" class="form-control" id="username" name="username"
-							required />
-					</div>
-					<div id="passwordDiv" class="form-group">
-						<label for="password">Contraseña:</label> <input type="password"
-							id="password" name="password" class="form-control" required />
-					</div>
-					<div id="confirmationDiv" class="form-group">
-						<label for="confirmation">Confirma la Contraseña:</label> <input
-							type="password" id="confirmation" name="confirmation"
-							class="form-control" required />
-					</div>
 					<div id="nombreDiv" class="form-group">
 						<label for="nombre">Nombre:</label> <input type="text" id="nombre"
-							name="nombre" autocomplete="given-name" class="form-control" />
+							name="nombre" class="form-control" required />
 					</div>
 					<div id="apellidosDiv" class="form-group">
-						<label for="apellidos">Apellidos:</label> <input type="text"
-							id="apellidos" name="apellidos" autocomplete="family-name"
-							class="form-control" required />
+						<label for="apellidos">Especialidad:</label> <input type="text"
+							id="especialidad" name="especialidad" class="form-control" />
 					</div>
-					<div class="checkbox">
-						<label for="activo"> <input type="checkbox" value="true"
-							id="activo" name="alergico" required>Activo
-						</label>
-					</div>
-
 
 					<div class="alert alert-success collapse fade margin-top-25 "
 						id="success-alert">
 						<p>
 							<button type="button" class="close" data-dismiss="alert">x</button>
 							<span class="glyphicon glyphicon-ok"></span><strong> OK!
-							</strong> El usuario se ha modificado correctamente.
+							</strong> El gabinete se ha modificado correctamente.
 						</p>
 					</div>
 
 					<div class="alert alert-danger collapse margin-top-25 "
 						id="error-alert">
 						<strong>Error!</strong> Ha ocurrido algún tipo de error y no se ha
-						modificado el paciente.
+						modificado el gabinete.
 					</div>
 
 					<button id="btnSave"
@@ -132,6 +127,29 @@
 				</div>
 
 			</form>
+			<div class="col-md-9 hidden-xs hidden-sm">
+				<table id="tablePersonal"
+					class="table table-striped table-hover display nowrap">
+					<thead>
+						<th>&nbsp;</th>
+						<th>id</th>
+						<th>Lunes</th>
+						<th>Martes</th>
+						<th>Miércoles</th>
+						<th>Jueves</th>
+						<th>Viernes</th>
+						<th>Sábado</th>
+						<th>Domingo</th>
+					</thead>
+					<tbody id="tablePersonalBody"></tbody>
+				</table>
+
+			</div>
+			<div id="contentRow2" class="row">
+				<div class="col-md-2 hidden-xs hidden-sm">
+					<div id="plantillaDiv"></div>
+				</div>
+			</div>
 		</div>
 
 	</div>
@@ -154,15 +172,37 @@
 
 	<!-- jQuery -->
 	<script src="js/jquery-1.12.4.min.js"></script>
+	<script src="js/jquery-ui.min.js"></script>
 
 	<!-- jQuery Cookie -->
 	<script src="js/jquery.cookie.js"></script>
+
+	<!--DataTables -->
+	<script type="text/javascript"
+		src="DataTables-1.10.12/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript"
+		src="DataTables-1.10.12/js/dataTables.bootstrap.min.js"></script>
+	<script type="text/javascript"
+		src="Buttons-1.2.1/js/dataTables.buttons.min.js"></script>
+	<script type="text/javascript"
+		src="Buttons-1.2.1/js/buttons.bootstrap.min.js"></script>
+	<script type="text/javascript"
+		src="Buttons-1.2.1/js/buttons.print.min.js"></script>
+	<script type="text/javascript"
+		src="FixedHeader-3.1.2/js/dataTables.fixedHeader.min.js"></script>
+	<script type="text/javascript"
+		src="Responsive-2.1.0/js/dataTables.responsive.min.js"></script>
+	<script type="text/javascript"
+		src="Responsive-2.1.0/js/responsive.bootstrap.min.js"></script>
+	<script type="text/javascript"
+		src="Select-1.2.0/js/dataTables.select.min.js"></script>
+	<script type="text/javascript" src="js/datatables.js"></script>
 
 	<!-- Bootstrap Core JavaScript -->
 	<script src="js/bootstrap.min.js"></script>
 
 	<script src="js/entorno.js"></script>
-	<script src="js/usuario.js"></script>
+	<script src="js/gabinete.js"></script>
 
 </body>
 </html>
