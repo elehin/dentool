@@ -198,18 +198,10 @@ function initDragNDrop() {
 	// #########################################################################
 	// Inicialización de los objetos draggable para cambiar las horas de citas
 	$(".draggable").draggable({
-		// scope : "personal",
-		// appendTo : $("#calendar tbody"),
-		// containment : $("#calendar tbody"),
 		delay : 200,
 		revert : true,
-		// grid : [ $(".hueco").width() + 5, 20.5 ],
-		// stack : ".ocupado",
-		// start : draggableStart,
-		// scroll : true,
-		// snap : true,
 		helper : "clone",
-	// opacity : 0.5
+		opacity : 0.5
 	});
 
 	// #########################################################################
@@ -217,12 +209,12 @@ function initDragNDrop() {
 	// Inicialización de los objetos droppable para aceptar los cambios de
 	// personal
 	$("td.hueco").droppable({
-		// scope : "personal",
 		accept : $(".draggable"),
 		// tolerance : "pointer",
 		drop : dropComplete,
-		activeClass : "drop-active",
-		hoverClass : "drop-hover"
+		classes : {
+			"ui-droppable-hover" : "drop-hover"
+		}
 	});
 }
 
@@ -251,10 +243,6 @@ function updateGabinete() {
 }
 
 function formToJSON() {
-	// if(currentGabinete.lunesMorning === undefined ||
-	// currentGabinete.lunesMorning == null){
-	// lunesMorning =
-	// }
 	return JSON.stringify({
 		"id" : $("#gabineteId").val(),
 		"nombre" : $('#nombre').val(),
@@ -323,6 +311,18 @@ function populateTablePlantilla(dataset) {
 			$("#plantillaDiv").append(html);
 		}
 	});
+	var html = '<div class="panel panel-default draggable" id="' + 'null'
+			+ '"><div class="panel-body">' + 'Libre' + '</div> </div>';
+	$("#plantillaDiv").append(html);
+	// var html = '<div class="panel panel-default draggable margin-left-5"
+	// id="'
+	// + item.id + '"><div class="panel-body">' + item.nombre
+	// + '</div> </div>';
+	// $('#tablePlantilla tr').append($("<td>"));
+	// $('#tablePlantilla tbody tr').each(function() {
+	// $(this).children('td:last').append($(html))
+	// });
+
 	initDragNDrop();
 
 }
@@ -332,7 +332,10 @@ function draggableStart() {
 }
 
 function dropComplete(draggable, ui) {
-	var personal = getPersonalFromPlantilla($(ui.draggable[0]).attr("id"));
+	var personal = {};
+	if ($(ui.draggable[0]).attr("id") != 'null') {
+		personal = getPersonalFromPlantilla($(ui.draggable[0]).attr("id"));
+	}
 
 	switch ($(this).attr("id")) {
 	case "1m":
@@ -381,7 +384,11 @@ function dropComplete(draggable, ui) {
 
 	updateGabinete();
 
-	$(this).text(personal.nombre);
+	if (personal.nombre === undefined) {
+		$(this).text('Libre');
+	} else {
+		$(this).text(personal.nombre);
+	}
 }
 
 function getPersonalFromPlantilla(id) {

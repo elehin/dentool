@@ -18,72 +18,72 @@ public class Gabinete {
 	private String nombre;
 	private String especialidad;
 
-	@ManyToOne(optional = true, cascade = CascadeType.MERGE)
+	@ManyToOne(optional = true, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
 	@JoinColumn(name = "lunesMorning", referencedColumnName = "id")
 	// @JsonIgnore
 	private Personal lunesMorning;
 
-	@ManyToOne(optional = true, cascade = CascadeType.MERGE)
+	@ManyToOne(optional = true, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
 	@JoinColumn(name = "lunesTarde", referencedColumnName = "id")
 	// @JsonIgnore
 	private Personal lunesTarde;
 
-	@ManyToOne(optional = true, cascade = CascadeType.MERGE)
+	@ManyToOne(optional = true, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
 	@JoinColumn(name = "martesMorning", referencedColumnName = "id")
 	// @JsonIgnore
 	private Personal martesMorning;
 
-	@ManyToOne(optional = true, cascade = CascadeType.MERGE)
+	@ManyToOne(optional = true, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
 	@JoinColumn(name = "martesTarde", referencedColumnName = "id")
 	// @JsonIgnore
 	private Personal martesTarde;
 
-	@ManyToOne(optional = true, cascade = CascadeType.MERGE)
+	@ManyToOne(optional = true, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
 	@JoinColumn(name = "miercolesMorning", referencedColumnName = "id")
 	// @JsonIgnore
 	private Personal miercolesMorning;
 
-	@ManyToOne(optional = true, cascade = CascadeType.MERGE)
+	@ManyToOne(optional = true, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
 	@JoinColumn(name = "miercolesTarde", referencedColumnName = "id")
 	// @JsonIgnore
 	private Personal miercolesTarde;
 
-	@ManyToOne(optional = true, cascade = CascadeType.MERGE)
+	@ManyToOne(optional = true, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
 	@JoinColumn(name = "juevesMorning", referencedColumnName = "id")
 	// @JsonIgnore
 	private Personal juevesMorning;
 
-	@ManyToOne(optional = true, cascade = CascadeType.MERGE)
+	@ManyToOne(optional = true, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
 	@JoinColumn(name = "juevesTarde", referencedColumnName = "id")
 	// @JsonIgnore
 	private Personal juevesTarde;
 
-	@ManyToOne(optional = true, cascade = CascadeType.MERGE)
+	@ManyToOne(optional = true, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
 	@JoinColumn(name = "viernesMorning", referencedColumnName = "id")
 	// @JsonIgnore
 	private Personal viernesMorning;
 
-	@ManyToOne(optional = true, cascade = CascadeType.MERGE)
+	@ManyToOne(optional = true, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
 	@JoinColumn(name = "viernesTarde", referencedColumnName = "id")
 	// @JsonIgnore
 	private Personal viernesTarde;
 
-	@ManyToOne(optional = true, cascade = CascadeType.MERGE)
+	@ManyToOne(optional = true, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
 	@JoinColumn(name = "sabadoMorning", referencedColumnName = "id")
 	// @JsonIgnore
 	private Personal sabadoMorning;
 
-	@ManyToOne(optional = true, cascade = CascadeType.MERGE)
+	@ManyToOne(optional = true, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
 	@JoinColumn(name = "sabadoTarde", referencedColumnName = "id")
 	// @JsonIgnore
 	private Personal sabadoTarde;
 
-	@ManyToOne(optional = true, cascade = CascadeType.MERGE)
+	@ManyToOne(optional = true, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
 	@JoinColumn(name = "domingoMorning", referencedColumnName = "id")
 	// @JsonIgnore
 	private Personal domingoMorning;
 
-	@ManyToOne(optional = true, cascade = CascadeType.MERGE)
+	@ManyToOne(optional = true, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
 	@JoinColumn(name = "domingoTarde", referencedColumnName = "id")
 	// @JsonIgnore
 	private Personal domingoTarde;
@@ -214,6 +214,7 @@ public class Gabinete {
 		this.setLunesMorning(origen.getLunesMorning());
 		this.setLunesTarde(origen.getLunesTarde());
 		this.setMartesMorning(origen.getMartesMorning());
+		this.setMartesTarde(origen.getMartesTarde());
 		this.setMiercolesMorning(origen.getMiercolesMorning());
 		this.setMiercolesTarde(origen.getMiercolesTarde());
 		this.setJuevesMorning(origen.getJuevesMorning());

@@ -640,7 +640,10 @@ function initDragAndDrop() {
 		tolerance : "pointer",
 		drop : dropComplete,
 		// activeClass : "drop-active",
-		hoverClass : "drop-hover"
+		classes : {
+			"ui-droppable-hover" : "drop-hover"
+		}
+	// hoverClass : "drop-hover"
 	});
 }
 
