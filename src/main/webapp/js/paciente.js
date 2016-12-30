@@ -899,7 +899,7 @@ function renderSaldo() {
 	if (currentPaciente.saldo > 0) {
 		$("#hSaldo").empty();
 		$("#saldoPanel").addClass("in");
-		$("#hSaldo").text("Saldo : +" + currentPaciente.saldo + " €");
+		$("#hSaldo").text("Saldo : +" + formatCurrency(currentPaciente.saldo));
 		$("#cantidadSaldo").val(0);
 	} else {
 		$("#hSaldo").empty();

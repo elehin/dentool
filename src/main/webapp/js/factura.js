@@ -208,7 +208,8 @@ function renderDiagTableRow(item) {
 		pieza = item.pieza;
 	}
 
-	row = [ item.id, '', item.tratamiento.nombre, pieza, item.precio + " €" ];
+	row = [ item.id, '', item.tratamiento.nombre, pieza,
+			formatCurrency(item.precio) ];
 
 	return row;
 }
@@ -220,7 +221,7 @@ function updateTotalPanel(data, action) {
 			total += item.precio;
 		});
 
-		$("#hTotalPanel").text(total + " €");
+		$("#hTotalPanel").text(formatCurrency(total));
 	} else {
 		$.each(data, function(i, item) {
 			var index = $.inArray(item[0], rows_selected);
@@ -229,7 +230,7 @@ function updateTotalPanel(data, action) {
 			}
 		});
 
-		$("#hTotalPanel").text(total + " €");
+		$("#hTotalPanel").text(formatCurrency(total));
 	}
 }
 

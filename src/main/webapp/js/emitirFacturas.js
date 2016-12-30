@@ -117,7 +117,7 @@ function populateTable(diagnosticos) {
 					});
 
 	$('input[type="checkbox"]').prop('checked', true);
-	
+
 	// Handle click on checkbox
 	$('#tablePacientes tbody tr').off('click');
 	$('#tablePacientes tbody').on('click', 'input[type="checkbox"]',
@@ -157,28 +157,26 @@ function populateTable(diagnosticos) {
 				// Prevent click event from propagating to parent
 				e.stopPropagation();
 			});
-	
-	$('#tablePacientes tbody')
-			.on(
-					'click',
-					'button',
-					function(e) {
-						var data = pacientesTable
-								.row($(this).parents('tr')).data();
-						url = serverURL + 'factura.html?paciente=' + data[0]
-								+ '&origin=emitirFacturas.html';
-						window.location.replace(url);
 
-						// Prevent click event from propagating to parent
-						e.stopPropagation();
-					});
+	$('#tablePacientes tbody').on(
+			'click',
+			'button',
+			function(e) {
+				var data = pacientesTable.row($(this).parents('tr')).data();
+				url = serverURL + 'factura.html?paciente=' + data[0]
+						+ '&origin=emitirFacturas.html';
+				window.location.replace(url);
+
+				// Prevent click event from propagating to parent
+				e.stopPropagation();
+			});
 }
 
 function renderDiagTableRow(item) {
 	var lupa = '<button class="btn btn-info padding-0-4" role="button"><span class="glyphicon glyphicon-search"></span></button>';
 
 	row = [ item.pacienteId, '', lupa, item.name + ' ' + item.apellidos,
-			item.dni, item.importe + " €" ];
+			item.dni, formatCurrency(item.importe) ];
 
 	return row;
 }
@@ -190,7 +188,7 @@ function updateTotalPanel(data, action) {
 			total += item.importe;
 		});
 
-		$("#hTotalPanel").text(total + " €");
+		$("#hTotalPanel").text(formatCurrency(total));
 	} else {
 		$.each(data, function(i, item) {
 			var index = $.inArray(item[0], rows_selected);
@@ -199,7 +197,7 @@ function updateTotalPanel(data, action) {
 			}
 		});
 
-		$("#hTotalPanel").text(total + " €");
+		$("#hTotalPanel").text(formatCurrency(total));
 	}
 }
 

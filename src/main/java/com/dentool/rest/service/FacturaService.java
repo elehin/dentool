@@ -88,15 +88,12 @@ public class FacturaService {
 			d.setFactura(factura);
 		}
 		Factura f = this.entityManager.merge(factura);
+
 		this.entityManager.flush();
 
-		if (factura.getNumero() == null) {
-			Calendar cal = Calendar.getInstance();
-			f.setNumero(cal.get(Calendar.YEAR) + "/" + String.format("%05d", f.getId()));
-		}
+		f.setNumero(getNumeroFactura(f));
 
-		// ------ Se crea el pdf de la factura
-		// -------
+		// ------ Se crea el pdf de la factura -------
 		FacturaPdfCreator pdfCreator = new FacturaPdfCreator();
 		String fileName = pdfCreator.createFacturaPdf(f);
 
@@ -109,6 +106,34 @@ public class FacturaService {
 		// this.pacienteService.updatePaciente(p);
 
 		return f;
+	}
+
+	private String getNumeroFactura(Factura f) {
+
+		long previousId = f.getId() - 1L;
+
+		Factura anterior = null;
+		while (anterior == null && previousId > 0L) {
+			anterior = this.entityManager.find(Factura.class, previousId);
+			previousId--;
+		}
+
+		int previousYear = Integer.valueOf(anterior.getNumero().substring(0, 4));
+
+		Calendar cal = Calendar.getInstance();
+
+		String numeroSiguiente = "";
+		String secuencialSiguente = anterior.getNumero().substring(5, anterior.getNumero().length());
+		int secSiguiente = Integer.parseInt(secuencialSiguente) + 1;
+
+		if (cal.get(Calendar.YEAR) == previousYear) {
+			numeroSiguiente = cal.get(Calendar.YEAR) + "/" + String.format("%05d", secSiguiente);
+		} else {
+			numeroSiguiente = cal.get(Calendar.YEAR) + "/" + String.format("%05d", 1);
+		}
+
+		return numeroSiguiente;
+
 	}
 
 	public int emitirFacturas(List<Long> pacientes) {
@@ -133,7 +158,7 @@ public class FacturaService {
 			Factura factura = this.entityManager.merge(f);
 			this.entityManager.flush();
 
-			factura.setNumero(cal.get(Calendar.YEAR) + "/" + String.format("%05d", factura.getId()));
+			factura.setNumero(this.getNumeroFactura(factura));
 
 			// ------ Se crea el pdf de la factura
 			// -------
@@ -445,26 +470,30 @@ public class FacturaService {
 
 		Object o = this.entityManager.createQuery(query).setParameter("desde", desde.getTime())
 				.setParameter("hasta", hasta.getTime()).getSingleResult();
+		double result;
+		float resultFloat;
 		if (o != null) {
-			double result = (double) o;
-			float resultFloat = Float.parseFloat(Double.toString(result));
+			result = (double) o;
+			resultFloat = Float.parseFloat(Double.toString(result));
 			ifs.setMes(resultFloat);
 			ifs.setStringMesCurso(desde.getDisplayName(Calendar.MONTH, Calendar.LONG, new Locale("es", "ES")));
 		}
 
 		// Cálculo del importe facturado en el mes anterior
 		desde.add(Calendar.MONTH, -1);
-		hasta.set(Calendar.DATE, hasta.getActualMaximum(Calendar.DAY_OF_MONTH));
 		hasta.add(Calendar.MONTH, -1);
+		hasta.set(Calendar.DATE, hasta.getActualMaximum(Calendar.DAY_OF_MONTH));
 
 		o = this.entityManager.createQuery(query).setParameter("desde", desde.getTime())
 				.setParameter("hasta", hasta.getTime()).getSingleResult();
+		result = 0;
+		resultFloat = 0;
 		if (o != null) {
-			double result = (double) o;
-			float resultFloat = Float.parseFloat(Double.toString(result));
-			ifs.setMesAnterior(resultFloat);
-			ifs.setStringMesAnterior(desde.getDisplayName(Calendar.MONTH, Calendar.LONG, new Locale("es", "ES")));
+			result = (double) o;
+			resultFloat = Float.parseFloat(Double.toString(result));
 		}
+		ifs.setMesAnterior(resultFloat);
+		ifs.setStringMesAnterior(desde.getDisplayName(Calendar.MONTH, Calendar.LONG, new Locale("es", "ES")));
 
 		// Cálculo del importe facturado en el trimestre en curso
 		switch (Math.floorDiv(Calendar.getInstance().get(Calendar.MONTH), 3)) {
@@ -492,11 +521,13 @@ public class FacturaService {
 
 		o = this.entityManager.createQuery(query).setParameter("desde", desde.getTime())
 				.setParameter("hasta", hasta.getTime()).getSingleResult();
+		result = 0;
+		resultFloat = 0;
 		if (o != null) {
-			double result = (double) o;
-			float resultFloat = Float.parseFloat(Double.toString(result));
-			ifs.setTrimestre(resultFloat);
+			result = (double) o;
+			resultFloat = Float.parseFloat(Double.toString(result));
 		}
+		ifs.setTrimestre(resultFloat);
 
 		// Cálculo del importe facturado en el año en curso
 		desde.set(Calendar.MONTH, 0);
@@ -505,11 +536,13 @@ public class FacturaService {
 
 		o = this.entityManager.createQuery(query).setParameter("desde", desde.getTime())
 				.setParameter("hasta", hasta.getTime()).getSingleResult();
+		result = 0;
+		resultFloat = 0;
 		if (o != null) {
-			double result = (double) o;
-			float resultFloat = Float.parseFloat(Double.toString(result));
-			ifs.setYear(resultFloat);
+			result = (double) o;
+			resultFloat = Float.parseFloat(Double.toString(result));
 		}
+		ifs.setYear(resultFloat);
 
 		return ifs;
 	}
