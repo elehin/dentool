@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.dentool.filter.Secured;
+import com.dentool.model.FacturasAEmitir;
 import com.dentool.model.ImportesFacturados;
 import com.dentool.model.entities.Factura;
 import com.dentool.rest.service.FacturaService;
@@ -135,12 +136,12 @@ public class FacturaRestService {
 
 	@GET
 	@Secured
-	@Path("/pdf/mes/{mes}")
+	@Path("/pdf/mes/{mes}/year/{year}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces("application/pdf")
-	public Response getPdfMes(@PathParam("mes") int mes) {
+	public Response getPdfMes(@PathParam("mes") int mes, @PathParam("year") int year) {
 
-		File file = this.facturaService.getZipFacturasMes(mes);
+		File file = this.facturaService.getZipFacturasMes(mes, year);
 
 		if (file == null) {
 			throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -154,12 +155,12 @@ public class FacturaRestService {
 
 	@GET
 	@Secured
-	@Path("/pdf/trimestre/{mes}")
+	@Path("/pdf/trimestre/{mes}/year/{year}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces("application/pdf")
-	public Response getPdfTrimestre(@PathParam("mes") int mes) {
+	public Response getPdfTrimestre(@PathParam("mes") int mes, @PathParam("year") int year) {
 
-		File file = this.facturaService.getZipFacturasTrimestre(mes);
+		File file = this.facturaService.getZipFacturasTrimestre(mes, year);
 
 		if (file == null) {
 			throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -194,8 +195,9 @@ public class FacturaRestService {
 	@Secured
 	@Path("/emiteFacturas")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response emiteFacturas(List<Long> pacientes) {
-		int response = this.facturaService.emitirFacturas(pacientes);
+	public Response emiteFacturas(FacturasAEmitir facturasAEmitir) {
+		int response = this.facturaService.emitirFacturas(facturasAEmitir.getPacientes(),
+				facturasAEmitir.getFechaFactura());
 		if (response < 1) {
 			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
 		}

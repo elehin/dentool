@@ -16,6 +16,7 @@ import java.util.zip.ZipOutputStream;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 import org.slf4j.Logger;
@@ -27,6 +28,7 @@ import com.dentool.model.entities.Factura;
 import com.dentool.model.entities.Paciente;
 import com.dentool.rest.service.itext.FacturaPdfCreator;
 import com.dentool.rest.service.poi.GeneradorInformeFacturacion;
+import com.dentool.utils.Utils;
 
 @Stateless
 public class FacturaService {
@@ -108,35 +110,76 @@ public class FacturaService {
 		return f;
 	}
 
-	private String getNumeroFactura(Factura f) {
+	private synchronized String getNumeroFactura(Factura f) {
 
-		long previousId = f.getId() - 1L;
+		String query = "SELECT f FROM Factura f WHERE f.fecha BETWEEN :desde AND :hasta AND f.numero IS NOT NULL ORDER BY f.numero DESC";
+
+		Calendar desde = Calendar.getInstance();
+		desde.setTime(f.getFecha());
+		desde.set(Calendar.MONTH, 0);
+		desde.set(Calendar.DATE, 1);
+		Utils.setInicioDia(desde);
+
+		Calendar hasta = Calendar.getInstance();
+		hasta.setTime(f.getFecha());
+		hasta.set(Calendar.MONTH, 11);
+		hasta.set(Calendar.DATE, 31);
+		Utils.setFinDia(hasta);
 
 		Factura anterior = null;
-		while (anterior == null && previousId > 0L) {
-			anterior = this.entityManager.find(Factura.class, previousId);
-			previousId--;
-		}
+		String numeroSiguiente = String.valueOf(desde.get(Calendar.YEAR)) + "/";
 
-		int previousYear = Integer.valueOf(anterior.getNumero().substring(0, 4));
+		try {
+			anterior = (Factura) this.entityManager.createQuery(query).setParameter("desde", desde.getTime())
+					.setParameter("hasta", hasta.getTime()).setMaxResults(1).getSingleResult();
 
-		Calendar cal = Calendar.getInstance();
-
-		String numeroSiguiente = "";
-		String secuencialSiguente = anterior.getNumero().substring(5, anterior.getNumero().length());
-		int secSiguiente = Integer.parseInt(secuencialSiguente) + 1;
-
-		if (cal.get(Calendar.YEAR) == previousYear) {
-			numeroSiguiente = cal.get(Calendar.YEAR) + "/" + String.format("%05d", secSiguiente);
-		} else {
-			numeroSiguiente = cal.get(Calendar.YEAR) + "/" + String.format("%05d", 1);
+			if (anterior != null) {
+				String secuencialSiguente = anterior.getNumero().substring(5, anterior.getNumero().length());
+				int secSiguiente = Integer.parseInt(secuencialSiguente) + 1;
+				numeroSiguiente += String.format("%05d", secSiguiente);
+			} else {
+				numeroSiguiente += String.format("%05d", 1);
+			}
+		} catch (NoResultException e) {
+			numeroSiguiente += String.format("%05d", 1);
 		}
 
 		return numeroSiguiente;
 
 	}
 
-	public int emitirFacturas(List<Long> pacientes) {
+	// private String getNumeroFactura(Factura f) {
+	//
+	// long previousId = f.getId() - 1L;
+	//
+	// Factura anterior = null;
+	// while (anterior == null && previousId > 0L) {
+	// anterior = this.entityManager.find(Factura.class, previousId);
+	// previousId--;
+	// }
+	//
+	// int previousYear = Integer.valueOf(anterior.getNumero().substring(0, 4));
+	//
+	// Calendar cal = Calendar.getInstance();
+	//
+	// String numeroSiguiente = "";
+	// String secuencialSiguente = anterior.getNumero().substring(5,
+	// anterior.getNumero().length());
+	// int secSiguiente = Integer.parseInt(secuencialSiguente) + 1;
+	//
+	// if (cal.get(Calendar.YEAR) == previousYear) {
+	// numeroSiguiente = cal.get(Calendar.YEAR) + "/" + String.format("%05d",
+	// secSiguiente);
+	// } else {
+	// numeroSiguiente = cal.get(Calendar.YEAR) + "/" + String.format("%05d",
+	// 1);
+	// }
+	//
+	// return numeroSiguiente;
+	//
+	// }
+
+	public int emitirFacturas(List<Long> pacientes, Date fechaFactura) {
 		int facturas = 0;
 		Calendar cal = Calendar.getInstance();
 
@@ -146,11 +189,17 @@ public class FacturaService {
 			Paciente p = this.pacienteService.find(id);
 			f.setPacienteId(p.getId());
 			f.setNombreFactura(p.getName() + " " + p.getApellidos());
-			f.setFecha(new Date(cal.getTimeInMillis()));
 			f.setCreada(new Date(Calendar.getInstance().getTimeInMillis()));
 			f.setNifFactura(p.getDni());
 			f.setDiagnosticos(this.diagnosticoService.getDiagnosticosNoFacturadosByPaciente(p.getId()));
 			f.setImporte(this.diagnosticoService.getPrecioDiagnosticos(f.getDiagnosticos()));
+
+			if (fechaFactura == null) {
+				f.setFecha(new Date(cal.getTimeInMillis()));
+			} else {
+				f.setFecha(fechaFactura);
+			}
+
 			for (Diagnostico d : f.getDiagnosticos()) {
 				d.setFactura(f);
 			}
@@ -183,12 +232,14 @@ public class FacturaService {
 		return this.entityManager.find(Factura.class, id);
 	}
 
-	public List<Factura> getFacturasTrimestre(int mes) {
+	public List<Factura> getFacturasTrimestre(int mes, int year) {
 		String query = "SELECT f FROM Factura f WHERE f.fecha between :desde AND :hasta ORDER BY f.creada DESC";
 
 		Calendar desde = Calendar.getInstance();
 		Calendar hasta = Calendar.getInstance();
 
+		desde.set(Calendar.YEAR, year);
+		hasta.set(Calendar.YEAR, year);
 		this.getMesesDelTrimestre(mes, desde, hasta);
 
 		@SuppressWarnings("unchecked")
@@ -235,18 +286,18 @@ public class FacturaService {
 		hasta.set(Calendar.DATE, hasta.getActualMaximum(Calendar.DATE));
 	}
 
-	public File getZipFacturasTrimestre(int mes) {
+	public File getZipFacturasTrimestre(int mes, int year) {
 		FileOutputStream fos = null;
 		ZipOutputStream zos = null;
 		GeneradorInformeFacturacion gif = new GeneradorInformeFacturacion();
 
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.MONTH, mes);
-		List<Factura> facturas = this.getFacturasTrimestre(mes);
+		cal.set(Calendar.YEAR, year);
+		List<Factura> facturas = this.getFacturasTrimestre(mes, year);
 
-		String zipFileName = "zip_mes_trimestre_"
-				+ cal.getDisplayName(Calendar.MONTH, Calendar.SHORT_FORMAT, new Locale("es", "ES")) + "_"
-				+ cal.getTimeInMillis() + ".zip";
+		String q = String.valueOf((mes + 3) / 3).substring(0, 1);
+		String zipFileName = "zip_Q" + q + "_" + cal.getTimeInMillis() + ".zip";
 
 		try {
 			fos = new FileOutputStream(zipFileName);
@@ -290,7 +341,7 @@ public class FacturaService {
 		return zipFile;
 	}
 
-	public List<Factura> getFacturasMes(int mes) {
+	public List<Factura> getFacturasMes(int mes, int year) {
 		String query = "SELECT f FROM Factura f WHERE f.fecha between :desde AND :hasta ORDER BY f.creada DESC";
 
 		Calendar desde = Calendar.getInstance();
@@ -298,8 +349,10 @@ public class FacturaService {
 
 		desde.set(Calendar.MONTH, mes);
 		desde.set(Calendar.DATE, 1);
+		desde.set(Calendar.YEAR, year);
 		hasta.set(Calendar.MONTH, mes);
 		hasta.set(Calendar.DATE, hasta.getActualMaximum(Calendar.DATE));
+		hasta.set(Calendar.YEAR, year);
 
 		@SuppressWarnings("unchecked")
 		List<Factura> lista = this.entityManager.createQuery(query).setParameter("desde", desde.getTime())
@@ -307,14 +360,15 @@ public class FacturaService {
 		return lista;
 	}
 
-	public File getZipFacturasMes(int mes) {
+	public File getZipFacturasMes(int mes, int year) {
 		FileOutputStream fos = null;
 		ZipOutputStream zos = null;
 		GeneradorInformeFacturacion gif = new GeneradorInformeFacturacion();
 
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.MONTH, mes);
-		List<Factura> facturas = this.getFacturasMes(mes);
+		cal.set(Calendar.YEAR, year);
+		List<Factura> facturas = this.getFacturasMes(mes, year);
 
 		String zipFileName = "zip_mes_"
 				+ cal.getDisplayName(Calendar.MONTH, Calendar.SHORT_FORMAT, new Locale("es", "ES")) + "_"
@@ -467,6 +521,7 @@ public class FacturaService {
 		Calendar desde = Calendar.getInstance();
 		desde.set(Calendar.DATE, 1);
 		Calendar hasta = Calendar.getInstance();
+		hasta.set(Calendar.DATE, hasta.getActualMaximum(Calendar.DAY_OF_MONTH));
 
 		Object o = this.entityManager.createQuery(query).setParameter("desde", desde.getTime())
 				.setParameter("hasta", hasta.getTime()).getSingleResult();
@@ -496,6 +551,9 @@ public class FacturaService {
 		ifs.setStringMesAnterior(desde.getDisplayName(Calendar.MONTH, Calendar.LONG, new Locale("es", "ES")));
 
 		// Cálculo del importe facturado en el trimestre en curso
+		desde = Calendar.getInstance();
+		desde.set(Calendar.DATE, 1);
+		hasta = Calendar.getInstance();
 		switch (Math.floorDiv(Calendar.getInstance().get(Calendar.MONTH), 3)) {
 		case 0:
 			desde.set(Calendar.MONTH, 0);

@@ -365,7 +365,8 @@ function formToJSON(action) {
 			"diagnosticos" : diagnosticos,
 			"pacienteId" : pacienteId,
 			"nombreFactura" : $('#otherName').val(),
-			"nifFactura" : $('#otherDni').val()
+			"nifFactura" : $('#otherDni').val(),
+			"fecha" : $('#otherDate').val(),
 		});
 	}
 }

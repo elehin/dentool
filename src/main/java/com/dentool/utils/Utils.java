@@ -105,4 +105,29 @@ public class Utils {
 	public static String capitalize(String string) {
 		return StringUtils.capitalize(string);
 	}
+
+	public static Calendar setInicioDia(Calendar c) {
+		if (c == null) {
+			return null;
+		}
+		c.set(Calendar.HOUR_OF_DAY, c.getActualMinimum(Calendar.HOUR_OF_DAY));
+		c.set(Calendar.MINUTE, c.getActualMinimum(Calendar.MINUTE));
+		c.set(Calendar.SECOND, c.getActualMinimum(Calendar.SECOND));
+		c.set(Calendar.MILLISECOND, c.getActualMinimum(Calendar.MILLISECOND));
+
+		return c;
+	}
+
+	public static Calendar setFinDia(Calendar c) {
+		if (c == null) {
+			return null;
+		}
+
+		c.set(Calendar.HOUR_OF_DAY, c.getActualMaximum(Calendar.HOUR_OF_DAY));
+		c.set(Calendar.MINUTE, c.getActualMaximum(Calendar.MINUTE));
+		c.set(Calendar.SECOND, c.getActualMaximum(Calendar.SECOND));
+		c.set(Calendar.MILLISECOND, c.getActualMaximum(Calendar.MILLISECOND));
+
+		return c;
+	}
 }

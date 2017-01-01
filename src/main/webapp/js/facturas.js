@@ -28,17 +28,84 @@ $(document).ready(function() {
 });
 
 function setCombosValues() {
-	$("#mesesDropdown").val(currentDate.getMonth());
 
-	var q = 0;
-	if (currentDate.getMonth() >= 3 && currentDate.getMonth() <= 5) {
-		q = 3;
-	} else if (currentDate.getMonth() >= 6 && currentDate.getMonth() <= 8) {
-		q = 6;
-	} else if (currentDate.getMonth() >= 9 && currentDate.getMonth() <= 11) {
-		q = 9;
+	for (var i = 0; i < 12; i++) {
+		if (i <= currentDate.getMonth()) {
+			$("#mesesDropdown").append(
+					$('<option>').text(meses[i]).attr('value',
+							i + "/" + currentDate.getFullYear()));
+		} else {
+			$("#mesesDropdown").append(
+					$('<option>').text(
+							meses[i] + " " + (currentDate.getFullYear() - 1))
+							.attr('value',
+									i + "/" + (currentDate.getFullYear() - 1)));
+		}
 	}
-	$("#trimestreDropdown").val(q);
+
+	$("#mesesDropdown").val(
+			currentDate.getMonth() + "/" + (currentDate.getFullYear()));
+
+	if (currentDate.getMonth() < 3) {
+		$("#trimestreDropdown").append(
+				$('<option>').text("Q1").attr('value',
+						'0/' + (currentDate.getFullYear())));
+		$("#trimestreDropdown").append(
+				$('<option>').text("Q2 " + (currentDate.getFullYear() - 1))
+						.attr('value', '3/' + (currentDate.getFullYear() - 1)));
+		$("#trimestreDropdown").append(
+				$('<option>').text("Q3 " + (currentDate.getFullYear() - 1))
+						.attr('value', '6/' + (currentDate.getFullYear() - 1)));
+		$("#trimestreDropdown").append(
+				$('<option>').text("Q4 " + (currentDate.getFullYear() - 1))
+						.attr('value', '9/' + (currentDate.getFullYear() - 1)));
+		$("#trimestreDropdown").val('0/' + (currentDate.getFullYear()));
+
+	} else if (currentDate.getMonth() >= 3 && currentDate.getMonth() <= 5) {
+		$("#trimestreDropdown").append(
+				$('<option>').text("Q1").attr('value',
+						'0/' + (currentDate.getFullYear())));
+		$("#trimestreDropdown").append(
+				$('<option>').text("Q2").attr('value',
+						'3/' + (currentDate.getFullYear())));
+		$("#trimestreDropdown").append(
+				$('<option>').text("Q3 " + (currentDate.getFullYear() - 1))
+						.attr('value', '6/' + (currentDate.getFullYear() - 1)));
+		$("#trimestreDropdown").append(
+				$('<option>').text("Q4 " + (currentDate.getFullYear() - 1))
+						.attr('value', '9/' + (currentDate.getFullYear() - 1)));
+		$("#trimestreDropdown").val('3/' + (currentDate.getFullYear()));
+
+	} else if (currentDate.getMonth() >= 3 && currentDate.getMonth() <= 5) {
+		$("#trimestreDropdown").append(
+				$('<option>').text("Q1").attr('value',
+						'0/' + (currentDate.getFullYear())));
+		$("#trimestreDropdown").append(
+				$('<option>').text("Q2").attr('value',
+						'3/' + (currentDate.getFullYear())));
+		$("#trimestreDropdown").append(
+				$('<option>').text("Q3").attr('value',
+						'6/' + (currentDate.getFullYear())));
+		$("#trimestreDropdown").append(
+				$('<option>').text("Q4 " + (currentDate.getFullYear() - 1))
+						.attr('value', '9/' + (currentDate.getFullYear() - 1)));
+		$("#trimestreDropdown").val('6/' + (currentDate.getFullYear()));
+
+	} else if (currentDate.getMonth() >= 3 && currentDate.getMonth() <= 5) {
+		$("#trimestreDropdown").append(
+				$('<option>').text("Q1").attr('value',
+						'0/' + (currentDate.getFullYear())));
+		$("#trimestreDropdown").append(
+				$('<option>').text("Q2").attr('value',
+						'3/' + (currentDate.getFullYear())));
+		$("#trimestreDropdown").append(
+				$('<option>').text("Q3").attr('value',
+						'6/' + (currentDate.getFullYear())));
+		$("#trimestreDropdown").append(
+				$('<option>').text("Q4").attr('value',
+						'9/' + (currentDate.getFullYear())));
+		$("#trimestreDropdown").val('9/' + (currentDate.getFullYear()));
+	}
 
 	$('#yearDropdown').append(
 			$('<option>').text(currentDate.getFullYear()).attr('value',
@@ -46,6 +113,12 @@ function setCombosValues() {
 	$('#yearDropdown').append(
 			$('<option>').text(currentDate.getFullYear() - 1).attr('value',
 					currentDate.getFullYear() - 1));
+	$('#yearDropdown').append(
+			$('<option>').text(currentDate.getFullYear() - 2).attr('value',
+					currentDate.getFullYear() - 2));
+	$('#yearDropdown').append(
+			$('<option>').text(currentDate.getFullYear() - 3).attr('value',
+					currentDate.getFullYear() - 3));
 	$("#yearDropdown").val(currentDate.getFullYear());
 
 }
@@ -233,8 +306,15 @@ function descargaFactura(data) {
 }
 
 function getZipFacturasMes() {
+	var mes, year;
+	mes = $("#mesesDropdown").val().substr(0,
+			$("#mesesDropdown").val().indexOf("/"));
+	year = $("#mesesDropdown").val().substr(
+			$("#mesesDropdown").val().indexOf("/") + 1,
+			$("#mesesDropdown").val().length);
+
 	var xhr = new XMLHttpRequest();
-	xhr.open('GET', facturaURL + 'pdf/mes/' + $("#mesesDropdown").val(), true);
+	xhr.open('GET', facturaURL + 'pdf/mes/' + mes + '/year/' + year, true);
 	xhr.setRequestHeader('Authorization', 'Bearer ' + $.cookie('restTokenC'));
 	xhr.responseType = 'blob';
 	xhr.onload = function(e) {
@@ -257,9 +337,17 @@ function getZipFacturasMes() {
 }
 
 function getZipFacturasTrimestre() {
+	var mes, year;
+	mes = $("#trimestreDropdown").val().substr(0,
+			$("#trimestreDropdown").val().indexOf("/"));
+	year = $("#trimestreDropdown").val().substr(
+			$("#trimestreDropdown").val().indexOf("/") + 1,
+			$("#trimestreDropdown").val().length);
+
 	var xhr = new XMLHttpRequest();
-	xhr.open('GET', facturaURL + 'pdf/trimestre/' + $("#mesesDropdown").val(),
-			true);
+	xhr
+			.open('GET', facturaURL + 'pdf/trimestre/' + mes + '/year/' + year,
+					true);
 	xhr.setRequestHeader('Authorization', 'Bearer ' + $.cookie('restTokenC'));
 	xhr.responseType = 'blob';
 	xhr.onload = function(e) {

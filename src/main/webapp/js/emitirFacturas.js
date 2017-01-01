@@ -297,7 +297,10 @@ function emitirFacturas() {
 		type : 'POST',
 		contentType : 'application/json',
 		url : facturaURL + 'emiteFacturas',
-		data : JSON.stringify(rows_selected),
+		data : JSON.stringify({
+			"pacientes" : rows_selected,
+			"fechaFactura" : $("#otherDate").val()
+		}),
 		success : function(rdata, textStatus, jqXHR) {
 			showSuccessMessage();
 		},

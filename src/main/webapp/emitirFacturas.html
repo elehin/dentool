@@ -122,12 +122,15 @@
 				</table>
 			</div>
 
-			<!-- Lista de pacientes no facturables por falta de datos -->
+			<!-- Fecha de factura y Lista de pacientes no facturables por falta de datos -->
 			<div class="col-md-3">
+				<label for="date">Cambiar fecha de factura:</label> <input
+					type="date" class="form-control margin-bottom-15" id="otherDate"
+					name="date" />
 				<div class="alert collapse alert-danger" id="noFacturables-alert">
-					<span class="glyphicon glyphicon-exclamation-sign"></span> Estos
-					pacientes no se pueden facturar por falta de datos <a href="#"
-						class="close" data-dismiss="alert" aria-label="close"
+					<span class="glyphicon glyphicon-exclamation-sign"></span> Los
+					siguientes pacientes no se pueden facturar por falta de datos <a
+						href="#" class="close" data-dismiss="alert" aria-label="close"
 						aria-hidden="true">&times;</a>
 				</div>
 				<table id="tableNoFacturables"

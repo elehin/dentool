@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import com.dentool.exception.NoCitaFoundException;
 import com.dentool.model.MiniCalendario;
 import com.dentool.model.entities.Cita;
+import com.dentool.utils.Utils;
 
 @Stateless
 public class CitaService {
@@ -65,32 +66,74 @@ public class CitaService {
 		this.entityManager.remove(c);
 	}
 
+	// @SuppressWarnings("unchecked")
+	// public List<Cita> getSiguientesCitas() {
+	// // Crea desde para el inicio día actual y hasta para final del día
+	// // actual
+	// Calendar desde = Calendar.getInstance();
+	// desde.set(Calendar.HOUR_OF_DAY,
+	// desde.getActualMinimum(Calendar.HOUR_OF_DAY));
+	// desde.set(Calendar.MINUTE, desde.getActualMinimum(Calendar.MINUTE));
+	// desde.set(Calendar.SECOND, desde.getActualMinimum(Calendar.SECOND));
+	// desde.set(Calendar.MILLISECOND,
+	// desde.getActualMinimum(Calendar.MILLISECOND));
+	//
+	// Calendar hasta = Calendar.getInstance();
+	// hasta.set(Calendar.HOUR_OF_DAY,
+	// desde.getActualMaximum(Calendar.HOUR_OF_DAY));
+	// hasta.set(Calendar.MINUTE, desde.getActualMaximum(Calendar.MINUTE));
+	// hasta.set(Calendar.SECOND, desde.getActualMaximum(Calendar.SECOND));
+	// hasta.set(Calendar.MILLISECOND,
+	// desde.getActualMaximum(Calendar.MILLISECOND));
+	//
+	// String query = "SELECT c FROM Cita c WHERE c.inicio BETWEEN :desde AND
+	// :hasta ORDER BY c.inicio";
+	// List<Cita> lista = null;
+	// int i = 0;
+	//
+	// // Mira día a día durante 30 días hasta que encuentra citas
+	// // Si no hay citas en los siguientes 30 días no mostrará nada
+	// do {
+	// lista = this.entityManager.createQuery(query).setParameter("desde",
+	// desde.getTime())
+	// .setParameter("hasta", hasta.getTime()).getResultList();
+	//
+	// desde.add(Calendar.DATE, 1);
+	// hasta.add(Calendar.DATE, 1);
+	// i++;
+	// } while ((lista == null || (lista != null && lista.size() == 0)) && i <
+	// 30);
+	//
+	// return lista;
+	//
+	// }
+
 	@SuppressWarnings("unchecked")
 	public List<Cita> getSiguientesCitas() {
+		// Crea desde para el inicio día actual y hasta para 30 días después
 		Calendar desde = Calendar.getInstance();
-		desde.set(Calendar.HOUR_OF_DAY, desde.getActualMinimum(Calendar.HOUR_OF_DAY));
-		desde.set(Calendar.MINUTE, desde.getActualMinimum(Calendar.MINUTE));
-		desde.set(Calendar.SECOND, desde.getActualMinimum(Calendar.SECOND));
-		desde.set(Calendar.MILLISECOND, desde.getActualMinimum(Calendar.MILLISECOND));
+		Utils.setInicioDia(desde);
 
 		Calendar hasta = Calendar.getInstance();
-		hasta.set(Calendar.HOUR_OF_DAY, desde.getActualMaximum(Calendar.HOUR_OF_DAY));
-		hasta.set(Calendar.MINUTE, desde.getActualMaximum(Calendar.MINUTE));
-		hasta.set(Calendar.SECOND, desde.getActualMaximum(Calendar.SECOND));
-		hasta.set(Calendar.MILLISECOND, desde.getActualMaximum(Calendar.MILLISECOND));
+		Utils.setFinDia(hasta);
+		hasta.add(Calendar.DATE, 30);
 
-		String query = "SELECT c FROM Cita c WHERE c.inicio BETWEEN :desde AND :hasta ORDER BY c.inicio";
+		// Busca la primera cita en los próximos 30 días
+		String queryFecha = "SELECT c FROM Cita c WHERE c.inicio BETWEEN :desde AND :hasta ORDER BY c.inicio";
+		Cita c = (Cita) this.entityManager.createQuery(queryFecha).setParameter("desde", desde.getTime())
+				.setParameter("hasta", hasta.getTime()).setMaxResults(1).getSingleResult();
+
 		List<Cita> lista = null;
-		int i = 0;
 
-		do {
-			lista = this.entityManager.createQuery(query).setParameter("desde", desde.getTime())
+		// Busca todas las citas de la fecha de la primera cita encontrada
+		if (c != null) {
+			desde.setTime(c.getInicio());
+			Utils.setInicioDia(desde);
+			hasta.setTime(c.getInicio());
+			Utils.setFinDia(hasta);
+			lista = this.entityManager.createQuery(queryFecha).setParameter("desde", desde.getTime())
 					.setParameter("hasta", hasta.getTime()).getResultList();
-
-			desde.add(Calendar.DATE, 1);
-			hasta.add(Calendar.DATE, 1);
-			i++;
-		} while ((lista == null || (lista != null && lista.size() == 0)) && i < 30);
+		}
 
 		return lista;
 
