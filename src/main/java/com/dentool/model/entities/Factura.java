@@ -37,6 +37,9 @@ public class Factura {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "factura", fetch = FetchType.EAGER)
 	private List<Diagnostico> diagnosticos;
 
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "factura", fetch = FetchType.EAGER)
+	private List<Pago> pagos;
+
 	public long getId() {
 		return id;
 	}
@@ -115,5 +118,13 @@ public class Factura {
 
 	public void setNifFactura(String nifFactura) {
 		this.nifFactura = nifFactura;
+	}
+
+	public List<Pago> getPagos() {
+		return pagos;
+	}
+
+	public void setPagos(List<Pago> pagos) {
+		this.pagos = pagos;
 	}
 }

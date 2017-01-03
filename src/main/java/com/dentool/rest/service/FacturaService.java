@@ -26,6 +26,7 @@ import com.dentool.model.ImportesFacturados;
 import com.dentool.model.entities.Diagnostico;
 import com.dentool.model.entities.Factura;
 import com.dentool.model.entities.Paciente;
+import com.dentool.model.entities.Pago;
 import com.dentool.rest.service.itext.FacturaPdfCreator;
 import com.dentool.rest.service.poi.GeneradorInformeFacturacion;
 import com.dentool.utils.Utils;
@@ -44,6 +45,9 @@ public class FacturaService {
 
 	@Inject
 	private PacienteService pacienteService;
+
+	@Inject
+	private PagoService pagoService;
 
 	public FacturaService() {
 		this.checkFilePath();
@@ -77,18 +81,36 @@ public class FacturaService {
 		}
 		factura.setCreada(new Date(Calendar.getInstance().getTimeInMillis()));
 
-		// ------- Recupera los diagnósticos de la bbdd para que no estén
-		// detacched -------
-		List<Long> diagnosticosIds = new ArrayList<Long>();
-		for (Diagnostico d : factura.getDiagnosticos()) {
-			diagnosticosIds.add(d.getId());
-		}
-		factura.setDiagnosticos(this.diagnosticoService.getDiagnosticos(diagnosticosIds));
-		factura.setImporte(this.diagnosticoService.getPrecioDiagnosticos(factura.getDiagnosticos()));
+		// Comprueba si se van a facturar diagnósticos pagados o pagos parciales
+		if (factura.getDiagnosticos() != null && !factura.getDiagnosticos().isEmpty()) {
 
-		for (Diagnostico d : factura.getDiagnosticos()) {
-			d.setFactura(factura);
+			// ------- Recupera los diagnósticos de la bbdd para que no estén
+			// detached -------
+			List<Long> diagnosticosIds = new ArrayList<Long>();
+			for (Diagnostico d : factura.getDiagnosticos()) {
+				diagnosticosIds.add(d.getId());
+			}
+			factura.setDiagnosticos(this.diagnosticoService.getDiagnosticos(diagnosticosIds));
+			factura.setImporte(this.diagnosticoService.getPrecioDiagnosticos(factura.getDiagnosticos()));
+
+			for (Diagnostico d : factura.getDiagnosticos()) {
+				d.setFactura(factura);
+			}
+		} else if (factura.getPagos() != null && !factura.getPagos().isEmpty()) {
+
+			// ------- Recupera los pagos de la bbdd para que no estén detached
+			List<Long> pagosIds = new ArrayList<Long>();
+			for (Pago pago : factura.getPagos()) {
+				pagosIds.add(pago.getId());
+			}
+			factura.setPagos(this.pagoService.getPagos(pagosIds));
+			factura.setImporte(this.pagoService.getPrecioPagos(factura.getPagos()));
+
+			for (Pago pago : factura.getPagos()) {
+				pago.setFactura(factura);
+			}
 		}
+
 		Factura f = this.entityManager.merge(factura);
 
 		this.entityManager.flush();

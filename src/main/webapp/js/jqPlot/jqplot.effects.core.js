@@ -197,7 +197,6 @@
 
         // invalid strings - treat as "normal" speed
         if ( typeof speed === "string" && !$.jqplot.effects.effect[ speed ] ) {
-            // TODO: remove in 2.0 (#7115)
             if ( backCompat && $.jqplot.effects[ speed ] ) {
                 return false;
             }
@@ -253,7 +252,6 @@
                 }
             }
 
-            // TODO: remove this check in 2.0, effectMethod will always be true
             if ( effectMethod ) {
                 return queue === false ? this.each( run ) : this.queue( queue || "fx", run );
             } else {

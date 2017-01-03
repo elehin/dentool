@@ -131,6 +131,7 @@
 					class="btn btn-primary btn-block margin-top-25 ">
 					<span class="glyphicon glyphicon-print"></span> Emitir factura
 				</button>
+
 			</div>
 			<div class="col-md-6">
 				<!-- Mensajes de éxito y error al modificar datos del paciente -->
@@ -149,13 +150,31 @@
 				</div>
 				<!-- ./ mensajes -->
 
-				<table id="tableDiagnosticos"
-					class="table table-striped table-hover display">
-				</table>
+
+
+				<div id="tableDiagnosticosDiv" class="collapse in">
+					<table id="tableDiagnosticos"
+						class="table table-striped table-hover display">
+					</table>
+				</div>
+
+
+
+				<div id="tablePagosDiv" class="collapse">
+					<table id="tablePagos" style="width: 100%"
+						class="table table-striped table-hover display">
+					</table>
+				</div>
 			</div>
 			<div class="col-md-3">
+				<button id="btnMuestraPagos" data-toggle="collapse"
+					data-target="#tablePagosDiv,#tableDiagnosticosDiv"
+					class="btn btn-info btn-block margin-top-25 ">
+					<span class="glyphicon glyphicon-zoom-in"></span> Mostrar pagos
+					parciales
+				</button>
 				<form id="cambioDatosForm" role="form">
-					<label for="name">Cambiar nombre:</label> <input type="text"
+					<label for="name" class="margin-top-15">Cambiar nombre:</label> <input type="text"
 						class="form-control" id="otherName" name="name" /> <label
 						for="dni" class="margin-top-15">Cambiar NIF:</label> <input
 						type="text" class="form-control" id="otherDni" name="dni" /> <label

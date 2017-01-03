@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -86,6 +87,11 @@ public class Utils {
 
 	public static String formatAsCurrency(float ammount) {
 		return CurrencyFormatter.format(ammount);
+	}
+
+	public static String formatAsPorcentaje(float ammount) {
+		DecimalFormat formateador = new DecimalFormat("####.##%");
+		return formateador.format(ammount);
 	}
 
 	public static String formatAsFecha(Date date) {

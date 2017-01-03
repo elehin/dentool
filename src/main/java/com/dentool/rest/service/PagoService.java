@@ -1,5 +1,6 @@
 package com.dentool.rest.service;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dentool.model.PagoEager;
 import com.dentool.model.entities.Diagnostico;
 import com.dentool.model.entities.IngresosMes;
 import com.dentool.model.entities.Paciente;
@@ -176,6 +178,65 @@ public class PagoService {
 	public List<IngresosMes> getReportIngresos() {
 		@SuppressWarnings("unchecked")
 		List<IngresosMes> lista = entityManager.createQuery("SELECT im FROM IngresosMes im").getResultList();
+
+		return lista;
+	}
+
+	public List<PagoEager> getPagosNoFacturadosByPaciente(Long pacienteId) {
+		Paciente p = entityManager.find(Paciente.class, pacienteId);
+
+		String query = "SELECT d FROM Diagnostico d WHERE d.paciente = :paciente AND d.pagado > 0 and d.pagado < d.precio "
+				+ "AND d.factura IS EMPTY ORDER BY d.finalizado, d.iniciado DESC, d.diagnosticado DESC, d.fechaInicio, d.fechaFin DESC";
+		@SuppressWarnings("unchecked")
+		List<Diagnostico> diagnosticos = entityManager.createQuery(query).setParameter("paciente", p).getResultList();
+
+		List<Long> ids = new ArrayList<Long>();
+		for (Diagnostico d : diagnosticos) {
+			ids.add(d.getId());
+		}
+
+		String queryPagos = "SELECT p FROM Pago p WHERE p.diagnosticoId IN :diagnosticos AND p.factura IS EMPTY";
+		@SuppressWarnings("unchecked")
+		List<Pago> lista = this.entityManager.createQuery(queryPagos).setParameter("diagnosticos", ids).getResultList();
+
+		List<PagoEager> pagosEager = new ArrayList<PagoEager>();
+		for (Pago pago : lista) {
+			PagoEager pe = new PagoEager();
+			pe.setPago(pago);
+
+			pe.setDiagnostico(this.entityManager.find(Diagnostico.class, pago.getDiagnosticoId()));
+
+			pagosEager.add(pe);
+		}
+
+		return pagosEager;
+	}
+
+	public List<Pago> getPagos(List<Long> ids) {
+		String query = "SELECT p FROM Pago p WHERE p.id IN :ides";
+
+		@SuppressWarnings("unchecked")
+		List<Pago> lista = this.entityManager.createQuery(query).setParameter("ides", ids).getResultList();
+
+		return lista;
+	}
+
+	public float getPrecioPagos(List<Pago> pagos) {
+		String query = "SELECT sum(p.cantidad) FROM Pago p WHERE p IN :pagos";
+		Object o = this.entityManager.createQuery(query).setParameter("pagos", pagos).getSingleResult();
+		if (o != null) {
+			double result = (double) o;
+			float resultFloat = Float.parseFloat(Double.toString(result));
+			return resultFloat;
+		}
+		return 0f;
+	}
+
+	public List<Pago> getPagosByDiagnostico(long diagnosticoId) {
+		String query = "SELECT p FROM Pago p WHERE p.diagnosticoId = :diagnostico";
+		@SuppressWarnings("unchecked")
+		List<Pago> lista = this.entityManager.createQuery(query).setParameter("diagnostico", diagnosticoId)
+				.getResultList();
 
 		return lista;
 	}

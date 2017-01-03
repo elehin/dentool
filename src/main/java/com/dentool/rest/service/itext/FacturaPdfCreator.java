@@ -4,9 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.StringTokenizer;
 
 import javax.naming.Context;
@@ -18,7 +16,9 @@ import org.slf4j.LoggerFactory;
 
 import com.dentool.model.entities.Diagnostico;
 import com.dentool.model.entities.Factura;
+import com.dentool.model.entities.Pago;
 import com.dentool.rest.service.DiagnosticoService;
+import com.dentool.rest.service.PagoService;
 import com.dentool.utils.Utils;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
@@ -42,10 +42,11 @@ public class FacturaPdfCreator {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private String path;
-	private float precioTotal = 0f;
+	// private float precioTotal = 0f;
 	private String fileName;
 
 	private DiagnosticoService diagnosticoService;
+	private PagoService pagoService;
 
 	PdfWriter writer;
 
@@ -65,7 +66,24 @@ public class FacturaPdfCreator {
 
 				diagnosticoService = (DiagnosticoService) context.lookup("java:global/dentool/DiagnosticoService");
 			} catch (NamingException e1) {
-				logger.error("PresupuestoPdfCreator() ---- Error al obtener stub para paciente o diagnostico ----");
+				logger.error("PresupuestoPdfCreator() ---- Error al obtener stub para DiagnosticoService ----");
+				logger.error(e.getMessage());
+				e1.printStackTrace();
+			}
+		}
+		try {
+			context = new InitialContext();
+
+			pagoService = (PagoService) context.lookup("java:global/ROOT/PagoService");
+
+		} catch (NamingException e) {
+			logger.info("----- Ejecución en entorno no OpenShift, se usará \"java:global/dentool/\" ------");
+			try {
+				context = new InitialContext();
+
+				pagoService = (PagoService) context.lookup("java:global/dentool/PagoService");
+			} catch (NamingException e1) {
+				logger.error("PresupuestoPdfCreator() ---- Error al obtener stub para PagoService ----");
 				logger.error(e.getMessage());
 				e1.printStackTrace();
 			}
@@ -121,27 +139,67 @@ public class FacturaPdfCreator {
 			this.processBody(tableBody, line, true, true);
 
 			int rows = 0;
-			int diagnosticos = 0;
+			int lineasFactura = 0;
 
-			List<Long> diagnosticosIds = new ArrayList<Long>();
-			for (Diagnostico d : factura.getDiagnosticos()) {
-				diagnosticosIds.add(d.getId());
-			}
+			// No sé por qué no usa los diagnosticos de factura
+			// Comento para ver si funciona bien con los de la factura
+			// Nota: tras probarlo parece que va bien con los del objeto factura
+			// List<Long> diagnosticosIds = new ArrayList<Long>();
+			// for (Diagnostico d : factura.getDiagnosticos()) {
+			// diagnosticosIds.add(d.getId());
+			// }
+			//
+			// List<Diagnostico> diagnosticosList =
+			// this.diagnosticoService.getDiagnosticos(diagnosticosIds);
 
-			List<Diagnostico> diagnosticosList = this.diagnosticoService.getDiagnosticos(diagnosticosIds);
+			// Comprueba si tiene que facturar diagnosticos o pagos
+			if (factura.getDiagnosticos() != null && !factura.getDiagnosticos().isEmpty()) {
+				for (Diagnostico d : factura.getDiagnosticos()) {
+					rows++;
 
-			for (Diagnostico d : diagnosticosList) {
-				rows++;
+					while (rows > 22 && rows < 28) {
+						rows++;
+						line = " ; ; ; ";
+						this.processBody(tableBody, line, false, false);
+					}
 
-				if (rows > 22 && rows < 28) {
-					line = " ; ; ; ";
-					this.processBody(tableBody, line, false, false);
-				} else {
-					diagnosticos++;
-					line = diagnosticos + "; " + d.getTratamiento().getNombre() + "; " + d.getPieza() + "; "
+					lineasFactura++;
+					line = lineasFactura + "; " + d.getTratamiento().getNombre() + "; " + d.getPieza() + "; "
 							+ Utils.formatAsCurrency(d.getPrecio());
 					this.processBody(tableBody, line, false, true);
-					this.precioTotal += d.getPrecio();
+					// this.precioTotal += d.getPrecio();
+
+				}
+			} else if (factura.getPagos() != null && !factura.getPagos().isEmpty()) {
+				for (Pago p : factura.getPagos()) {
+					rows++;
+					Diagnostico d = this.diagnosticoService.find(p.getDiagnosticoId());
+
+					while (rows > 22 && rows < 28) {
+						rows++;
+						line = " ; ; ; ";
+						this.processBody(tableBody, line, false, false);
+					}
+					lineasFactura++;
+
+					int ordinal = 1;
+					for (Pago pago : this.pagoService.getPagosByDiagnostico(p.getDiagnosticoId())) {
+						if (pago.compare(pago, p) > 0) {
+							ordinal++;
+						} else if (pago.compare(pago, p) == 0) {
+							if (pago.getId() < p.getId()) {
+								ordinal++;
+							}
+						}
+					}
+					String concepto = d.getTratamiento().getNombre() + " - Pago " + ordinal + "º - "
+							+ Utils.formatAsPorcentaje(p.getCantidad() / d.getPrecio());
+
+					line = lineasFactura + "; " + concepto + "; " + d.getPieza() + "; "
+							+ Utils.formatAsCurrency(p.getCantidad());
+					this.processBody(tableBody, line, false, true);
+					// this.precioTotal += p.getCantidad();
+
 				}
 			}
 
@@ -156,14 +214,14 @@ public class FacturaPdfCreator {
 			tableTotal.setWidthPercentage(90);
 			tableTotal.setSpacingBefore(20f);
 
-			this.processTotalizer(tableTotal, Utils.formatAsCurrency(this.precioTotal));
+			this.processTotalizer(tableTotal, Utils.formatAsCurrency(factura.getImporte()));
 
 			document.add(tableTotal);
 
 			// ------- ./ Tabla Totalizador -------
 
 			// ------- Decoración -------
-			if (diagnosticos <= 20 || rows > 25) {
+			if (lineasFactura <= 20 || rows > 25) {
 				this.renderDecoration(document);
 			}
 

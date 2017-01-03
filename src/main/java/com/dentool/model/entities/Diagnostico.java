@@ -103,7 +103,9 @@ public class Diagnostico {
 		if (origen.getPieza() != 0) {
 			this.setPieza(origen.getPieza());
 		}
-		this.setNotas(origen.getNotas());
+		if (origen.getNotas() != null) {
+			this.setNotas(origen.getNotas());
+		}
 	}
 
 	@JsonIgnore

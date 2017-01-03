@@ -1001,7 +1001,6 @@
                         var fasopts = $.extend(true, {}, opts, {fill:false, closePath:false});
                         this.renderer.shapeRenderer.draw(ctx, fasgd, fasopts);
                         //////////
-                        // TODO: figure out some way to do shadows nicely
                         // if (shadow) {
                         //     this.renderer.shadowRenderer.draw(ctx, fasgd, fasopts);
                         // }

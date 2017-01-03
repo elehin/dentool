@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import com.dentool.filter.Secured;
+import com.dentool.model.PagoEager;
 import com.dentool.model.entities.Pago;
 import com.dentool.rest.service.PagoService;
 
@@ -92,5 +93,17 @@ public class PagoRestService {
 	@Path("/delete/{id}")
 	public void delete(@PathParam("id") long id) {
 		this.pagoService.delete(id);
+	}
+
+	@GET
+	@Secured
+	@Path("/noFacturados/paciente/{paciente}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getPagosNoFacturadosByPaciente(@PathParam("paciente") long id) {
+		List<PagoEager> lista = pagoService.getPagosNoFacturadosByPaciente(id);
+		if (lista == null) {
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}
+		return Response.ok(lista).build();
 	}
 }

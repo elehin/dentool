@@ -1328,11 +1328,6 @@
                 }
             }
             else {
-                // TODO: figure out what to do with null values
-                // probably involve keeping nulls in data array
-                // and then updating renderers to break line
-                // when it hits null value.
-                // For now, just keep value.
                 temp.push(d[i]);
             }
         }
