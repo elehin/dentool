@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -76,8 +77,14 @@ public class FacturaService {
 			factura.setNifFactura(p.getDni());
 		}
 
+		// ------ Si viene fecha en la petición se emite la factura a ese nif.
+		// ------ En caso contrario se pone la fecha actual.
+		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Madrid"));
 		if (factura.getFecha() == null) {
-			factura.setFecha(new Date(Calendar.getInstance().getTimeInMillis()));
+			factura.setFecha(new Date(calendar.getTimeInMillis()));
+		} else {
+			calendar.setTimeInMillis(factura.getFecha().getTime());
+			factura.setFecha(calendar.getTime());
 		}
 		factura.setCreada(new Date(Calendar.getInstance().getTimeInMillis()));
 

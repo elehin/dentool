@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -95,7 +96,7 @@ public class Utils {
 	}
 
 	public static String formatAsFecha(Date date) {
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Madrid"));
 		cal.setTime(date);
 		String dia = String.valueOf(cal.get(Calendar.DATE));
 		String mes = String.valueOf(cal.get(Calendar.MONTH) + 1);
