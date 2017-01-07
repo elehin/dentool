@@ -17,8 +17,8 @@ import javax.ws.rs.core.UriBuilder;
 
 import com.dentool.filter.Secured;
 import com.dentool.model.PacienteLazy;
-import com.dentool.model.entities.ReportPacientesMes;
 import com.dentool.model.entities.Paciente;
+import com.dentool.model.entities.ReportPacientesMes;
 import com.dentool.rest.service.PacienteService;
 
 @Path("/paciente")
@@ -169,5 +169,27 @@ public class PacienteRestService {
 		return Response
 				.created(UriBuilder.fromResource(PacienteRestService.class).path(String.valueOf(p.getId())).build())
 				.build();
+	}
+
+	@GET
+	@Secured
+	@Path("/pagosNoFacturados")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getPacientesConPagosNoFacturados() {
+		List<Paciente> lista = this.pacienteService.getPacientesConPagosNoFacturados();
+		if (lista == null) {
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}
+		return Response.ok(lista).build();
+	}
+
+	@GET
+	@Secured
+	@Path("/hayPagosNoFacturados")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response hayPacientesConPagosNoFacturados() {
+		boolean result = this.pacienteService.hayPacientesConPagosNoFacturados();
+
+		return Response.ok(result).build();
 	}
 }

@@ -124,10 +124,21 @@
 
 			<!-- Fecha de factura y Lista de pacientes no facturables por falta de datos -->
 			<div class="col-md-3">
-				<label for="date">Cambiar fecha de factura:</label> <input
-					type="date" class="form-control margin-bottom-15" id="otherDate"
-					name="date" />
-				<div class="alert collapse alert-danger" id="noFacturables-alert">
+				<!-- Pacientes con pagos parciales facturables -->
+				<div id="pagosFacturablesDiv" class="collapse">
+					<a href="pacientesPagosParciales.html" id="aPagosFacturables"
+						class="btn btn-warning btn-block "> <span
+						class="glyphicon glyphicon-zoom-in"></span> Clientes con pagos
+						parciales
+					</a>
+				</div>
+				<!-- ./ Pacientes con pagos parciales facturables -->
+
+				<label for="date" class="margin-top-15">Cambiar fecha de
+					factura:</label> <input type="date" class="form-control margin-bottom-15"
+					id="otherDate" name="date" />
+				<div class="alert collapse alert-danger margin-bottom-minus-5"
+					id="noFacturables-alert">
 					<span class="glyphicon glyphicon-exclamation-sign"></span> Los
 					siguientes pacientes no se pueden facturar por falta de datos <a
 						href="#" class="close" data-dismiss="alert" aria-label="close"
@@ -136,8 +147,9 @@
 				<table id="tableNoFacturables"
 					class="table table-striped table-hover display">
 				</table>
+				<!-- ./ Lista de pacientes no facturables por falta de datos -->
 			</div>
-			<!-- ./ Lista de pacientes no facturables por falta de datos -->
+
 
 		</div>
 	</div>

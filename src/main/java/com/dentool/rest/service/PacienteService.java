@@ -1,6 +1,7 @@
 package com.dentool.rest.service;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -12,9 +13,10 @@ import javax.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dentool.model.entities.ReportPacientesMes;
 import com.dentool.model.entities.Paciente;
+import com.dentool.model.entities.Pago;
 import com.dentool.model.entities.Parametro;
+import com.dentool.model.entities.ReportPacientesMes;
 import com.dentool.service.ParametroService;
 import com.dentool.utils.Utils;
 
@@ -202,5 +204,49 @@ public class PacienteService {
 				.getResultList();
 
 		return lista;
+	}
+
+	public List<Paciente> getPacientesConPagosNoFacturados() {
+
+		// select p.id, p.name, p.apellidos, d.id, pago.cantidad, pago.factura
+		// from Paciente p join diagnostico d on d.paciente = p.id
+		// join pago pago on pago.diagnosticoId = d.id where d.variasfacturas =
+		// true and pago.factura is null;
+
+		String queryDiagnosticos = "SELECT d.id FROM Diagnostico d WHERE d.variasFacturas = :variasFacturas";
+		@SuppressWarnings("unchecked")
+		List<Long> diagnosticos = this.entityManager.createQuery(queryDiagnosticos).setParameter("variasFacturas", true)
+				.getResultList();
+
+		String queryPagos = "SELECT p FROM Pago p WHERE p.diagnosticoId IN :diagnosticos AND p.factura IS EMPTY";
+		@SuppressWarnings("unchecked")
+		List<Pago> pagos = this.entityManager.createQuery(queryPagos).setParameter("diagnosticos", diagnosticos)
+				.getResultList();
+
+		List<Long> diagnosticoIds = new ArrayList<Long>();
+		for (Pago pago : pagos) {
+			diagnosticoIds.add(pago.getDiagnosticoId());
+		}
+
+		String queryPacientes = "SELECT p FROM Diagnostico d JOIN d.paciente AS p WHERE d.id in :diagnosticoIds";
+		@SuppressWarnings("unchecked")
+		List<Paciente> pacientes = this.entityManager.createQuery(queryPacientes)
+				.setParameter("diagnosticoIds", diagnosticoIds).getResultList();
+
+		return pacientes;
+	}
+
+	public boolean hayPacientesConPagosNoFacturados() {
+		String queryDiagnosticos = "SELECT d.id FROM Diagnostico d WHERE d.variasFacturas = :variasFacturas";
+		@SuppressWarnings("unchecked")
+		List<Long> diagnosticos = this.entityManager.createQuery(queryDiagnosticos).setParameter("variasFacturas", true)
+				.getResultList();
+
+		String queryPagos = "SELECT p FROM Pago p WHERE p.diagnosticoId IN :diagnosticos AND p.factura IS EMPTY";
+		@SuppressWarnings("unchecked")
+		List<Pago> pagos = this.entityManager.createQuery(queryPagos).setParameter("diagnosticos", diagnosticos)
+				.getResultList();
+
+		return pagos != null && !pagos.isEmpty();
 	}
 }

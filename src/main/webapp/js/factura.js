@@ -39,6 +39,8 @@ $(document)
 
 					findDiagnosticosParaFactura(pacienteId);
 
+					hayPagosParciales(pacienteId)
+
 					$("#btnMuestraPagos")
 							.click(
 									function() {
@@ -56,6 +58,10 @@ $(document)
 
 										muestraPagos = !muestraPagos;
 									})
+
+					if (getUrlParameter("origin") == 'pacientesPagosParciales.html') {
+						$("#btnMuestraPagos").trigger("click");
+					}
 
 				});
 
@@ -585,6 +591,32 @@ function findPagosParaFactura(pacienteId) {
 		success : function(data) {
 			populateTablePagos(data);
 			updateTotalPanel(data);
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
+		}
+	});
+}
+
+function hayPagosParciales(pacienteId) {
+	$.ajax({
+		type : 'GET',
+		url : pagosURL + "noFacturados/paciente/" + pacienteId,
+		success : function(data) {
+			if (data !== undefined) {
+				$.each(data, function(i, item) {
+					if (item.pago.cantidad != item.diagnostico.precio) {
+						$("#muestraPagosDiv").addClass("in");
+						return false;
+					}
+				});
+			}
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			if (errorThrown == 'Unauthorized') {

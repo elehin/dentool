@@ -60,11 +60,16 @@ public class DiagnosticoService {
 	public List<Diagnostico> getDiagnosticosNoFacturadosByPaciente(Long pacienteId) {
 		Paciente p = entityManager.find(Paciente.class, pacienteId);
 
+		return this.getDiagnosticosNoFacturadosByPaciente(p);
+	}
+
+	public List<Diagnostico> getDiagnosticosNoFacturadosByPaciente(Paciente paciente) {
 		String query = "SELECT d FROM Diagnostico d WHERE d.paciente = :paciente AND d.finalizado = :finalizado AND d.factura IS EMPTY "
+				+ "AND d.variasFacturas = :variasFacturas "
 				+ "ORDER BY d.finalizado, d.iniciado DESC, d.diagnosticado DESC, d.fechaInicio, d.fechaFin DESC";
 		@SuppressWarnings("unchecked")
-		List<Diagnostico> lista = entityManager.createQuery(query).setParameter("paciente", p)
-				.setParameter("finalizado", true).getResultList();
+		List<Diagnostico> lista = entityManager.createQuery(query).setParameter("paciente", paciente)
+				.setParameter("finalizado", true).setParameter("variasFacturas", false).getResultList();
 		return lista;
 	}
 
@@ -198,11 +203,12 @@ public class DiagnosticoService {
 	public List<DiagnosticosNoFacturado> getDiagnosticosNoFacturados() {
 		String query = "SELECT p.id AS pacienteId, p.name AS name, p.apellidos AS apellidos, p.dni AS dni, sum(d.pagado) AS importe"
 				+ " FROM Diagnostico d JOIN d.paciente as p "
-				+ "WHERE d.finalizado = true AND d.factura IS EMPTY AND d.pagado = d.precio  "
+				+ "WHERE d.finalizado = true AND d.factura IS EMPTY AND d.pagado = d.precio AND d.variasFacturas = :variasFacturas "
 				+ "AND p.name IS NOT NULL AND (p.apellidos IS NOT NULL AND p.apellidos <> '') "
 				+ "AND (p.dni IS NOT NULL AND p.dni <> '') GROUP BY p.id, p.name, p.apellidos, p.dni";
 		@SuppressWarnings("unchecked")
-		List<Object[]> lista = this.entityManager.createQuery(query).getResultList();
+		List<Object[]> lista = this.entityManager.createQuery(query).setParameter("variasFacturas", false)
+				.getResultList();
 
 		List<DiagnosticosNoFacturado> returnList = new ArrayList<DiagnosticosNoFacturado>();
 		for (Object[] o : lista) {

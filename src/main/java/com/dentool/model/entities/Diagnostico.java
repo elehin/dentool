@@ -64,6 +64,7 @@ public class Diagnostico {
 
 	private String notas;
 	private float descuento;
+	private boolean variasFacturas;
 
 	public float getPrecio() {
 		return precio;
@@ -240,6 +241,14 @@ public class Diagnostico {
 
 	public void setDescuento(float descuento) {
 		this.descuento = descuento;
+	}
+
+	public boolean isVariasFacturas() {
+		return variasFacturas;
+	}
+
+	public void setVariasFacturas(boolean variasFacturas) {
+		this.variasFacturas = variasFacturas;
 	}
 
 }

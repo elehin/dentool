@@ -153,24 +153,7 @@ public class FacturaPdfCreator {
 			// this.diagnosticoService.getDiagnosticos(diagnosticosIds);
 
 			// Comprueba si tiene que facturar diagnosticos o pagos
-			if (factura.getDiagnosticos() != null && !factura.getDiagnosticos().isEmpty()) {
-				for (Diagnostico d : factura.getDiagnosticos()) {
-					rows++;
-
-					while (rows > 22 && rows < 28) {
-						rows++;
-						line = " ; ; ; ";
-						this.processBody(tableBody, line, false, false);
-					}
-
-					lineasFactura++;
-					line = lineasFactura + "; " + d.getTratamiento().getNombre() + "; " + d.getPieza() + "; "
-							+ Utils.formatAsCurrency(d.getPrecio());
-					this.processBody(tableBody, line, false, true);
-					// this.precioTotal += d.getPrecio();
-
-				}
-			} else if (factura.getPagos() != null && !factura.getPagos().isEmpty()) {
+			if (factura.getPagos() != null && !factura.getPagos().isEmpty()) {
 				for (Pago p : factura.getPagos()) {
 					rows++;
 					Diagnostico d = this.diagnosticoService.find(p.getDiagnosticoId());
@@ -199,6 +182,23 @@ public class FacturaPdfCreator {
 							+ Utils.formatAsCurrency(p.getCantidad());
 					this.processBody(tableBody, line, false, true);
 					// this.precioTotal += p.getCantidad();
+
+				}
+			} else if (factura.getDiagnosticos() != null && !factura.getDiagnosticos().isEmpty()) {
+				for (Diagnostico d : factura.getDiagnosticos()) {
+					rows++;
+
+					while (rows > 22 && rows < 28) {
+						rows++;
+						line = " ; ; ; ";
+						this.processBody(tableBody, line, false, false);
+					}
+
+					lineasFactura++;
+					line = lineasFactura + "; " + d.getTratamiento().getNombre() + "; " + d.getPieza() + "; "
+							+ Utils.formatAsCurrency(d.getPrecio());
+					this.processBody(tableBody, line, false, true);
+					// this.precioTotal += d.getPrecio();
 
 				}
 			}

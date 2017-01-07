@@ -91,12 +91,13 @@ public class FacturaService {
 		// Comprueba si se van a facturar diagnósticos pagados o pagos parciales
 		if (factura.getDiagnosticos() != null && !factura.getDiagnosticos().isEmpty()) {
 
-			// ------- Recupera los diagnósticos de la bbdd para que no estén
-			// detached -------
+			// Extrae los Ids de los diagnosticos los guarda en una Lista<Long>
+			// para uso posterior en la recuperación de los diagnósticos de BBDD
 			List<Long> diagnosticosIds = new ArrayList<Long>();
 			for (Diagnostico d : factura.getDiagnosticos()) {
 				diagnosticosIds.add(d.getId());
 			}
+			// Recupera los diagnósticos de la bbdd para que no estén detached.
 			factura.setDiagnosticos(this.diagnosticoService.getDiagnosticos(diagnosticosIds));
 			factura.setImporte(this.diagnosticoService.getPrecioDiagnosticos(factura.getDiagnosticos()));
 
@@ -116,9 +117,34 @@ public class FacturaService {
 			for (Pago pago : factura.getPagos()) {
 				pago.setFactura(factura);
 			}
+
+			// // Marca los diagnosticos como variasFacturas = true
+			// List<Long> diagnosticosIds = new ArrayList<Long>();
+			// for (Pago pago : factura.getPagos()) {
+			// diagnosticosIds.add(pago.getDiagnosticoId());
+			// }
+			// // Recupera los diagnósticos de la bbdd para que no estén
+			// detached.
+			// factura.setDiagnosticos(this.diagnosticoService.getDiagnosticos(diagnosticosIds));
+			// for (Diagnostico d : factura.getDiagnosticos()) {
+			// d.setVariasFacturas(true);
+			// }
 		}
 
 		Factura f = this.entityManager.merge(factura);
+
+		if (f.getPagos() != null && !f.getPagos().isEmpty()) {
+			// Marca los diagnosticos como variasFacturas = true
+			List<Long> diagnosticosIds = new ArrayList<Long>();
+			for (Pago pago : f.getPagos()) {
+				diagnosticosIds.add(pago.getDiagnosticoId());
+			}
+			// Recupera los diagnósticos de la bbdd para que no estén detached.
+			f.setDiagnosticos(this.diagnosticoService.getDiagnosticos(diagnosticosIds));
+			for (Diagnostico d : f.getDiagnosticos()) {
+				d.setVariasFacturas(true);
+			}
+		}
 
 		this.entityManager.flush();
 
@@ -220,10 +246,14 @@ public class FacturaService {
 			f.setNombreFactura(p.getName() + " " + p.getApellidos());
 			f.setCreada(new Date(Calendar.getInstance().getTimeInMillis()));
 			f.setNifFactura(p.getDni());
-			f.setDiagnosticos(this.diagnosticoService.getDiagnosticosNoFacturadosByPaciente(p.getId()));
+			f.setDiagnosticos(this.diagnosticoService.getDiagnosticosNoFacturadosByPaciente(p));
+			if (f.getDiagnosticos() == null) {
+				continue;
+			}
 			f.setImporte(this.diagnosticoService.getPrecioDiagnosticos(f.getDiagnosticos()));
 
 			if (fechaFactura == null) {
+				// TODO incluir TimeZone
 				f.setFecha(new Date(cal.getTimeInMillis()));
 			} else {
 				f.setFecha(fechaFactura);

@@ -185,7 +185,11 @@ public class PagoService {
 	public List<PagoEager> getPagosNoFacturadosByPaciente(Long pacienteId) {
 		Paciente p = entityManager.find(Paciente.class, pacienteId);
 
-		String query = "SELECT d FROM Diagnostico d WHERE d.paciente = :paciente AND d.pagado > 0 and d.pagado < d.precio "
+		// String query = "SELECT d FROM Diagnostico d WHERE d.paciente =
+		// :paciente AND d.pagado > 0 and d.pagado < d.precio "
+		// + "AND d.factura IS EMPTY ORDER BY d.finalizado, d.iniciado DESC,
+		// d.diagnosticado DESC, d.fechaInicio, d.fechaFin DESC";
+		String query = "SELECT d FROM Diagnostico d WHERE d.paciente = :paciente AND d.pagado > 0 "
 				+ "AND d.factura IS EMPTY ORDER BY d.finalizado, d.iniciado DESC, d.diagnosticado DESC, d.fechaInicio, d.fechaFin DESC";
 		@SuppressWarnings("unchecked")
 		List<Diagnostico> diagnosticos = entityManager.createQuery(query).setParameter("paciente", p).getResultList();
@@ -211,6 +215,7 @@ public class PagoService {
 
 		return pagosEager;
 	}
+
 
 	public List<Pago> getPagos(List<Long> ids) {
 		String query = "SELECT p FROM Pago p WHERE p.id IN :ides";

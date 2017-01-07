@@ -18,6 +18,7 @@ $(document).ready(function() {
 
 	findPacientesParaFactura();
 	checkNoFacturables();
+	hayPacientesConPagosFacturables();
 
 });
 
@@ -327,4 +328,25 @@ function showSuccessMessage() {
 
 function showNoFactMessage() {
 	$("#noFacturables-alert").show();
+}
+
+function hayPacientesConPagosFacturables() {
+	$.ajax({
+		type : 'GET',
+		url : pacienteURL + "hayPagosNoFacturados",
+		success : function(response) {
+			if (response) {
+				$("#pagosFacturablesDiv").addClass("in");
+			}
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
+		}
+	});
 }
