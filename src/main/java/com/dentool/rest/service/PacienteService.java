@@ -242,6 +242,10 @@ public class PacienteService {
 		List<Long> diagnosticos = this.entityManager.createQuery(queryDiagnosticos).setParameter("variasFacturas", true)
 				.getResultList();
 
+		if (diagnosticos == null || diagnosticos.isEmpty()) {
+			return false;
+		}
+
 		String queryPagos = "SELECT p FROM Pago p WHERE p.diagnosticoId IN :diagnosticos AND p.factura IS EMPTY";
 		@SuppressWarnings("unchecked")
 		List<Pago> pagos = this.entityManager.createQuery(queryPagos).setParameter("diagnosticos", diagnosticos)

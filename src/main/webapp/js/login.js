@@ -11,6 +11,8 @@ $(document).ready(function() {
 		$.removeCookie('restTokenC');
 	}
 
+	$("#username").focus();
+
 });
 
 function login() {
