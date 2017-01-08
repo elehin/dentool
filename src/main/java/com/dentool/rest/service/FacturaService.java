@@ -646,7 +646,25 @@ public class FacturaService {
 		}
 		ifs.setTrimestre(resultFloat);
 
+		// Cálculo del importe facturado en el trimestre anterior
+		desde.add(Calendar.MONTH, -3);
+		hasta.add(Calendar.MONTH, -3);
+		hasta.set(Calendar.DATE, hasta.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+		o = this.entityManager.createQuery(query).setParameter("desde", desde.getTime())
+				.setParameter("hasta", hasta.getTime()).getSingleResult();
+		result = 0;
+		resultFloat = 0;
+		if (o != null) {
+			result = (double) o;
+			resultFloat = Float.parseFloat(Double.toString(result));
+		}
+		ifs.setTrimestreAnterior(resultFloat);
+
 		// Cálculo del importe facturado en el año en curso
+		desde = Calendar.getInstance();
+		hasta = Calendar.getInstance();
+
 		desde.set(Calendar.MONTH, 0);
 		hasta.set(Calendar.MONTH, 11);
 		hasta.set(Calendar.DATE, hasta.getActualMaximum(Calendar.DAY_OF_MONTH));
@@ -660,6 +678,20 @@ public class FacturaService {
 			resultFloat = Float.parseFloat(Double.toString(result));
 		}
 		ifs.setYear(resultFloat);
+
+		// Cálculo del importe facturado en el año anterior
+		desde.add(Calendar.YEAR, -1);
+		hasta.add(Calendar.YEAR, -1);
+
+		o = this.entityManager.createQuery(query).setParameter("desde", desde.getTime())
+				.setParameter("hasta", hasta.getTime()).getSingleResult();
+		result = 0;
+		resultFloat = 0;
+		if (o != null) {
+			result = (double) o;
+			resultFloat = Float.parseFloat(Double.toString(result));
+		}
+		ifs.setYearAnterior(resultFloat);
 
 		return ifs;
 	}

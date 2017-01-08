@@ -1,5 +1,7 @@
 package com.dentool.model;
 
+import java.util.Date;
+
 public class DiagnosticosNoFacturado {
 
 	private long pacienteId;
@@ -7,6 +9,7 @@ public class DiagnosticosNoFacturado {
 	private String apellidos;
 	private String dni;
 	private float importe;
+	private Date fecha;
 
 	public long getPacienteId() {
 		return pacienteId;
@@ -51,6 +54,14 @@ public class DiagnosticosNoFacturado {
 	@Override
 	public String toString() {
 		return "DiagnosticoNoFacturado pacienteId : \"" + this.pacienteId + "\"";
+	}
+
+	public Date getFecha() {
+		return fecha;
+	}
+
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
 	}
 
 }

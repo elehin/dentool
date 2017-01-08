@@ -57,7 +57,7 @@ function populateTable(diagnosticos) {
 						"paging" : false,
 						"searching" : false,
 						"info" : false,
-						"ordering" : false,
+						"ordering" : true,
 						"data" : dataset,
 						"columns" : [ {
 							"title" : "pacienteId"
@@ -71,6 +71,8 @@ function populateTable(diagnosticos) {
 							"title" : "NIF"
 						}, {
 							"title" : "Importe"
+						}, {
+							"title" : "Tratado"
 						} ],
 						"columnDefs" : [ {
 							"className" : "never",
@@ -85,6 +87,10 @@ function populateTable(diagnosticos) {
 							'render' : function(data, type, full, meta) {
 								return '<input type="checkbox">';
 							}
+						}, {
+							'targets' : 2,
+							'searchable' : false,
+							'orderable' : false
 						} ],
 						"select" : {
 							"style" : "os",
@@ -177,7 +183,7 @@ function renderDiagTableRow(item) {
 	var lupa = '<button class="btn btn-info padding-0-4" role="button"><span class="glyphicon glyphicon-search"></span></button>';
 
 	row = [ item.pacienteId, '', lupa, item.name + ' ' + item.apellidos,
-			item.dni, formatCurrency(item.importe) ];
+			item.dni, formatCurrency(item.importe), item.fecha ];
 
 	return row;
 }

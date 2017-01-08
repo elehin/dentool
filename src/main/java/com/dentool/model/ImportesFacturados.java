@@ -7,6 +7,8 @@ public class ImportesFacturados {
 	private float trimestre;
 	private float year;
 	private float mesAnterior;
+	private float trimestreAnterior;
+	private float yearAnterior;
 	private String stringMesAnterior;
 	private String stringMesCurso;
 
@@ -56,6 +58,22 @@ public class ImportesFacturados {
 
 	public void setStringMesCurso(String stringMesCurso) {
 		this.stringMesCurso = stringMesCurso;
+	}
+
+	public float getTrimestreAnterior() {
+		return trimestreAnterior;
+	}
+
+	public void setTrimestreAnterior(float trimestreAnterior) {
+		this.trimestreAnterior = trimestreAnterior;
+	}
+
+	public float getYearAnterior() {
+		return yearAnterior;
+	}
+
+	public void setYearAnterior(float yearAnterior) {
+		this.yearAnterior = yearAnterior;
 	}
 
 }

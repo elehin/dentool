@@ -201,11 +201,12 @@ public class DiagnosticoService {
 	}
 
 	public List<DiagnosticosNoFacturado> getDiagnosticosNoFacturados() {
-		String query = "SELECT p.id AS pacienteId, p.name AS name, p.apellidos AS apellidos, p.dni AS dni, sum(d.pagado) AS importe"
-				+ " FROM Diagnostico d JOIN d.paciente as p "
+		String query = "SELECT p.id AS pacienteId, p.name AS name, p.apellidos AS apellidos, p.dni AS dni, sum(d.pagado) AS importe, "
+				+ "min(d.fechaFin) AS fecha " + "FROM Diagnostico d JOIN d.paciente as p "
 				+ "WHERE d.finalizado = true AND d.factura IS EMPTY AND d.pagado = d.precio AND d.variasFacturas = :variasFacturas "
 				+ "AND p.name IS NOT NULL AND (p.apellidos IS NOT NULL AND p.apellidos <> '') "
-				+ "AND (p.dni IS NOT NULL AND p.dni <> '') GROUP BY p.id, p.name, p.apellidos, p.dni";
+				+ "AND (p.dni IS NOT NULL AND p.dni <> '') GROUP BY p.id, p.name, p.apellidos, p.dni "
+				+ "ORDER BY fecha";
 		@SuppressWarnings("unchecked")
 		List<Object[]> lista = this.entityManager.createQuery(query).setParameter("variasFacturas", false)
 				.getResultList();
@@ -218,6 +219,7 @@ public class DiagnosticoService {
 			dn.setApellidos(String.valueOf(o[2]));
 			dn.setDni(String.valueOf(o[3]));
 			dn.setImporte(Float.valueOf(String.valueOf(o[4])));
+			dn.setFecha((Date) o[5]);
 			returnList.add(dn);
 		}
 

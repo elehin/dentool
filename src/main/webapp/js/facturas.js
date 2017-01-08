@@ -246,7 +246,9 @@ function updatePanels() {
 			$("#hmPanel").text(formatCurrency(data.mes));
 			$("#hmAnteriorPanel").text(formatCurrency(data.mesAnterior));
 			$("#hqPanel").text(formatCurrency(data.trimestre));
+			$("#hqAnteriorPanel").text(formatCurrency(data.trimestreAnterior));
 			$("#hyPanel").text(formatCurrency(data.year));
+			$("#hyAnteriorPanel").text(formatCurrency(data.yearAnterior));
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			if (errorThrown == 'Unauthorized') {
