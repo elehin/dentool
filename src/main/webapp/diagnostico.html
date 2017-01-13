@@ -105,9 +105,26 @@
 						name="tratamiento" readonly /> <label for="diagnosticado">Diagnosticado:</label>
 					<input type="date" class="form-control" id="diagnosticado"
 						name="diagnosticado" /> <label for="fechaInicio">Iniciado:</label>
-					<input type="date" class="form-control" id="fechaInicio"
-						name="fechaInicio" /> <label for="fechaFin">Finalizado:</label> <input
-						type="date" class="form-control" id="fechaFin" name="fechaFin" />
+					<div class="input-group">
+						<input type="date" class="form-control" id="fechaInicio"
+							name="fechaInicio" /> <span class="input-group-btn">
+							<button class="btn btn-default" type="button"
+								id="resetFechaInicioButton">
+								<span class="glyphicon glyphicon-remove"></span>
+							</button>
+						</span>
+					</div>
+
+					<label for="fechaFin">Finalizado:</label>
+					<div class="input-group">
+						<input type="date" class="form-control" id="fechaFin"
+							name="fechaFin" /> <span class="input-group-btn">
+							<button class="btn btn-default" type="button"
+								id="resetFechaFinButton">
+								<span class="glyphicon glyphicon-remove"></span>
+							</button>
+						</span>
+					</div>
 					<label>Precio:</label>
 					<div class="input-group">
 						<span class="input-group-addon">€</span> <input type="number"

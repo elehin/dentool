@@ -34,7 +34,6 @@ $(document).ready(
 				addPago();
 				return false;
 			});
-			pagoRestanteBtn
 
 			$("#pagoRestanteBtn").click(function() {
 				addPagoRestante();
@@ -54,6 +53,16 @@ $(document).ready(
 
 			$("#cambiarOdontogramaBtn").click(function() {
 				cambiaOdontograma();
+				return false;
+			});
+
+			$("#resetFechaInicioButton").click(function() {
+				resetFechaInicio();
+				return false;
+			});
+
+			$("#resetFechaFinButton").click(function() {
+				resetFechaFin();
 				return false;
 			});
 		});
@@ -562,4 +571,50 @@ function devuelvePago(row) {
 
 function cambiaOdontograma() {
 	$(".odontograma").toggleClass("in");
+}
+
+function resetFechaInicio() {
+	$.ajax({
+		type : 'POST',
+		contentType : 'application/json',
+		url : diagnosticoURL + 'resetFechaInicio/' + $('#diagnosticoId').val(),
+		success : function(rdata, textStatus, jqXHR) {
+			showSuccessMessage();
+			findTratamiento(getUrlParameter("diagnostico"));
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			} else {
+				showErrorMessage(textStatus);
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
+		}
+	});
+}
+
+function resetFechaFin() {
+	$.ajax({
+		type : 'POST',
+		contentType : 'application/json',
+		url : diagnosticoURL + 'resetFechaFin/' + $('#diagnosticoId').val(),
+		success : function(rdata, textStatus, jqXHR) {
+			showSuccessMessage();
+			findTratamiento(getUrlParameter("diagnostico"));
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			} else {
+				showErrorMessage(textStatus);
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
+		}
+	});
 }

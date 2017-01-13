@@ -271,4 +271,19 @@ public class DiagnosticoService {
 		}
 	}
 
+	public Diagnostico resetFechaInicio(long id) {
+		Diagnostico d = this.entityManager.find(Diagnostico.class, id);
+		d.setFechaInicio(null);
+		d.setIniciado(false);
+		d.setFechaFin(null);
+		d.setFinalizado(false);
+		return d;
+	}
+	
+	public Diagnostico resetFechaFin(long id) {
+		Diagnostico d = this.entityManager.find(Diagnostico.class, id);
+		d.setFechaFin(null);
+		d.setFinalizado(false);
+		return d;
+	}
 }

@@ -116,6 +116,7 @@ public class DiagnosticoRestService {
 	}
 
 	@POST
+	@Secured
 	@Path("/add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response addDiagnostico(Diagnostico d) {
@@ -145,6 +146,28 @@ public class DiagnosticoRestService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response updateDiagnostico(Diagnostico d) {
 		diagnosticoService.updateDiagnostico(d);
+		return Response
+				.created(UriBuilder.fromResource(DiagnosticoRestService.class).path(String.valueOf(d.getId())).build())
+				.build();
+	}
+
+	@POST
+	@Secured
+	@Path("/resetFechaInicio/{id}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response resetFechaInicio(@PathParam("id") Long id) {
+		Diagnostico d = diagnosticoService.resetFechaInicio(id);
+		return Response
+				.created(UriBuilder.fromResource(DiagnosticoRestService.class).path(String.valueOf(d.getId())).build())
+				.build();
+	}
+
+	@POST
+	@Secured
+	@Path("/resetFechaFin/{id}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response resetFechaFin(@PathParam("id") Long id) {
+		Diagnostico d = diagnosticoService.resetFechaFin(id);
 		return Response
 				.created(UriBuilder.fromResource(DiagnosticoRestService.class).path(String.valueOf(d.getId())).build())
 				.build();
