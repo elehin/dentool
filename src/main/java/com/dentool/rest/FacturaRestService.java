@@ -197,7 +197,7 @@ public class FacturaRestService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response emiteFacturas(FacturasAEmitir facturasAEmitir) {
 		int response = this.facturaService.emitirFacturas(facturasAEmitir.getPacientes(),
-				facturasAEmitir.getFechaFactura());
+				facturasAEmitir.getFechaFactura(), facturasAEmitir.getTimezone());
 		if (response < 1) {
 			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
 		}

@@ -9,6 +9,9 @@ $(document)
 		.ready(
 				function() {
 
+					console
+							.log(Intl.DateTimeFormat().resolvedOptions().timeZone);
+
 					$("#btnCreaFactura").click(function() {
 						// console.log(formToJSON());
 						createFactura();
@@ -421,6 +424,7 @@ function formToJSON(action) {
 				"nombreFactura" : $('#otherName').val(),
 				"nifFactura" : $('#otherDni').val(),
 				"fecha" : $('#otherDate').val(),
+				"timezone" : Intl.DateTimeFormat().resolvedOptions().timeZone
 			});
 		}
 

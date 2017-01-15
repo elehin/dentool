@@ -109,7 +109,7 @@ public class FacturaPdfCreator {
 			PdfPTable tablefactura = new PdfPTable(new float[] { 9f, 6f });
 			tablefactura.setWidthPercentage(90);
 			String lineFactura = "Número de factura:;\n     " + factura.getNumero() + ";Fecha:;\n      "
-					+ Utils.formatAsFecha(factura.getFecha());
+					+ Utils.formatAsFecha(factura.getFecha(), factura.getTimezone());
 			this.processHeader(tablefactura, lineFactura, 40f);
 			tablefactura.setSpacingBefore(5);
 

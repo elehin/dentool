@@ -306,7 +306,8 @@ function emitirFacturas() {
 		url : facturaURL + 'emiteFacturas',
 		data : JSON.stringify({
 			"pacientes" : rows_selected,
-			"fechaFactura" : $("#otherDate").val()
+			"fechaFactura" : $("#otherDate").val(),
+			"timezone" : Intl.DateTimeFormat().resolvedOptions().timeZone
 		}),
 		success : function(rdata, textStatus, jqXHR) {
 			showSuccessMessage();

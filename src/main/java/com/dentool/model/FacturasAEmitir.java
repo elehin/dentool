@@ -7,6 +7,7 @@ public class FacturasAEmitir {
 
 	private List<Long> pacientes;
 	private Date fechaFactura;
+	private String timezone;
 
 	public Date getFechaFactura() {
 		return fechaFactura;
@@ -22,6 +23,14 @@ public class FacturasAEmitir {
 
 	public void setPacientes(List<Long> pacientes) {
 		this.pacientes = pacientes;
+	}
+
+	public String getTimezone() {
+		return timezone;
+	}
+
+	public void setTimezone(String timezone) {
+		this.timezone = timezone;
 	}
 
 }

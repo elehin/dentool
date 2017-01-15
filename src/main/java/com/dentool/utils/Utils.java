@@ -11,8 +11,6 @@ import java.util.TimeZone;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.dentool.model.entities.Paciente;
-
 public class Utils {
 
 	/**
@@ -35,15 +33,15 @@ public class Utils {
 		return output;
 	}
 
-	public static void copyPaciente(Paciente origen, Paciente destino) {
-		destino.setName(origen.getName());
-		destino.setApellidos(origen.getApellidos());
-		destino.setTelefono(origen.getTelefono());
-		destino.setDireccion(origen.getDireccion());
-		destino.setNotas(origen.getNotas());
-		destino.setFechaNacimiento(origen.getFechaNacimiento());
-		destino.setAlergico(origen.isAlergico());
-	}
+	// public static void copyPaciente(Paciente origen, Paciente destino) {
+	// destino.setName(origen.getName());
+	// destino.setApellidos(origen.getApellidos());
+	// destino.setTelefono(origen.getTelefono());
+	// destino.setDireccion(origen.getDireccion());
+	// destino.setNotas(origen.getNotas());
+	// destino.setFechaNacimiento(origen.getFechaNacimiento());
+	// destino.setAlergico(origen.isAlergico());
+	// }
 
 	public static String md5Hash(String input) {
 		byte[] bytesOfMessage;
@@ -96,7 +94,16 @@ public class Utils {
 	}
 
 	public static String formatAsFecha(Date date) {
-		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Madrid"));
+		return Utils.formatAsFecha(date, Utils.getDefaultTimezone().getDisplayName());
+	}
+
+	public static String formatAsFecha(Date date, String timezone) {
+		Calendar cal = null;
+		if (timezone == null) {
+			cal = Calendar.getInstance(Utils.getDefaultTimezone());
+		} else {
+			cal = Calendar.getInstance(TimeZone.getTimeZone(timezone));
+		}
 		cal.setTime(date);
 		String dia = String.valueOf(cal.get(Calendar.DATE));
 		String mes = String.valueOf(cal.get(Calendar.MONTH) + 1);
@@ -136,5 +143,9 @@ public class Utils {
 		c.set(Calendar.MILLISECOND, c.getActualMaximum(Calendar.MILLISECOND));
 
 		return c;
+	}
+
+	public static TimeZone getDefaultTimezone() {
+		return TimeZone.getTimeZone("Europe/Madrid");
 	}
 }

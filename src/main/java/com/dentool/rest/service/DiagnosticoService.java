@@ -12,11 +12,13 @@ import javax.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dentool.model.DiagnosticoSet;
 import com.dentool.model.DiagnosticosNoFacturado;
 import com.dentool.model.entities.Diagnostico;
 import com.dentool.model.entities.Paciente;
 import com.dentool.model.entities.Pago;
 import com.dentool.model.entities.Tratamiento;
+import com.dentool.utils.Utils;
 
 @Stateless
 public class DiagnosticoService {
@@ -33,13 +35,38 @@ public class DiagnosticoService {
 		diagnostico.setTratamiento(t);
 		diagnostico.setPrecio(t.getPrecio());
 		diagnostico.setDescuento((1 - diagnostico.getPrecio() / t.getPrecio()) * 100);
-		Date now = new Date(Calendar.getInstance().getTimeInMillis());
+		Date now = new Date(Calendar.getInstance(Utils.getDefaultTimezone()).getTimeInMillis());
 		diagnostico.setDiagnosticado(now);
 		diagnostico.setLastChangeTs(now);
 		p.getDiagnosticos().add(diagnostico);
 		p.setLastChangeTs(now);
 
 		return diagnostico;
+	}
+
+	public List<Diagnostico> addDiagnostico(DiagnosticoSet set) {
+		List<Diagnostico> diagnosticos = new ArrayList<Diagnostico>();
+
+		Paciente p = entityManager.find(Paciente.class, set.getPaciente().getId());
+		Tratamiento t = entityManager.find(Tratamiento.class, set.getTratamiento().getId());
+
+		for (Short s : set.getPieza()) {
+			Diagnostico diagnostico = new Diagnostico();
+			diagnostico.setPaciente(p);
+			diagnostico.setTratamiento(t);
+			diagnostico.setPieza(s);
+			diagnostico.setPrecio(t.getPrecio());
+			diagnostico.setDescuento((1 - diagnostico.getPrecio() / t.getPrecio()) * 100);
+			Date now = new Date(Calendar.getInstance(Utils.getDefaultTimezone()).getTimeInMillis());
+			diagnostico.setDiagnosticado(now);
+			diagnostico.setLastChangeTs(now);
+			p.getDiagnosticos().add(diagnostico);
+			p.setLastChangeTs(now);
+
+			diagnosticos.add(diagnostico);
+		}
+
+		return diagnosticos;
 	}
 
 	public Diagnostico find(Long id) {
@@ -279,7 +306,7 @@ public class DiagnosticoService {
 		d.setFinalizado(false);
 		return d;
 	}
-	
+
 	public Diagnostico resetFechaFin(long id) {
 		Diagnostico d = this.entityManager.find(Diagnostico.class, id);
 		d.setFechaFin(null);

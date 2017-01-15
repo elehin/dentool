@@ -79,14 +79,24 @@ public class FacturaService {
 
 		// ------ Si viene fecha en la petición se emite la factura a ese nif.
 		// ------ En caso contrario se pone la fecha actual.
-		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Madrid"));
+		Calendar calendar;
+
+		// ------ Se comprueba si viene especificada timezone. En caso negativo
+		// se usa la de por defecto
+		if (factura.getTimezone() == null || factura.getTimezone().equals("undefined")
+				|| factura.getTimezone().equals("")) {
+			calendar = Calendar.getInstance(Utils.getDefaultTimezone());
+		} else {
+			calendar = Calendar.getInstance(TimeZone.getTimeZone(factura.getTimezone()));
+		}
+
 		if (factura.getFecha() == null) {
 			factura.setFecha(new Date(calendar.getTimeInMillis()));
 		} else {
 			calendar.setTimeInMillis(factura.getFecha().getTime());
 			factura.setFecha(calendar.getTime());
 		}
-		factura.setCreada(new Date(Calendar.getInstance().getTimeInMillis()));
+		factura.setCreada(new Date(Calendar.getInstance(Utils.getDefaultTimezone()).getTimeInMillis()));
 
 		// Comprueba si se van a facturar diagnósticos pagados o pagos parciales
 		if (factura.getDiagnosticos() != null && !factura.getDiagnosticos().isEmpty()) {
@@ -132,6 +142,7 @@ public class FacturaService {
 		}
 
 		Factura f = this.entityManager.merge(factura);
+		f.setTimezone(factura.getTimezone());
 
 		if (f.getPagos() != null && !f.getPagos().isEmpty()) {
 			// Marca los diagnosticos como variasFacturas = true
@@ -169,13 +180,13 @@ public class FacturaService {
 
 		String query = "SELECT f FROM Factura f WHERE f.fecha BETWEEN :desde AND :hasta AND f.numero IS NOT NULL ORDER BY f.numero DESC";
 
-		Calendar desde = Calendar.getInstance();
+		Calendar desde = Calendar.getInstance(Utils.getDefaultTimezone());
 		desde.setTime(f.getFecha());
 		desde.set(Calendar.MONTH, 0);
 		desde.set(Calendar.DATE, 1);
 		Utils.setInicioDia(desde);
 
-		Calendar hasta = Calendar.getInstance();
+		Calendar hasta = Calendar.getInstance(Utils.getDefaultTimezone());
 		hasta.setTime(f.getFecha());
 		hasta.set(Calendar.MONTH, 11);
 		hasta.set(Calendar.DATE, 31);
@@ -215,7 +226,7 @@ public class FacturaService {
 	//
 	// int previousYear = Integer.valueOf(anterior.getNumero().substring(0, 4));
 	//
-	// Calendar cal = Calendar.getInstance();
+	// Calendar cal = Calendar.getInstance(Utils.getDefaultTimezone();
 	//
 	// String numeroSiguiente = "";
 	// String secuencialSiguente = anterior.getNumero().substring(5,
@@ -235,8 +246,19 @@ public class FacturaService {
 	// }
 
 	public int emitirFacturas(List<Long> pacientes, Date fechaFactura) {
+		return this.emitirFacturas(pacientes, fechaFactura, Utils.getDefaultTimezone().getDisplayName());
+	}
+
+	public int emitirFacturas(List<Long> pacientes, Date fechaFactura, String timezone) {
 		int facturas = 0;
-		Calendar cal = Calendar.getInstance();
+		Calendar cal;
+		// ------ Se comprueba si viene especificada timezone. En caso negativo
+		// se usa la de por defecto
+		if (timezone == null || timezone.equals("undefined") || timezone.equals("")) {
+			cal = Calendar.getInstance(Utils.getDefaultTimezone());
+		} else {
+			cal = Calendar.getInstance(TimeZone.getTimeZone(timezone));
+		}
 
 		for (long id : pacientes) {
 			Factura f = new Factura();
@@ -244,7 +266,7 @@ public class FacturaService {
 			Paciente p = this.pacienteService.find(id);
 			f.setPacienteId(p.getId());
 			f.setNombreFactura(p.getName() + " " + p.getApellidos());
-			f.setCreada(new Date(Calendar.getInstance().getTimeInMillis()));
+			f.setCreada(new Date(Calendar.getInstance(Utils.getDefaultTimezone()).getTimeInMillis()));
 			f.setNifFactura(p.getDni());
 			f.setDiagnosticos(this.diagnosticoService.getDiagnosticosNoFacturadosByPaciente(p));
 			if (f.getDiagnosticos() == null) {
@@ -253,7 +275,6 @@ public class FacturaService {
 			f.setImporte(this.diagnosticoService.getPrecioDiagnosticos(f.getDiagnosticos()));
 
 			if (fechaFactura == null) {
-				// TODO incluir TimeZone
 				f.setFecha(new Date(cal.getTimeInMillis()));
 			} else {
 				f.setFecha(fechaFactura);
@@ -264,6 +285,7 @@ public class FacturaService {
 			}
 
 			Factura factura = this.entityManager.merge(f);
+			factura.setTimezone(cal.getTimeZone().getDisplayName());
 			this.entityManager.flush();
 
 			factura.setNumero(this.getNumeroFactura(factura));
@@ -294,8 +316,8 @@ public class FacturaService {
 	public List<Factura> getFacturasTrimestre(int mes, int year) {
 		String query = "SELECT f FROM Factura f WHERE f.fecha between :desde AND :hasta ORDER BY f.creada DESC";
 
-		Calendar desde = Calendar.getInstance();
-		Calendar hasta = Calendar.getInstance();
+		Calendar desde = Calendar.getInstance(Utils.getDefaultTimezone());
+		Calendar hasta = Calendar.getInstance(Utils.getDefaultTimezone());
 
 		desde.set(Calendar.YEAR, year);
 		hasta.set(Calendar.YEAR, year);
@@ -350,7 +372,7 @@ public class FacturaService {
 		ZipOutputStream zos = null;
 		GeneradorInformeFacturacion gif = new GeneradorInformeFacturacion();
 
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance(Utils.getDefaultTimezone());
 		cal.set(Calendar.MONTH, mes);
 		cal.set(Calendar.YEAR, year);
 		List<Factura> facturas = this.getFacturasTrimestre(mes, year);
@@ -369,8 +391,8 @@ public class FacturaService {
 				}
 			}
 
-			Calendar desde = Calendar.getInstance();
-			Calendar hasta = Calendar.getInstance();
+			Calendar desde = Calendar.getInstance(Utils.getDefaultTimezone());
+			Calendar hasta = Calendar.getInstance(Utils.getDefaultTimezone());
 			this.getMesesDelTrimestre(mes, desde, hasta);
 
 			String informeFileName = "informe_trimestre_"
@@ -403,8 +425,8 @@ public class FacturaService {
 	public List<Factura> getFacturasMes(int mes, int year) {
 		String query = "SELECT f FROM Factura f WHERE f.fecha between :desde AND :hasta ORDER BY f.creada DESC";
 
-		Calendar desde = Calendar.getInstance();
-		Calendar hasta = Calendar.getInstance();
+		Calendar desde = Calendar.getInstance(Utils.getDefaultTimezone());
+		Calendar hasta = Calendar.getInstance(Utils.getDefaultTimezone());
 
 		desde.set(Calendar.MONTH, mes);
 		desde.set(Calendar.DATE, 1);
@@ -424,7 +446,7 @@ public class FacturaService {
 		ZipOutputStream zos = null;
 		GeneradorInformeFacturacion gif = new GeneradorInformeFacturacion();
 
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance(Utils.getDefaultTimezone());
 		cal.set(Calendar.MONTH, mes);
 		cal.set(Calendar.YEAR, year);
 		List<Factura> facturas = this.getFacturasMes(mes, year);
@@ -472,8 +494,8 @@ public class FacturaService {
 	public List<Factura> getFacturasYear(int year) {
 		String query = "SELECT f FROM Factura f WHERE f.fecha between :desde AND :hasta ORDER BY f.creada DESC";
 
-		Calendar desde = Calendar.getInstance();
-		Calendar hasta = Calendar.getInstance();
+		Calendar desde = Calendar.getInstance(Utils.getDefaultTimezone());
+		Calendar hasta = Calendar.getInstance(Utils.getDefaultTimezone());
 
 		desde.set(Calendar.MONTH, 0);
 		desde.set(Calendar.DATE, 1);
@@ -493,7 +515,7 @@ public class FacturaService {
 		ZipOutputStream zos = null;
 		GeneradorInformeFacturacion gif = new GeneradorInformeFacturacion();
 
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance(Utils.getDefaultTimezone());
 		cal.set(Calendar.YEAR, year);
 		List<Factura> facturas = this.getFacturasYear(year);
 
@@ -577,9 +599,9 @@ public class FacturaService {
 		ImportesFacturados ifs = new ImportesFacturados();
 
 		// Cálculo del importe facturado en el mes en curso
-		Calendar desde = Calendar.getInstance();
+		Calendar desde = Calendar.getInstance(Utils.getDefaultTimezone());
 		desde.set(Calendar.DATE, 1);
-		Calendar hasta = Calendar.getInstance();
+		Calendar hasta = Calendar.getInstance(Utils.getDefaultTimezone());
 		hasta.set(Calendar.DATE, hasta.getActualMaximum(Calendar.DAY_OF_MONTH));
 
 		Object o = this.entityManager.createQuery(query).setParameter("desde", desde.getTime())
@@ -610,10 +632,10 @@ public class FacturaService {
 		ifs.setStringMesAnterior(desde.getDisplayName(Calendar.MONTH, Calendar.LONG, new Locale("es", "ES")));
 
 		// Cálculo del importe facturado en el trimestre en curso
-		desde = Calendar.getInstance();
+		desde = Calendar.getInstance(Utils.getDefaultTimezone());
 		desde.set(Calendar.DATE, 1);
-		hasta = Calendar.getInstance();
-		switch (Math.floorDiv(Calendar.getInstance().get(Calendar.MONTH), 3)) {
+		hasta = Calendar.getInstance(Utils.getDefaultTimezone());
+		switch (Math.floorDiv(Calendar.getInstance(Utils.getDefaultTimezone()).get(Calendar.MONTH), 3)) {
 		case 0:
 			desde.set(Calendar.MONTH, 0);
 			hasta.set(Calendar.MONTH, 2);
@@ -662,8 +684,8 @@ public class FacturaService {
 		ifs.setTrimestreAnterior(resultFloat);
 
 		// Cálculo del importe facturado en el año en curso
-		desde = Calendar.getInstance();
-		hasta = Calendar.getInstance();
+		desde = Calendar.getInstance(Utils.getDefaultTimezone());
+		hasta = Calendar.getInstance(Utils.getDefaultTimezone());
 
 		desde.set(Calendar.MONTH, 0);
 		hasta.set(Calendar.MONTH, 11);

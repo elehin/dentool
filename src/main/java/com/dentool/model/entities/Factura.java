@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @Entity
 public class Factura {
@@ -28,6 +29,8 @@ public class Factura {
 	private float importe;
 	private String nombreFactura;
 	private String nifFactura;
+	@Transient
+	private String timezone;
 
 	@Temporal(TemporalType.DATE)
 	private Date fecha;
@@ -126,5 +129,13 @@ public class Factura {
 
 	public void setPagos(List<Pago> pagos) {
 		this.pagos = pagos;
+	}
+
+	public String getTimezone() {
+		return timezone;
+	}
+
+	public void setTimezone(String timezone) {
+		this.timezone = timezone;
 	}
 }

@@ -2,6 +2,7 @@ var currentPaciente;
 var searchTable;
 var searchDialog;
 var activeDiagnostico;
+var addDiagDesplegado = false;
 
 var lupa = '<button class="btn btn-info padding-0-4 detalle" role="button"><span class="glyphicon glyphicon-search"></span></button>';
 var descarga = '<button class="btn btn-info padding-0-4 detalle" role="button"><span class="glyphicon glyphicon-download-alt"></span></button>';
@@ -77,7 +78,7 @@ $(document).ready(
 
 			$(".botonPieza").click(function(eventObject) {
 				// console.log('$("#botonPieza").click');
-				$(".botonPieza").removeClass("active");
+				// $(".botonPieza").removeClass("active");
 				$(eventObject.target).toggleClass("active");
 				return false;
 			});
@@ -128,6 +129,18 @@ $(document).ready(
 			// scrollTop : $("#addSaldoLink").offset().top
 			// }, 500);
 			// });
+
+			$("#aAddDiag").click(function() {
+				addDiagDesplegado = !addDiagDesplegado;
+				if (addDiagDesplegado) {
+					$("#aAddDiag").text("Ocultar nuevo tratamiento");
+				} else {
+					$("#aAddDiag").text("Añadir	tratamiento");
+				}
+				$("#addDiagDiv").toggleClass("in");
+
+				return false;
+			})
 
 		});
 
@@ -381,93 +394,107 @@ function addDiagnostico(tratamientoTop) {
 		tratamientoTop = 'addDiagnostico';
 	}
 
+	var numeroPiezas = $(".botonPieza.active").length;
+	var operacion;
+	if (numeroPiezas > 1) {
+		operacion = "addMultiple";
+	} else {
+		operacion = "add";
+	}
+
 	$
 			.ajax({
 				type : 'POST',
 				contentType : 'application/json',
-				url : diagnosticoURL + 'add',
-				data : formToJSON(tratamientoTop),
+				url : diagnosticoURL + operacion,
+				data : formToJSON(tratamientoTop, null, numeroPiezas),
 				success : function(rdata, textStatus, jqXHR) {
 					showDiagnosticoSuccessMessage();
-					$('#addDiagDiv').toggleClass("in");
+					// $('#addDiagDiv').toggleClass("in");
 					$('.botonPieza').removeClass('active');
 					$('#addDiagForm')[0].reset();
-					$
-							.when($
-									.ajax(
-											{
-												type : 'GET',
-												url : jqXHR
-														.getResponseHeader('Location'),
-												success : function(data) {
-													activeDiagnostico = data;
-												},
-												error : function(jqXHR,
-														textStatus, errorThrown) {
-													if (errorThrown == 'Unauthorized') {
-														window.location
-																.replace(serverURL
-																		+ 'login.html');
+					if (numeroPiezas > 1) {
+						renderDiagnosticosNuevos(rdata);
+					} else {
+						$
+								.when($
+										.ajax(
+												{
+													type : 'GET',
+													url : jqXHR
+															.getResponseHeader('Location'),
+													success : function(data) {
+														activeDiagnostico = data;
+													},
+													error : function(jqXHR,
+															textStatus,
+															errorThrown) {
+														if (errorThrown == 'Unauthorized') {
+															window.location
+																	.replace(serverURL
+																			+ 'login.html');
+														}
+													},
+													beforeSend : function(xhr,
+															settings) {
+														xhr
+																.setRequestHeader(
+																		'Authorization',
+																		'Bearer '
+																				+ $
+																						.cookie('restTokenC'));
 													}
-												},
-												beforeSend : function(xhr,
-														settings) {
-													xhr
-															.setRequestHeader(
-																	'Authorization',
-																	'Bearer '
-																			+ $
-																					.cookie('restTokenC'));
-												}
-											})
-									.done(
-											function() {
-												var table = $(
-														'#tableUltimosTratamientos')
-														.DataTable({
-															"retrieve" : true
-														});
-												var estadoPago;
-												if (activeDiagnostico.pagado == 0) {
-													estadoPago = sinPagar;
-												} else if (activeDiagnostico.pagado == activeDiagnostico.precio) {
-													estadoPago = pagado;
-												} else {
-													estestadoPagoado = pagadoPacial;
-												}
-												var estado
-												if (activeDiagnostico.iniciado == false) {
-													estado = statusSinEmpezar;
-												} else if (activeDiagnostico.iniciado == true
-														&& activeDiagnostico.finalizado == false) {
-													estado = statusEmpezado;
-												} else if (activeDiagnostico.finalizado == true) {
-													estado = statusFinalizado;
-												}
+												})
+										.done(
+												function() {
+													var table = $(
+															'#tableUltimosTratamientos')
+															.DataTable(
+																	{
+																		"retrieve" : true
+																	});
+													var estadoPago;
+													if (activeDiagnostico.pagado == 0) {
+														estadoPago = sinPagar;
+													} else if (activeDiagnostico.pagado == activeDiagnostico.precio) {
+														estadoPago = pagado;
+													} else {
+														estestadoPagoado = pagadoPacial;
+													}
+													var estado
+													if (activeDiagnostico.iniciado == false) {
+														estado = statusSinEmpezar;
+													} else if (activeDiagnostico.iniciado == true
+															&& activeDiagnostico.finalizado == false) {
+														estado = statusEmpezado;
+													} else if (activeDiagnostico.finalizado == true) {
+														estado = statusFinalizado;
+													}
 
-												var pieza;
-												if (pieza == 0) {
-													pieza = '';
-												} else {
-													pieza = activeDiagnostico.pieza;
-												}
+													var pieza;
+													if (activeDiagnostico.pieza == 0) {
+														pieza = '';
+													} else {
+														pieza = activeDiagnostico.pieza;
+													}
 
-												table.row
-														.add(
-																[
-																		activeDiagnostico.id,
-																		activeDiagnostico.precio,
-																		activeDiagnostico.pagado,
-																		lupa,
-																		estado,
-																		estadoPago,
-																		activeDiagnostico.tratamiento.nombre,
-																		pieza ])
-														.draw(false);
+													table.row
+															.add(
+																	[
+																			activeDiagnostico.id,
+																			activeDiagnostico.precio,
+																			activeDiagnostico.pagado,
+																			lupa,
+																			estado,
+																			estadoPago,
+																			activeDiagnostico.tratamiento.nombre,
+																			pieza ])
+															.draw(false);
 
-												setTableButtonsClickListeners();
-											}));
+													setTableButtonsClickListeners();
+												}));
 
+					}
 				},
 				error : function(jqXHR, textStatus, errorThrown) {
 					if (errorThrown == 'Unauthorized') {
@@ -481,6 +508,46 @@ function addDiagnostico(tratamientoTop) {
 							+ $.cookie('restTokenC'));
 				}
 			});
+}
+
+function renderDiagnosticosNuevos(diagnosticos) {
+	var table = $('#tableUltimosTratamientos').DataTable({
+		"retrieve" : true
+	});
+	var estadoPago;
+	var pieza;
+
+	$.each(diagnosticos, function(i, item) {
+
+		if (item.pagado == 0) {
+			estadoPago = sinPagar;
+		} else if (item.pagado == item.precio) {
+			estadoPago = pagado;
+		} else {
+			estestadoPagoado = pagadoPacial;
+		}
+		var estado
+		if (item.iniciado == false) {
+			estado = statusSinEmpezar;
+		} else if (item.iniciado == true && item.finalizado == false) {
+			estado = statusEmpezado;
+		} else if (item.finalizado == true) {
+			estado = statusFinalizado;
+		}
+
+		if (item.pieza == 0) {
+			pieza = '';
+		} else {
+			pieza = item.pieza;
+		}
+
+		table.row.add(
+				[ item.id, item.precio, item.pagado, lupa, estado, estadoPago,
+						item.tratamiento.nombre, pieza ]).draw(false);
+
+	});
+
+	setTableButtonsClickListeners();
 }
 
 function findDiagnosticoByUrl(url) {
@@ -970,8 +1037,154 @@ function updatePaciente() {
 	});
 }
 
-function formToJSON(action, data) {
+// function formToJSON(action, data) {
+// // console.log('formToJSON() -> ' + action + ' data {' + data + '}');
+//
+// if (action == '1') {
+// return JSON.stringify({
+// "tratamiento" : {
+// "id" : $('#tt1').attr("tratamiento")
+// },
+// "paciente" : {
+// "id" : $('#pacienteId').val()
+// },
+// "iniciado" : false,
+// "finalizado" : false,
+// "pieza" : $(".botonPieza.active").text()
+// });
+// } else if (action == '2') {
+// return JSON.stringify({
+// "tratamiento" : {
+// "id" : $('#tt2').attr("tratamiento")
+// },
+// "paciente" : {
+// "id" : $('#pacienteId').val()
+// },
+// "iniciado" : false,
+// "finalizado" : false,
+// "pieza" : $(".botonPieza.active").text()
+// });
+// } else if (action == '3') {
+// return JSON.stringify({
+// "tratamiento" : {
+// "id" : $('#tt3').attr("tratamiento")
+// },
+// "paciente" : {
+// "id" : $('#pacienteId').val()
+// },
+// "iniciado" : false,
+// "finalizado" : false,
+// "pieza" : $(".botonPieza.active").text()
+// });
+// } else if (action == '4') {
+// return JSON.stringify({
+// "tratamiento" : {
+// "id" : $('#tt4').attr("tratamiento")
+// },
+// "paciente" : {
+// "id" : $('#pacienteId').val()
+// },
+// "iniciado" : false,
+// "finalizado" : false,
+// "pieza" : $(".botonPieza.active").text()
+// });
+// } else if (action == '5') {
+// return JSON.stringify({
+// "tratamiento" : {
+// "id" : $('#tt5').attr("tratamiento")
+// },
+// "paciente" : {
+// "id" : $('#pacienteId').val()
+// },
+// "iniciado" : false,
+// "finalizado" : false,
+// "pieza" : $(".botonPieza.active").text()
+// });
+// } else if (action == 'addDiagnostico') {
+// return JSON.stringify({
+// "tratamiento" : {
+// "id" : $('#tratamiento').val()
+// },
+// "paciente" : {
+// "id" : $('#pacienteId').val()
+// },
+// "iniciado" : false,
+// "finalizado" : false,
+// "pieza" : $(".botonPieza.active").text()
+// });
+// } else if (action == 'updateDiagnostico') {
+// var pagado;
+// if (currentPaciente.saldo > 0
+// && currentPaciente.saldo < (data[1] - data[2])) {
+// pagado = data[2] + currentPaciente.saldo;
+// } else {
+// pagado = data[1];
+// }
+// return JSON.stringify({
+// "id" : data[0],
+// "pagado" : pagado,
+// "precio" : data[1]
+// });
+// } else if (action == 'updateEstadoDiagnostico') {
+// return JSON.stringify({
+// "id" : data[0],
+// "fechaFin" : new Date(),
+// "pagado" : data[2],
+// "precio" : data[1]
+// });
+// } else if (action == 'updateSaldoParcialDiagnostico') {
+// var pagado;
+// if (currentPaciente.saldo > 0
+// && currentPaciente.saldo < (data[1] - data[2])) {
+// pagado = data[2] + currentPaciente.saldo;
+// } else {
+// pagado = data[1];
+// }
+// return JSON.stringify({
+// "id" : data[0],
+// "fechaFin" : new Date(),
+// "pagado" : pagado,
+// "precio" : data[1]
+// });
+// } else {
+// var newSaldo;
+// if ($("#cantidadSaldo").val() == 0) {
+// newSaldo = currentPaciente.saldo;
+// } else {
+// newSaldo = parseFloat($("#cantidadSaldo").val())
+// + parseFloat(currentPaciente.saldo);
+// }
+// return JSON
+// .stringify({
+// "id" : $('#pacienteId').val(),
+// "name" : $('#name').val(),
+// "apellidos" : $('#apellidos').val(),
+// "direccion" : $('#direccion').val(),
+// "telefono" : $('#telefono').val(),
+// "fechaNacimiento" : $('#fechaNacimiento').val(),
+// "notas" : $('#notas').val(),
+// "dni" : $('#dni').val(),
+// "alergico" : $('#alergico').prop('checked'),
+// "enfermoGrave" : $('#enfermoGrave').prop('checked'),
+// "saldo" : newSaldo,
+// "pacienteAnteriorADentool" : currentPaciente.pacienteAnteriorADentool
+// });
+// }
+// }
+
+function formToJSON(action, data, numPiezas) {
 	// console.log('formToJSON() -> ' + action + ' data {' + data + '}');
+
+	var piezas;
+
+	if (numPiezas > 1) {
+		piezas = new Array();
+		$(".botonPieza.active").each(function(index) {
+			piezas.push($(this).text());
+		});
+	} else {
+		piezas = $(".botonPieza.active").text();
+	}
 
 	if (action == '1') {
 		return JSON.stringify({
@@ -983,7 +1196,7 @@ function formToJSON(action, data) {
 			},
 			"iniciado" : false,
 			"finalizado" : false,
-			"pieza" : $(".botonPieza.active").text()
+			"pieza" : piezas
 		});
 	} else if (action == '2') {
 		return JSON.stringify({
@@ -995,7 +1208,7 @@ function formToJSON(action, data) {
 			},
 			"iniciado" : false,
 			"finalizado" : false,
-			"pieza" : $(".botonPieza.active").text()
+			"pieza" : piezas
 		});
 	} else if (action == '3') {
 		return JSON.stringify({
@@ -1007,7 +1220,7 @@ function formToJSON(action, data) {
 			},
 			"iniciado" : false,
 			"finalizado" : false,
-			"pieza" : $(".botonPieza.active").text()
+			"pieza" : piezas
 		});
 	} else if (action == '4') {
 		return JSON.stringify({
@@ -1019,7 +1232,7 @@ function formToJSON(action, data) {
 			},
 			"iniciado" : false,
 			"finalizado" : false,
-			"pieza" : $(".botonPieza.active").text()
+			"pieza" : piezas
 		});
 	} else if (action == '5') {
 		return JSON.stringify({
@@ -1031,7 +1244,7 @@ function formToJSON(action, data) {
 			},
 			"iniciado" : false,
 			"finalizado" : false,
-			"pieza" : $(".botonPieza.active").text()
+			"pieza" : piezas
 		});
 	} else if (action == 'addDiagnostico') {
 		return JSON.stringify({
@@ -1043,7 +1256,7 @@ function formToJSON(action, data) {
 			},
 			"iniciado" : false,
 			"finalizado" : false,
-			"pieza" : $(".botonPieza.active").text()
+			"pieza" : piezas
 		});
 	} else if (action == 'updateDiagnostico') {
 		var pagado;

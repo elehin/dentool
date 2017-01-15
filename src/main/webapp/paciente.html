@@ -228,8 +228,8 @@
 				</div>
 
 				<!-- Nuevo diagnóstico -->
-				<a href="#addDiagDiv" class="btn btn-info btn-block margin-top-5"
-					data-toggle="collapse">Añadir tratamiento</a>
+				<a id="aAddDiag" class="btn btn-info btn-block margin-top-5">Añadir
+					tratamiento</a>
 				<div id="addDiagDiv" class="collapse padding-5">
 					<button id="cambiarOdontogramaBtn"
 						class="btn btn-default btn-block margin-top-5">Cambiar
@@ -237,80 +237,163 @@
 
 					<hr>
 
+					<!--  Mensajes de alerta sobre diagnositicos -->
+					<div class="alert alert-success collapse fade margin-top-25 "
+						id="diagnostico-success-alert">
+						<p>
+							<button type="button" class="close" data-dismiss="alert">x</button>
+							<span class="glyphicon glyphicon-ok"></span><strong> OK!
+							</strong> El tratamiento se ha sido añadido.
+						</p>
+					</div>
+					<div class="alert alert-success collapse fade margin-top-25 "
+						id="diagnostico-update-success-alert">
+						<p>
+							<button type="button" class="close" data-dismiss="alert">x</button>
+							<span class="glyphicon glyphicon-ok"></span><strong> OK!
+							</strong> El tratamiento se ha modificado.
+						</p>
+					</div>
+					<!-- /.Mensajes de alerta sobre diagnositicos -->
+
 					<form id="addDiagForm" role="form">
 
 						<!-- Selección de pieza dental para diagnóstico -->
 						<div class="margin-left-5 collapse in odontograma">
 							<div class="btn-group btn-group-justified">
-								<button id="piezaBtn18" type="button"
-									class="btn btn-default botonPieza">18</button>
-								<button id="piezaBtn17" type="button"
-									class="btn btn-default botonPieza">17</button>
-								<button id="piezaBtn16" type="button"
-									class="btn btn-default botonPieza">16</button>
-								<button id="piezaBtn15" type="button"
-									class="btn btn-default botonPieza">15</button>
-								<button id="piezaBtn14" type="button"
-									class="btn btn-default botonPieza">14</button>
-								<button id="piezaBtn13" type="button"
-									class="btn btn-default botonPieza">13</button>
-								<button id="piezaBtn12" type="button"
-									class="btn btn-default botonPieza">12</button>
-								<button id="piezaBtn11" type="button"
-									class="btn btn-default botonPieza">11</button>
-								<button id="piezaBtn21" type="button"
-									class="btn btn-default botonPieza">21</button>
-								<button id="piezaBtn22" type="button"
-									class="btn btn-default botonPieza">22</button>
-								<button id="piezaBtn23" type="button"
-									class="btn btn-default botonPieza">23</button>
-								<button id="piezaBtn24" type="button"
-									class="btn btn-default botonPieza">24</button>
-								<button id="piezaBtn25" type="button"
-									class="btn btn-default botonPieza">25</button>
-								<button id="piezaBtn26" type="button"
-									class="btn btn-default botonPieza">26</button>
-								<button id="piezaBtn27" type="button"
-									class="btn btn-default botonPieza">27</button>
-								<button id="piezaBtn28" type="button"
-									class="btn btn-default botonPieza">28</button>
+								<div class="btn-group">
+									<button id="piezaBtn18" type="button"
+										class="btn btn-default botonPieza">18</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn17" type="button"
+										class="btn btn-default botonPieza">17</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn16" type="button"
+										class="btn btn-default botonPieza">16</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn15" type="button"
+										class="btn btn-default botonPieza">15</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn14" type="button"
+										class="btn btn-default botonPieza">14</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn13" type="button"
+										class="btn btn-default botonPieza">13</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn12" type="button"
+										class="btn btn-default botonPieza">12</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn11" type="button"
+										class="btn btn-default botonPieza">11</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn21" type="button"
+										class="btn btn-default botonPieza">21</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn22" type="button"
+										class="btn btn-default botonPieza">22</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn23" type="button"
+										class="btn btn-default botonPieza">23</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn24" type="button"
+										class="btn btn-default botonPieza">24</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn25" type="button"
+										class="btn btn-default botonPieza">25</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn26" type="button"
+										class="btn btn-default botonPieza">26</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn27" type="button"
+										class="btn btn-default botonPieza">27</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn28" type="button"
+										class="btn btn-default botonPieza">28</button>
+								</div>
 							</div>
 							<img class="img-responsive margin-left-minus-5"
 								src="images/odontograma.png" alt="Odontograma" width="100%">
 
 							<div class="btn-group btn-group-justified">
-								<button id="piezaBtn48" type="button"
-									class="btn btn-default botonPieza">48</button>
-								<button id="piezaBtn47" type="button"
-									class="btn btn-default botonPieza">47</button>
-								<button id="piezaBtn46" type="button"
-									class="btn btn-default botonPieza">46</button>
-								<button id="piezaBtn45" type="button"
-									class="btn btn-default botonPieza">45</button>
-								<button id="piezaBtn44" type="button"
-									class="btn btn-default botonPieza">44</button>
-								<button id="piezaBtn43" type="button"
-									class="btn btn-default botonPieza">43</button>
-								<button id="piezaBtn42" type="button"
-									class="btn btn-default botonPieza">42</button>
-								<button id="piezaBtn41" type="button"
-									class="btn btn-default botonPieza">41</button>
-								<button id="piezaBtn31" type="button"
-									class="btn btn-default botonPieza">31</button>
-								<button id="piezaBtn32" type="button"
-									class="btn btn-default botonPieza">32</button>
-								<button id="piezaBtn33" type="button"
-									class="btn btn-default botonPieza">33</button>
-								<button id="piezaBtn34" type="button"
-									class="btn btn-default botonPieza">34</button>
-								<button id="piezaBtn35" type="button"
-									class="btn btn-default botonPieza">35</button>
-								<button id="piezaBtn36" type="button"
-									class="btn btn-default botonPieza">36</button>
-								<button id="piezaBtn37" type="button"
-									class="btn btn-default botonPieza">37</button>
-								<button id="piezaBtn38" type="button"
-									class="btn btn-default botonPieza">38</button>
+								<div class="btn-group">
+									<button id="piezaBtn48" type="button"
+										class="btn btn-default botonPieza">48</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn47" type="button"
+										class="btn btn-default botonPieza">47</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn46" type="button"
+										class="btn btn-default botonPieza">46</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn45" type="button"
+										class="btn btn-default botonPieza">45</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn44" type="button"
+										class="btn btn-default botonPieza">44</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn43" type="button"
+										class="btn btn-default botonPieza">43</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn42" type="button"
+										class="btn btn-default botonPieza">42</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn41" type="button"
+										class="btn btn-default botonPieza">41</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn31" type="button"
+										class="btn btn-default botonPieza">31</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn32" type="button"
+										class="btn btn-default botonPieza">32</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn33" type="button"
+										class="btn btn-default botonPieza">33</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn34" type="button"
+										class="btn btn-default botonPieza">34</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn35" type="button"
+										class="btn btn-default botonPieza">35</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn36" type="button"
+										class="btn btn-default botonPieza">36</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn37" type="button"
+										class="btn btn-default botonPieza">37</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn38" type="button"
+										class="btn btn-default botonPieza">38</button>
+								</div>
 							</div>
 						</div>
 						<!-- /.Selección de pieza dental para diagnóstico -->
@@ -318,75 +401,139 @@
 						<!-- Selección de pieza dental para diagnóstico infantil-->
 						<div class="margin-left-5 collapse odontograma">
 							<div class="btn-group btn-group-justified">
-								<button id="piezaBtn18" type="button"
-									class="btn btn-default botonPieza">18</button>
-								<button id="piezaBtn17" type="button"
-									class="btn btn-default botonPieza">17</button>
-								<button id="piezaBtn16" type="button"
-									class="btn btn-default botonPieza">16</button>
-								<button id="piezaBtn55" type="button"
-									class="btn btn-default botonPieza">55</button>
-								<button id="piezaBtn54" type="button"
-									class="btn btn-default botonPieza">54</button>
-								<button id="piezaBtn53" type="button"
-									class="btn btn-default botonPieza">53</button>
-								<button id="piezaBtn52" type="button"
-									class="btn btn-default botonPieza">52</button>
-								<button id="piezaBtn51" type="button"
-									class="btn btn-default botonPieza">51</button>
-								<button id="piezaBtn61" type="button"
-									class="btn btn-default botonPieza">61</button>
-								<button id="piezaBtn62" type="button"
-									class="btn btn-default botonPieza">62</button>
-								<button id="piezaBtn63" type="button"
-									class="btn btn-default botonPieza">63</button>
-								<button id="piezaBtn64" type="button"
-									class="btn btn-default botonPieza">64</button>
-								<button id="piezaBtn65" type="button"
-									class="btn btn-default botonPieza">65</button>
-								<button id="piezaBtn26" type="button"
-									class="btn btn-default botonPieza">26</button>
-								<button id="piezaBtn27" type="button"
-									class="btn btn-default botonPieza">27</button>
-								<button id="piezaBtn28" type="button"
-									class="btn btn-default botonPieza">28</button>
+								<div class="btn-group">
+									<button id="piezaBtn18" type="button"
+										class="btn btn-default botonPieza">18</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn17" type="button"
+										class="btn btn-default botonPieza">17</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn16" type="button"
+										class="btn btn-default botonPieza">16</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn55" type="button"
+										class="btn btn-default botonPieza">55</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn54" type="button"
+										class="btn btn-default botonPieza">54</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn53" type="button"
+										class="btn btn-default botonPieza">53</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn52" type="button"
+										class="btn btn-default botonPieza">52</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn51" type="button"
+										class="btn btn-default botonPieza">51</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn61" type="button"
+										class="btn btn-default botonPieza">61</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn62" type="button"
+										class="btn btn-default botonPieza">62</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn63" type="button"
+										class="btn btn-default botonPieza">63</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn64" type="button"
+										class="btn btn-default botonPieza">64</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn65" type="button"
+										class="btn btn-default botonPieza">65</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn26" type="button"
+										class="btn btn-default botonPieza">26</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn27" type="button"
+										class="btn btn-default botonPieza">27</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn28" type="button"
+										class="btn btn-default botonPieza">28</button>
+								</div>
 							</div>
 							<img class="img-responsive margin-left-minus-5"
 								src="images/odontograma.png" alt="Odontograma" width="100%">
 
 							<div class="btn-group btn-group-justified">
-								<button id="piezaBtn48" type="button"
-									class="btn btn-default botonPieza">48</button>
-								<button id="piezaBtn47" type="button"
-									class="btn btn-default botonPieza">47</button>
-								<button id="piezaBtn46" type="button"
-									class="btn btn-default botonPieza">46</button>
-								<button id="piezaBtn85" type="button"
-									class="btn btn-default botonPieza">85</button>
-								<button id="piezaBtn84" type="button"
-									class="btn btn-default botonPieza">84</button>
-								<button id="piezaBtn83" type="button"
-									class="btn btn-default botonPieza">83</button>
-								<button id="piezaBtn82" type="button"
-									class="btn btn-default botonPieza">82</button>
-								<button id="piezaBtn81" type="button"
-									class="btn btn-default botonPieza">81</button>
-								<button id="piezaBtn71" type="button"
-									class="btn btn-default botonPieza">71</button>
-								<button id="piezaBtn72" type="button"
-									class="btn btn-default botonPieza">72</button>
-								<button id="piezaBtn73" type="button"
-									class="btn btn-default botonPieza">73</button>
-								<button id="piezaBtn74" type="button"
-									class="btn btn-default botonPieza">74</button>
-								<button id="piezaBtn75" type="button"
-									class="btn btn-default botonPieza">75</button>
-								<button id="piezaBtn36" type="button"
-									class="btn btn-default botonPieza">36</button>
-								<button id="piezaBtn37" type="button"
-									class="btn btn-default botonPieza">37</button>
-								<button id="piezaBtn38" type="button"
-									class="btn btn-default botonPieza">38</button>
+								<div class="btn-group">
+									<button id="piezaBtn48" type="button"
+										class="btn btn-default botonPieza">48</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn47" type="button"
+										class="btn btn-default botonPieza">47</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn46" type="button"
+										class="btn btn-default botonPieza">46</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn85" type="button"
+										class="btn btn-default botonPieza">85</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn84" type="button"
+										class="btn btn-default botonPieza">84</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn83" type="button"
+										class="btn btn-default botonPieza">83</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn82" type="button"
+										class="btn btn-default botonPieza">82</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn81" type="button"
+										class="btn btn-default botonPieza">81</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn71" type="button"
+										class="btn btn-default botonPieza">71</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn72" type="button"
+										class="btn btn-default botonPieza">72</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn73" type="button"
+										class="btn btn-default botonPieza">73</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn74" type="button"
+										class="btn btn-default botonPieza">74</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn75" type="button"
+										class="btn btn-default botonPieza">75</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn36" type="button"
+										class="btn btn-default botonPieza">36</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn37" type="button"
+										class="btn btn-default botonPieza">37</button>
+								</div>
+								<div class="btn-group">
+									<button id="piezaBtn38" type="button"
+										class="btn btn-default botonPieza">38</button>
+								</div>
 							</div>
 						</div>
 						<!-- /.Selección de pieza dental para diagnóstico infantil-->
@@ -449,24 +596,7 @@
 					</form>
 				</div>
 
-				<!--  Mensajes de alerta sobre diagnositicos -->
-				<div class="alert alert-success collapse fade margin-top-25 "
-					id="diagnostico-success-alert">
-					<p>
-						<button type="button" class="close" data-dismiss="alert">x</button>
-						<span class="glyphicon glyphicon-ok"></span><strong> OK!
-						</strong> El tratamiento se ha sido añadido.
-					</p>
-				</div>
-				<div class="alert alert-success collapse fade margin-top-25 "
-					id="diagnostico-update-success-alert">
-					<p>
-						<button type="button" class="close" data-dismiss="alert">x</button>
-						<span class="glyphicon glyphicon-ok"></span><strong> OK!
-						</strong> El tratamiento se ha modificado.
-					</p>
-				</div>
-				<!-- /.Mensajes de alerta sobre diagnositicos -->
+
 				<!-- /.Nuevo diagnóstico -->
 
 				<table id="tableUltimosTratamientos"
