@@ -65,6 +65,7 @@ public class Diagnostico {
 	private String notas;
 	private float descuento;
 	private boolean variasFacturas;
+	private boolean archivado = false;
 
 	public float getPrecio() {
 		return precio;
@@ -107,6 +108,7 @@ public class Diagnostico {
 		if (origen.getNotas() != null) {
 			this.setNotas(origen.getNotas());
 		}
+		this.setArchivado(origen.isArchivado());
 	}
 
 	@JsonIgnore
@@ -249,6 +251,14 @@ public class Diagnostico {
 
 	public void setVariasFacturas(boolean variasFacturas) {
 		this.variasFacturas = variasFacturas;
+	}
+
+	public boolean isArchivado() {
+		return archivado;
+	}
+
+	public void setArchivado(boolean archivado) {
+		this.archivado = archivado;
 	}
 
 }

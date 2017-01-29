@@ -132,7 +132,7 @@ public class DiagnosticoService {
 
 		ld.update(d);
 
-		Date now = new Date(Calendar.getInstance().getTimeInMillis());
+		Date now = new Date(Calendar.getInstance(Utils.getDefaultTimezone()).getTimeInMillis());
 		// Si está pagado y sin fecha de inicio se actualiza la fecha de inicio
 		// a now()
 		if (ld.getPagado() == ld.getPrecio() && ld.getFechaInicio() == null) {
@@ -168,11 +168,24 @@ public class DiagnosticoService {
 
 		// Se actualiza la fecha de modificación del paciente
 		Paciente p = this.entityManager.find(Paciente.class, ld.getPaciente().getId());
-		p.setLastChangeTs(new Date(ld.getLastChange().getTime()));
+		p.setLastChangeTs(Calendar.getInstance(Utils.getDefaultTimezone()).getTime());
 
 		ld.getPaciente().getDiagnosticos().remove(ld);
 		logger.debug("######################################### Borrando diagnóstico " + ld.getId());
 		entityManager.remove(ld);
+
+	}
+
+	public Diagnostico archiva(long id) {
+		Diagnostico ld = entityManager.find(Diagnostico.class, id);
+
+		// Se actualiza la fecha de modificación del paciente
+		Paciente p = this.entityManager.find(Paciente.class, ld.getPaciente().getId());
+		p.setLastChangeTs(Calendar.getInstance(Utils.getDefaultTimezone()).getTime());
+
+		ld.setArchivado(true);
+		return ld;
+
 	}
 
 	private void createPago(Diagnostico d, float cantidad) {
@@ -180,7 +193,7 @@ public class DiagnosticoService {
 
 		p.setDiagnosticoId(d.getId());
 		p.setCantidad(cantidad);
-		p.setFecha(new Date(Calendar.getInstance().getTimeInMillis()));
+		p.setFecha(new Date(Calendar.getInstance(Utils.getDefaultTimezone()).getTimeInMillis()));
 
 		Paciente paciente = this.entityManager.find(Paciente.class, d.getPaciente().getId());
 		if (paciente.getSaldo() > 0) {
@@ -191,8 +204,8 @@ public class DiagnosticoService {
 			}
 		}
 
-		d.setLastChangeTs(new Date(Calendar.getInstance().getTimeInMillis()));
-		paciente.setLastChangeTs(new Date(Calendar.getInstance().getTimeInMillis()));
+		d.setLastChangeTs(new Date(Calendar.getInstance(Utils.getDefaultTimezone()).getTimeInMillis()));
+		paciente.setLastChangeTs(new Date(Calendar.getInstance(Utils.getDefaultTimezone()).getTimeInMillis()));
 
 		this.entityManager.persist(p);
 	}

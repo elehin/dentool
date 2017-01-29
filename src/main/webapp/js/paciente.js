@@ -3,6 +3,8 @@ var searchTable;
 var searchDialog;
 var activeDiagnostico;
 var addDiagDesplegado = false;
+var presupuestos;
+var facturas;
 
 var lupa = '<button class="btn btn-info padding-0-4 detalle" role="button"><span class="glyphicon glyphicon-search"></span></button>';
 var descarga = '<button class="btn btn-info padding-0-4 detalle" role="button"><span class="glyphicon glyphicon-download-alt"></span></button>';
@@ -149,7 +151,8 @@ function getPresupuestos() {
 		type : 'GET',
 		url : presupuestoURL + "paciente/" + getUrlParameter("paciente"),
 		success : function(data) {
-			renderTablePresupuestos(data);
+			presupuestos = data;
+			renderTablePresupuestos(presupuestos);
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			if (errorThrown == 'Unauthorized') {
@@ -231,7 +234,8 @@ function getFacturas() {
 		type : 'GET',
 		url : facturaURL + "paciente/" + getUrlParameter("paciente"),
 		success : function(data) {
-			renderTableFacturas(data);
+			facturas = data;
+			renderTableFacturas(facturas);
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			if (errorThrown == 'Unauthorized') {
@@ -699,9 +703,15 @@ function renderTableDiagnosticos(diagnosticos) {
 	// console.log('renderTableDiagnosticos');
 
 	var dataset = [];
+	var datasetArchivados = [];
 
 	$.each(diagnosticos, function(i, item) {
-		dataset.push(renderDiagTableRow(item));
+		if (item.archivado == false) {
+			dataset.push(renderDiagTableRow(item));
+		} else {
+			datasetArchivados.push(renderDiagTableRow(item));
+			$("#btnVerArchivados").addClass("in");
+		}
 	});
 
 	diagsTable = $('#tableUltimosTratamientos')
@@ -751,6 +761,53 @@ function renderTableDiagnosticos(diagnosticos) {
 						}
 					});
 
+	diagsArchivadosTable = $('#tableTratamientosArchivados')
+			.DataTable(
+					{
+						"retrieve" : true,
+						"paging" : false,
+						"searching" : false,
+						"info" : false,
+						"ordering" : false,
+						"data" : datasetArchivados,
+						"columns" : [ {
+							"title" : "id"
+						}, {
+							"title" : "precio"
+						}, {
+							"title" : "pagado"
+						}, {
+							"title" : "&nbsp;"
+						}, {
+							"title" : "&nbsp;"
+						}, {
+							"title" : "&nbsp;"
+						}, {
+							"title" : "Tratamiento"
+						}, {
+							"title" : "Pieza"
+						} ],
+						"columnDefs" : [ {
+							"className" : "never",
+							"targets" : [ 0, 1, 2 ],
+							"visible" : false
+						} ],
+						"language" : {
+							"search" : "Buscar:",
+							"sLengthMenu" : "Mostrar _MENU_ registros",
+							"sZeroRecords" : "No se encontraron resultados",
+							"sEmptyTable" : "No hay tratamientos aún",
+							"sInfo" : "Mostrando registros del _START_ al _END_ de un total de _TOTAL_",
+							"sInfoEmpty" : "Mostrando registros del 0 al 0 de un total de 0 registros",
+							"oPaginate" : {
+								"sFirst" : "Primero",
+								"sLast" : "Último",
+								"sNext" : "Siguiente",
+								"sPrevious" : "Anterior"
+							}
+						}
+					});
+
 	setTableButtonsClickListeners();
 
 }
@@ -759,6 +816,7 @@ function setTableButtonsClickListeners() {
 	var row;
 
 	$('#tableUltimosTratamientos tbody tr').off('click');
+	$('#tableTratamientosArchivados tbody tr').off('click');
 	$('#tableUltimosTratamientos tbody tr').on(
 			'click',
 			'button',
@@ -772,13 +830,69 @@ function setTableButtonsClickListeners() {
 					setPagado(row);
 				} else if ($(this).hasClass("detalle")) {
 					var data = diagsTable.row($(this).parents('tr')).data();
+
 					url = serverURL + 'diagnostico.html?paciente='
-							+ currentPaciente.id + '&diagnostico=' + data[0];
+							+ currentPaciente.id + '&diagnostico=' + data[0]
+							+ '&presupuestado='
+							+ isDiagnosticoPresupuestado(data[0])
+							+ '&facturado=' + isDiagnosticoFacturado(data[0]);
 					window.location.replace(url);
 				} else if ($(this).is('.sinEmpezar, .empezado')) {
 					setFinalizado(row);
 				}
 			});
+	$('#tableTratamientosArchivados tbody tr').on(
+			'click',
+			'button',
+			function(evt) {
+				evt.stopPropagation();
+				evt.preventDefault();
+
+				row = $(this).parents('tr');
+
+				if ($(this).hasClass("pagar")) {
+					setPagado(row);
+				} else if ($(this).hasClass("detalle")) {
+					var data = diagsTable.row($(this).parents('tr')).data();
+
+					url = serverURL + 'diagnostico.html?paciente='
+							+ currentPaciente.id + '&diagnostico=' + data[0]
+							+ '&presupuestado='
+							+ isDiagnosticoPresupuestado(data[0])
+							+ '&facturado=' + isDiagnosticoFacturado(data[0]);
+					window.location.replace(url);
+				} else if ($(this).is('.sinEmpezar, .empezado')) {
+					setFinalizado(row);
+				}
+			});
+}
+
+function isDiagnosticoPresupuestado(id) {
+	var presupuestado = false;
+
+	$.each(presupuestos, function(i, item) {
+		$.each(item.diagnosticos, function(j, d) {
+			if (d.id == id) {
+				presupuestado = true;
+			}
+			return !presupuestado;
+		});
+		return !presupuestado;
+	});
+
+	return presupuestado;
+}
+
+function isDiagnosticoFacturado(id) {
+	$.each(facturas, function(i, item) {
+		$.each(item.diagnosticos, function(j, d) {
+			if (d.id == id) {
+				return true;
+			}
+		});
+	});
+
+	return false;
 }
 
 function descargaPresupuesto(data) {

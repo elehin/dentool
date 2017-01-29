@@ -2,6 +2,7 @@ package com.dentool.rest;
 
 import java.util.List;
 
+import javax.ejb.EJBTransactionRolledbackException;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -187,10 +188,30 @@ public class DiagnosticoRestService {
 				.build();
 	}
 
+	@POST
+	@Secured
+	@Path("/archiva/{id}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response archiva(@PathParam("id") Long id) {
+		Diagnostico d = diagnosticoService.archiva(id);
+		return Response
+				.created(UriBuilder.fromResource(DiagnosticoRestService.class).path(String.valueOf(d.getId())).build())
+				.build();
+	}
+
 	@DELETE
 	@Secured
 	@Path("/delete/{id}")
 	public void delete(@PathParam("id") long id) {
-		diagnosticoService.delete(id);
+		try {
+			diagnosticoService.delete(id);
+		} catch (EJBTransactionRolledbackException e) {
+			System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+			System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+			System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+			System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+			System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+			System.out.println(e.getClass());
+		}
 	}
 }

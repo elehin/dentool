@@ -25,11 +25,6 @@ $(document).ready(
 				return false;
 			});
 
-			$("#btnDelete").click(function() {
-				deleteTratamiento();
-				return false;
-			});
-
 			$("#btnAddPago").click(function() {
 				addPago();
 				return false;
@@ -65,6 +60,21 @@ $(document).ready(
 				resetFechaFin();
 				return false;
 			});
+
+			if (isArchivable()) {
+				$("#btnDelete").text("Archivar");
+				$("#btnDelete").click(function() {
+					archivaTratamiento();
+					return false;
+				});
+			} else {
+				$("#btnDelete").text("Eliminar");
+				$("#btnDelete").click(function() {
+					deleteTratamiento();
+					return false;
+				});
+			}
+
 		});
 
 function addPagoRestante() {
@@ -220,6 +230,30 @@ function deleteTratamiento() {
 		type : 'DELETE',
 		contentType : 'application/json',
 		url : diagnosticoURL + 'delete/' + $('#diagnosticoId').val(),
+		success : function(rdata, textStatus, jqXHR) {
+			url = serverURL + 'paciente.html?paciente='
+					+ getUrlParameter("paciente");
+			window.location.replace(url);
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			} else {
+				showErrorMessage(textStatus);
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
+		}
+	});
+}
+
+function archivaTratamiento() {
+	$.ajax({
+		type : 'POST',
+		contentType : 'application/json',
+		url : diagnosticoURL + 'archiva/' + $('#diagnosticoId').val(),
 		success : function(rdata, textStatus, jqXHR) {
 			url = serverURL + 'paciente.html?paciente='
 					+ getUrlParameter("paciente");
@@ -617,4 +651,21 @@ function resetFechaFin() {
 					+ $.cookie('restTokenC'));
 		}
 	});
+}
+
+function isArchivable() {
+	var presupuestado, facturado;
+	if (getUrlParameter("presupuestado") == "true") {
+		presupuestado = true;
+	} else {
+		presupuestado = false;
+	}
+
+	if (getUrlParameter("facturado") == "true") {
+		facturado = true;
+	} else {
+		facturado = false;
+	}
+
+	return (presupuestado || facturado);
 }
