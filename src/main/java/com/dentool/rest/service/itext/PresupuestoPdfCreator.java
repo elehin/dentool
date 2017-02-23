@@ -139,21 +139,24 @@ public class PresupuestoPdfCreator {
 				for (Diagnostico d : diagnosticosList) {
 					rows++;
 
-					if (rows > 22 && rows < 28) {
+					while (rows > 22 && rows < 28) {
+						rows++;
 						line = " ; ; ; ";
 						this.processBody(tableBody, line, false, false);
-					} else {
-						diagnosticos++;
-						if (d.getPieza() == 0) {
-							pieza = "";
-						} else {
-							pieza = String.valueOf(d.getPieza());
-						}
-						line = diagnosticos + "; " + d.getTratamiento().getNombre() + "; " + pieza + "; "
-								+ Utils.formatAsCurrency(d.getPrecio());
-						this.processBody(tableBody, line, false, true);
-						this.precioTotal += d.getPrecio();
 					}
+
+					diagnosticos++;
+
+					if (d.getPieza() == 0) {
+						pieza = "";
+					} else {
+						pieza = String.valueOf(d.getPieza());
+					}
+					line = diagnosticos + "; " + d.getTratamiento().getNombre() + "; " + pieza + "; "
+							+ Utils.formatAsCurrency(d.getPrecio());
+					this.processBody(tableBody, line, false, true);
+					this.precioTotal += d.getPrecio();
+
 				}
 			} else { // tiene descuentos: se añaden dos columnas a la tabla
 				tableBody = new PdfPTable(new float[] { 1f, 8f, 1.5f, 3f, 2f, 3f });
@@ -165,27 +168,30 @@ public class PresupuestoPdfCreator {
 				for (Diagnostico d : diagnosticosList) {
 					rows++;
 
-					if (rows > 22 && rows < 28) {
+					while (rows > 22 && rows < 28) {
+						rows++;
 						line = " ; ; ; ";
 						this.processBody(tableBody, line, false, false);
-					} else {
-						diagnosticos++;
-						if (d.getPieza() == 0) {
-							pieza = "";
-						} else {
-							pieza = String.valueOf(d.getPieza());
-						}
-						if (d.getDescuento() == 0f) {
-							descuento = "";
-						} else {
-							descuento = String.format("%.0f", d.getDescuento()) + "%";
-						}
-						line = diagnosticos + "; " + d.getTratamiento().getNombre() + "; " + pieza + "; "
-								+ Utils.formatAsCurrency(d.getTratamiento().getPrecio()) + "; " + descuento + "; "
-								+ Utils.formatAsCurrency(d.getPrecio());
-						this.processBody(tableBody, line, false, true);
-						this.precioTotal += d.getPrecio();
 					}
+
+					diagnosticos++;
+
+					if (d.getPieza() == 0) {
+						pieza = "";
+					} else {
+						pieza = String.valueOf(d.getPieza());
+					}
+					if (d.getDescuento() == 0f) {
+						descuento = "";
+					} else {
+						descuento = String.format("%.0f", d.getDescuento()) + "%";
+					}
+					line = diagnosticos + "; " + d.getTratamiento().getNombre() + "; " + pieza + "; "
+							+ Utils.formatAsCurrency(d.getTratamiento().getPrecio()) + "; " + descuento + "; "
+							+ Utils.formatAsCurrency(d.getPrecio());
+					this.processBody(tableBody, line, false, true);
+					this.precioTotal += d.getPrecio();
+
 				}
 			}
 

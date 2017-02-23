@@ -103,11 +103,11 @@ public class DiagnosticoService {
 	public List<Diagnostico> getDiagnosticosNotStartedByPaciente(Long pacienteId) {
 		Paciente p = entityManager.find(Paciente.class, pacienteId);
 
-		String query = "SELECT d FROM Diagnostico d WHERE d.paciente = :paciente AND d.iniciado = :iniciado "
+		String query = "SELECT d FROM Diagnostico d WHERE d.paciente = :paciente AND d.iniciado = :iniciado AND d.archivado = :archivado "
 				+ "ORDER BY d.finalizado, d.iniciado DESC, d.diagnosticado DESC, d.fechaInicio, d.fechaFin DESC";
 		@SuppressWarnings("unchecked")
 		List<Diagnostico> lista = entityManager.createQuery(query).setParameter("paciente", p)
-				.setParameter("iniciado", false).getResultList();
+				.setParameter("iniciado", false).setParameter("archivado", false).getResultList();
 		return lista;
 	}
 
