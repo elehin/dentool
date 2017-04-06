@@ -12,10 +12,19 @@ $(document)
 					console
 							.log(Intl.DateTimeFormat().resolvedOptions().timeZone);
 
+					$("#btnCreaFactura").attr("disabled", false);
+
 					$("#btnCreaFactura").click(function() {
 						// console.log(formToJSON());
-						createFactura();
-						return false;
+						if ($("#btnCreaFactura").attr("disabled") == true) {
+							return false;
+						} else {
+							$("#btnCreaFactura").attr("disabled", true);
+							if (checkDNI()) {
+								createFactura();
+							}
+							return false;
+						}
 					});
 
 					$("#btnSave").click(function() {
@@ -298,6 +307,9 @@ function createFactura() {
 		error : function(jqXHR, textStatus, errorThrown) {
 			if (errorThrown == 'Unauthorized') {
 				window.location.replace(serverURL + 'login.html');
+			} else if (errorThrown == 'Precondition Failed') {
+				showErrorMessage("No se ha seleccionado ningún tratamiento");
+				$("#btnCreaFactura").attr("disabled", false);
 			}
 		},
 		beforeSend : function(xhr, settings) {
@@ -443,7 +455,7 @@ function showSuccessMessage() {
 function showErrorMessage(error) {
 	$("#error-alert").alert();
 	window.setTimeout(function() {
-		$("#error-alert").fadeTo(2000, 500).slideUp(500, function() {
+		$("#error-alert").fadeTo(20000, 500).slideUp(500, function() {
 			$("#error-alert").hide();
 		});
 	}, 0);
@@ -632,4 +644,15 @@ function hayPagosParciales(pacienteId) {
 					+ $.cookie('restTokenC'));
 		}
 	});
+}
+
+function checkDNI() {
+	if (paciente.dni.length < 5 && $("#otherDni").val().length < 5) {
+		showErrorMessage();
+		$("#btnCreaFactura").attr("disabled", false);
+		return false;
+	} else {
+		return true;
+	}
+
 }

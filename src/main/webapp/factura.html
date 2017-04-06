@@ -144,9 +144,15 @@
 					</p>
 				</div>
 
-				<div class="alert alert-danger collapse margin-top-25 "
+				<div
+					class="alert alert-danger collapse margin-top-25 alert-dismissable"
 					id="error-alert">
+					<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 					<strong>Error!</strong> Ha ocurrido algún tipo de error.
+					<ul>
+						<li>Has seleccionado algún tratamiento?</li>
+						<li>Has completado el DNI?</li>
+					</ul>
 				</div>
 				<!-- ./ mensajes -->
 
@@ -238,6 +244,9 @@
 
 	<!-- Accounting JavaScript for formatting currency-->
 	<script src="js/accounting.min.js"></script>
+
+	<!-- blockUI -->
+	<script src="js/jquery.blockUI.js"></script>
 
 	<script src="js/entorno.js"></script>
 	<script src="js/factura.js"></script>

@@ -90,6 +90,10 @@ public class FacturaRestService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response create(Factura f) {
+		if (f.getDiagnosticos() == null || f.getDiagnosticos().size() <= 0) {
+			throw new WebApplicationException(Response.Status.PRECONDITION_FAILED);
+		}
+
 		Factura factura = this.facturaService.create(f);
 
 		return Response.ok(factura).build();
@@ -101,6 +105,10 @@ public class FacturaRestService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces("application/pdf")
 	public Response createAndPrint(Factura factura) {
+		if (factura.getDiagnosticos() == null || factura.getDiagnosticos().size() <= 0) {
+			throw new WebApplicationException(Response.Status.PRECONDITION_FAILED);
+		}
+
 		Factura f = this.facturaService.create(factura);
 
 		File file = new File(f.getFileName());
