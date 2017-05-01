@@ -90,7 +90,8 @@ public class FacturaRestService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response create(Factura f) {
-		if (f.getDiagnosticos() == null || f.getDiagnosticos().size() <= 0) {
+		if ((f.getDiagnosticos() == null || f.getDiagnosticos().size() <= 0)
+				&& (f.getPagos() == null || f.getPagos().size() <= 0)) {
 			throw new WebApplicationException(Response.Status.PRECONDITION_FAILED);
 		}
 
@@ -105,7 +106,8 @@ public class FacturaRestService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces("application/pdf")
 	public Response createAndPrint(Factura factura) {
-		if (factura.getDiagnosticos() == null || factura.getDiagnosticos().size() <= 0) {
+		if ((factura.getDiagnosticos() == null || factura.getDiagnosticos().size() <= 0)
+				&& (factura.getPagos() == null || factura.getPagos().size() <= 0)) {
 			throw new WebApplicationException(Response.Status.PRECONDITION_FAILED);
 		}
 

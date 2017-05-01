@@ -13,6 +13,7 @@ var reportIngresosURL = 'https://dentool-elehin.rhcloud.com/service/ingresosMes/
 var citaURL = 'https://dentool-elehin.rhcloud.com/service/cita/';
 var personalURL = 'https://dentool-elehin.rhcloud.com/service/personal/';
 var gabineteURL = 'https://dentool-elehin.rhcloud.com/service/gabinete/';
+var diaURL = 'https://dentool-elehin.rhcloud.com/service/dia/';
 
 // var rootURL = 'http://localhost:8080/service/tratamiento/';
 // var diagnosticoURL = 'http://localhost:8080/service/diagnostico/';
@@ -29,10 +30,20 @@ var gabineteURL = 'https://dentool-elehin.rhcloud.com/service/gabinete/';
 // var citaURL = 'http://localhost:8080/service/cita/';
 // var personalURL = 'http://localhost:8080/service/personal/';
 // var gabineteURL = 'http://localhost:8080/service/gabinete/';
+// var diaURL = 'http://localhost:8080/service/dia/';
+ 
+ var uiBlocked, initConnCheck;
 
 $(document).ready(function() {
 	$('.dropdown-toggle').dropdown();
 	$('[data-toggle="tooltip"]').tooltip();
+	
+	uiBlocked = false;
+
+	initConnCheck = window.setInterval(checkConnectivity, 1000);
+	
+	window.setInterval(checkConnectivity, 60000);
+	
 });
 
 var getUrlParameter = function getUrlParameter(sParam) {
@@ -125,8 +136,8 @@ function paddingLeft(number, digits) {
 class TzDate extends Date {
 	constructor(){
 		super();
-		this.horasDif = 6;
-		// this.horasDif = 0;
+// this.horasDif = 6;
+		this.horasDif = 0;
 		this.setHours(this.getHours() + this.horasDif);
 	}
 	
@@ -146,9 +157,9 @@ class TzDate extends Date {
 		var year = fecha.substr(fecha.lastIndexOf('-') + 1,
 				fecha.length);
 		
-		this.setDate(dia);
-		this.setMonth(mes);
 		this.setFullYear(year);
+		this.setMonth(mes);
+		this.setDate(dia);
 		
 		this.setHours(this.getHours() + this.horasDif);
 	}
@@ -173,3 +184,42 @@ class TzDate extends Date {
 // }
 }
 
+
+function checkConnectivity(){
+	
+	    $.ajax({
+	      cache: false,
+	      type: 'GET',
+	      url: rootURL + 'ping',
+	      timeout: 5000,
+	      success: function(data, textStatus, XMLHttpRequest) {
+	        if (data == 'Up & running') {
+	          
+	          if (uiBlocked == true) {
+	            uiBlocked = false;
+	            $.unblockUI();
+	          }
+	          console.log("Comprobada conexión a servidor OK.");
+	          clearInterval(initConnCheck);
+	        }
+	      },
+	      error: function(jqXHR, textStatus, errorThrown){
+	    	  if (uiBlocked == false) {
+		            uiBlocked = true;
+		            $.blockUI({
+		              message: "No puedo conectarme con el servidor, espera unos instantes...",
+		              css: {
+		                border: 'none',
+		                padding: '15px',
+		                backgroundColor: '#000',
+		                '-webkit-border-radius': '10px',
+		                '-moz-border-radius': '10px',
+		                opacity: .5,
+		                color: '#fff'
+		              } });
+		          }
+		        }
+	    })
+
+	  
+}
