@@ -959,7 +959,7 @@ function formToJSON(action, event) {
 			var cita = getCurrentCita(huecoClicado.attr('cita'));
 			fin.setTime(inicio.getTime() + cita.fin - cita.inicio);
 		} else {
-			fin.setTime(inicio.getTime() + $("#duracion").val() * 60000);
+			fin.setTime(inicio.getTime() + $("#duracionEdit").val() * 60000);
 		}
 
 		return JSON.stringify({
