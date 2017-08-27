@@ -80,6 +80,7 @@ function checkCurrentDate() {
 		var year = fechaParameter.substr(fechaParameter.lastIndexOf('-') + 1,
 				fechaParameter.length);
 
+		displayDate.setDate(1); //para evitar que los días 31 cambien el mes
 		displayDate.setYear(year);
 		displayDate.setMonth(mes - 1);
 		displayDate.setDate(dia);
