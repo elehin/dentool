@@ -136,8 +136,8 @@ function paddingLeft(number, digits) {
 class TzDate extends Date {
 	constructor(){
 		super();
-// this.horasDif = 6;
-		this.horasDif = 0;
+		this.horasDif = 6;
+		// this.horasDif = 0;
 		this.setHours(this.getHours() + this.horasDif);
 	}
 	
@@ -149,13 +149,17 @@ class TzDate extends Date {
 		this.setSeconds(fechaActual.getSeconds());
 		this.setMilliseconds(fechaActual.getMilliseconds());
 		
-		var dia = fecha.substr(0, fecha.indexOf('-'));
+		var year = fecha.substr(fecha.lastIndexOf('-') + 1,
+				fecha.length);
+		
 		var mes = fecha.substr(fecha.indexOf('-') + 1,
 				fecha.lastIndexOf('-') - fecha.indexOf('-')
 						- 1);
 		mes--;
-		var year = fecha.substr(fecha.lastIndexOf('-') + 1,
-				fecha.length);
+		var dia = fecha.substr(0, fecha.indexOf('-'));
+		
+		// para evitar que los días 31 cambien el mes
+		this.setDate(1);
 		
 		this.setFullYear(year);
 		this.setMonth(mes);
