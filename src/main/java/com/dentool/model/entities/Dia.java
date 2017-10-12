@@ -14,8 +14,8 @@ import javax.persistence.TemporalType;
 public class Dia {
 
 	@Id
-	@SequenceGenerator(name = "cita_id_seq", sequenceName = "cita_id_seq", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cita_id_seq")
+	@SequenceGenerator(name = "dia_id_seq", sequenceName = "dia_id_seq", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "dia_id_seq")
 	private long id;
 
 	private boolean agendaDetalle;
@@ -56,7 +56,7 @@ public class Dia {
 			return false;
 		}
 		final Dia other = (Dia) obj;
-
+	
 		return other.getFecha().equals(this.fecha);
 	}
 }
