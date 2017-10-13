@@ -1,19 +1,19 @@
-var rootURL = 'https://dentool-elehin.rhcloud.com/service/tratamiento/';
-var diagnosticoURL = 'https://dentool-elehin.rhcloud.com/service/diagnostico/';
-var tratamientoURL = 'https://dentool-elehin.rhcloud.com/service/tratamiento/';
-var tratamientosTopURL = 'https://dentool-elehin.rhcloud.com/service/tratamientoTop';
-var serverURL = 'https://dentool-elehin.rhcloud.com/';
-var pacienteURL = 'https://dentool-elehin.rhcloud.com/service/paciente/';
-var pagosURL = 'https://dentool-elehin.rhcloud.com/service/pago/';
-var authenticationURL = 'https://dentool-elehin.rhcloud.com/service/authentication/';
-var presupuestoURL = 'https://dentool-elehin.rhcloud.com/service/presupuesto/';
-var facturaURL = 'https://dentool-elehin.rhcloud.com/service/factura/';
-var datosComercialesURL = 'https://dentool-elehin.rhcloud.com/service/datosComerciales/';
-var reportIngresosURL = 'https://dentool-elehin.rhcloud.com/service/ingresosMes/';
-var citaURL = 'https://dentool-elehin.rhcloud.com/service/cita/';
-var personalURL = 'https://dentool-elehin.rhcloud.com/service/personal/';
-var gabineteURL = 'https://dentool-elehin.rhcloud.com/service/gabinete/';
-var diaURL = 'https://dentool-elehin.rhcloud.com/service/dia/';
+var rootURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/tratamiento/';
+var diagnosticoURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/diagnostico/';
+var tratamientoURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/tratamiento/';
+var tratamientosTopURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/tratamientoTop';
+var serverURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/';
+var pacienteURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/paciente/';
+var pagosURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/pago/';
+var authenticationURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/authentication/';
+var presupuestoURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/presupuesto/';
+var facturaURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/factura/';
+var datosComercialesURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/datosComerciales/';
+var reportIngresosURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/ingresosMes/';
+var citaURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/cita/';
+var personalURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/personal/';
+var gabineteURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/gabinete/';
+var diaURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/dia/';
 
 // var rootURL = 'http://localhost:8080/service/tratamiento/';
 // var diagnosticoURL = 'http://localhost:8080/service/diagnostico/';
@@ -227,3 +227,28 @@ function checkConnectivity(){
 
 	  
 }
+
+
+// var rootURL = 'https://dentool-elehin.rhcloud.com/service/tratamiento/';
+// var diagnosticoURL =
+// 'https://dentool-elehin.rhcloud.com/service/diagnostico/';
+// var tratamientoURL =
+// 'https://dentool-elehin.rhcloud.com/service/tratamiento/';
+// var tratamientosTopURL =
+// 'https://dentool-elehin.rhcloud.com/service/tratamientoTop';
+// var serverURL = 'https://dentool-elehin.rhcloud.com/';
+// var pacienteURL = 'https://dentool-elehin.rhcloud.com/service/paciente/';
+// var pagosURL = 'https://dentool-elehin.rhcloud.com/service/pago/';
+// var authenticationURL =
+// 'https://dentool-elehin.rhcloud.com/service/authentication/';
+// var presupuestoURL =
+// 'https://dentool-elehin.rhcloud.com/service/presupuesto/';
+// var facturaURL = 'https://dentool-elehin.rhcloud.com/service/factura/';
+// var datosComercialesURL =
+// 'https://dentool-elehin.rhcloud.com/service/datosComerciales/';
+// var reportIngresosURL =
+// 'https://dentool-elehin.rhcloud.com/service/ingresosMes/';
+// var citaURL = 'https://dentool-elehin.rhcloud.com/service/cita/';
+// var personalURL = 'https://dentool-elehin.rhcloud.com/service/personal/';
+// var gabineteURL = 'https://dentool-elehin.rhcloud.com/service/gabinete/';
+// var diaURL = 'https://dentool-elehin.rhcloud.com/service/dia/';
