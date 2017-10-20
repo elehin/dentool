@@ -2,7 +2,9 @@ package com.dentool.rest.service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -216,17 +218,17 @@ public class PagoService {
 		return pagosEager;
 	}
 
-
-	public List<Pago> getPagos(List<Long> ids) {
+	public Set<Pago> getPagos(List<Long> ids) {
 		String query = "SELECT p FROM Pago p WHERE p.id IN :ides";
 
 		@SuppressWarnings("unchecked")
-		List<Pago> lista = this.entityManager.createQuery(query).setParameter("ides", ids).getResultList();
+		Set<Pago> lista = new HashSet<Pago>(
+				this.entityManager.createQuery(query).setParameter("ides", ids).getResultList());
 
 		return lista;
 	}
 
-	public float getPrecioPagos(List<Pago> pagos) {
+	public float getPrecioPagos(Set<Pago> pagos) {
 		String query = "SELECT sum(p.cantidad) FROM Pago p WHERE p IN :pagos";
 		Object o = this.entityManager.createQuery(query).setParameter("pagos", pagos).getSingleResult();
 		if (o != null) {
