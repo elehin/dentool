@@ -255,8 +255,8 @@ public class PresupuestoPdfCreator {
 	}
 
 	/**
-	 * Crea el documento, establece márgenes y añade el evento para la creación
-	 * del header y el footer
+	 * Crea el documento, establece márgenes y añade el evento para la creación del
+	 * header y el footer
 	 * 
 	 * @param presupuesto
 	 * @return un Document
@@ -286,14 +286,7 @@ public class PresupuestoPdfCreator {
 	}
 
 	private void checkFilePath() {
-		this.path = System.getenv("OPENSHIFT_DATA_DIR");
-		if (this.path == null) {
-			logger.info("Ejecución en entorno no OpenShift, se crearán los ficheros en ruta absoluta.");
-			this.path = "C:/Users/Vane/Documents/";
-		} else {
-			path += "presupuestos/";
-		}
-
+		this.path = Utils.getFileStoragePath() + "presupuestos/";
 		logger.info(this.path);
 	}
 
