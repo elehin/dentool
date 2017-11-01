@@ -36,7 +36,7 @@ import com.dentool.utils.Utils;
 public class FacturaService {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	private String path;
+	// private String path;
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -51,12 +51,10 @@ public class FacturaService {
 	private PagoService pagoService;
 
 	public FacturaService() {
-		this.checkFilePath();
+		// this.checkFilePath();
 	}
 
 	public Factura create(Factura factura) {
-
-		logger.debug("FacturaService.create()");
 
 		// ------ Si viene nombre en la petición se emite la factura a ese
 		// nombre.
@@ -82,7 +80,7 @@ public class FacturaService {
 		Calendar calendar;
 
 		// ------ Se comprueba si viene especificada timezone. En caso negativo
-		// se usa la de por defecto
+		// se usa el timezone por defecto
 		if (factura.getTimezone() == null || factura.getTimezone().equals("undefined")
 				|| factura.getTimezone().equals("")) {
 			calendar = Calendar.getInstance(Utils.getDefaultTimezone());
@@ -717,16 +715,17 @@ public class FacturaService {
 
 		return ifs;
 	}
-
-	private void checkFilePath() {
-		this.path = System.getenv("OPENSHIFT_DATA_DIR");
-		if (this.path == null) {
-			logger.info("Ejecución en entorno no OpenShift, se crearán los ficheros en ruta absoluta.");
-			this.path = "C:/Users/Vane/Documents/";
-		} else {
-			path += "facturas/";
-		}
-
-		logger.info(this.path);
-	}
+	//
+	// private void checkFilePath() {
+	// this.path = System.getenv("OPENSHIFT_DATA_DIR");
+	// if (this.path == null) {
+	// logger.info("Ejecución en entorno no OpenShift, se crearán los ficheros en
+	// ruta absoluta.");
+	// this.path = "C:/Users/Vane/Documents/";
+	// } else {
+	// path += "facturas/";
+	// }
+	//
+	// logger.info(this.path);
+	// }
 }
