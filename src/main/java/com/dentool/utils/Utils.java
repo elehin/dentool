@@ -14,8 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 public class Utils {
 
 	/**
-	 * Función que elimina acentos y caracteres especiales de una cadena de
-	 * texto.
+	 * Función que elimina acentos y caracteres especiales de una cadena de texto.
 	 * 
 	 * @param input
 	 * @return cadena de texto limpia de acentos y caracteres especiales.
@@ -147,5 +146,17 @@ public class Utils {
 
 	public static TimeZone getDefaultTimezone() {
 		return TimeZone.getTimeZone("Europe/Madrid");
+	}
+
+	public static String getFileStoragePath() {
+		String path = System.getenv("HOME");
+
+		if (path == null) {
+			path = "C:/Users/Vane/Documents/dentoolFiles/";
+		} else if (path.equals("/home/wildfly")) {
+			path = "/home/bitnami/";
+		}
+
+		return path;
 	}
 }
