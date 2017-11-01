@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 
 import com.dentool.utils.Utils;
 
@@ -11,7 +12,8 @@ import com.dentool.utils.Utils;
 public class TratamientoTop {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@SequenceGenerator(name = "tratamientoTop_id_seq", sequenceName = "tratamientoTop_id_seq", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tratamientoTop_id_seq")
 	private long id;
 
 	private String nombre;
