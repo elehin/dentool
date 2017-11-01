@@ -9,8 +9,8 @@ public class Parametro {
 	@Id
 	private long id;
 	@Column(unique = true)
-	private String key;
-	private String value;
+	private String clave;
+	private String valor;
 
 	public final static String PACIENTES_ANTERIORES_DENTOOL = "pacientesAnterioresADentool";
 
@@ -22,20 +22,20 @@ public class Parametro {
 		this.id = id;
 	}
 
-	public String getValue() {
-		return value;
+	public String getValor() {
+		return valor;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public void setValor(String valor) {
+		this.valor = valor;
 	}
 
-	public String getKey() {
-		return key;
+	public String getClave() {
+		return clave;
 	}
 
-	public void setKey(String key) {
-		this.key = key;
+	public void setClave(String clave) {
+		this.clave = clave;
 	}
 
 }
