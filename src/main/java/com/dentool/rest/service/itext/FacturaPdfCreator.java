@@ -264,8 +264,8 @@ public class FacturaPdfCreator {
 	}
 
 	/**
-	 * Crea el documento, establece márgenes y añade el evento para la creación
-	 * del header y el footer
+	 * Crea el documento, establece márgenes y añade el evento para la creación del
+	 * header y el footer
 	 * 
 	 * @param factura
 	 * @return un Document
@@ -295,14 +295,7 @@ public class FacturaPdfCreator {
 	}
 
 	private void checkFilePath() {
-		this.path = System.getenv("OPENSHIFT_DATA_DIR");
-		if (this.path == null) {
-			logger.info("Ejecución en entorno no OpenShift, se crearán los ficheros en ruta absoluta.");
-			this.path = "C:/Users/Vane/Documents/";
-		} else {
-			path += "facturas/";
-		}
-
+		this.path = Utils.getFileStoragePath() + "facturas/";
 		logger.info(this.path);
 	}
 
