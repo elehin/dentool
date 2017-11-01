@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dentool.model.entities.Factura;
+import com.dentool.utils.Utils;
 
 public class GeneradorInformeFacturacion {
 
@@ -36,6 +37,7 @@ public class GeneradorInformeFacturacion {
 		this.checkFilePath();
 	}
 
+	// TODO cambiar métodos deprecados de poi
 	public File creaInforme(String titulo, String name, List<Factura> facturas) {
 		String filename = this.path + name + ".xls";
 		HSSFWorkbook workbook = new HSSFWorkbook();
@@ -164,14 +166,7 @@ public class GeneradorInformeFacturacion {
 	}
 
 	private void checkFilePath() {
-		this.path = System.getenv("OPENSHIFT_DATA_DIR");
-		if (this.path == null) {
-			logger.info("Ejecución en entorno no OpenShift, se crearán los ficheros en ruta absoluta.");
-			this.path = "C:/Users/Vane/Documents/excel/";
-		} else {
-			this.path += "excel/";
-		}
-
+		this.path = Utils.getFileStoragePath() + "excel/";
 		logger.info(this.path);
 	}
 }
