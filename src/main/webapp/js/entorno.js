@@ -1,37 +1,40 @@
-var rootURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/tratamiento/';
-var diagnosticoURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/diagnostico/';
-var tratamientoURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/tratamiento/';
-var tratamientosTopURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/tratamientoTop';
-var serverURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/';
-var pacienteURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/paciente/';
-var pagosURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/pago/';
-var authenticationURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/authentication/';
-var presupuestoURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/presupuesto/';
-var facturaURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/factura/';
-var datosComercialesURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/datosComerciales/';
-var reportIngresosURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/ingresosMes/';
-var citaURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/cita/';
-var personalURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/personal/';
-var gabineteURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/gabinete/';
-var diaURL = 'https://dentool-dentool.1d35.starter-us-east-1.openshiftapps.com/service/dia/';
+// ------ URLs para conexión en local  --------------------- 
+//var rootURL = 'https://localhost/service/tratamiento/';
+//var diagnosticoURL = 'https://localhost/service/diagnostico/';
+//var pacienteURL = 'https://localhost/service/paciente/';
+//var tratamientoURL = 'https://localhost/service/tratamiento/';
+//var tratamientosTopURL = 'https://localhost/service/tratamientoTop';
+//var serverURL = 'https://localhost/';
+//var pagosURL = 'https://localhost/service/pago/';
+//var authenticationURL = 'https://localhost/service/authentication/';
+//var presupuestoURL = 'https://localhost/service/presupuesto/';
+//var facturaURL = 'https://localhost/service/factura/';
+//var datosComercialesURL = 'https://localhost/service/datosComerciales/';
+//var reportIngresosURL = 'https://localhost/service/ingresosMes/';
+//var citaURL = 'https://localhost/service/cita/';
+//var personalURL = 'https://localhost/service/personal/';
+//var gabineteURL = 'https://localhost/service/gabinete/';
+//var diaURL = 'https://localhost/service/dia/';
 
-// var rootURL = 'http://localhost:8080/service/tratamiento/';
-// var diagnosticoURL = 'http://localhost:8080/service/diagnostico/';
-// var pacienteURL = 'http://localhost:8080/service/paciente/';
-// var tratamientoURL = 'http://localhost:8080/service/tratamiento/';
-// var tratamientosTopURL = 'http://localhost:8080/service/tratamientoTop';
-// var serverURL = 'http://localhost:8080/';
-// var pagosURL = 'http://localhost:8080/service/pago/';
-// var authenticationURL = 'http://localhost:8080/service/authentication/';
-// var presupuestoURL = 'http://localhost:8080/service/presupuesto/';
-// var facturaURL = 'http://localhost:8080/service/factura/';
-// var datosComercialesURL = 'http://localhost:8080/service/datosComerciales/';
-// var reportIngresosURL = 'http://localhost:8080/service/ingresosMes/';
-// var citaURL = 'http://localhost:8080/service/cita/';
-// var personalURL = 'http://localhost:8080/service/personal/';
-// var gabineteURL = 'http://localhost:8080/service/gabinete/';
-// var diaURL = 'http://localhost:8080/service/dia/';
- 
+// ------ URLs para conexión en GCP ---------------------
+ var rootURL = 'https://dentool.elehin.com/service/tratamiento/';
+ var diagnosticoURL = 'https://dentool.elehin.com/service/diagnostico/';
+ var pacienteURL = 'https://dentool.elehin.com/service/paciente/';
+ var tratamientoURL = 'https://dentool.elehin.com/service/tratamiento/';
+ var tratamientosTopURL = 'https://dentool.elehin.com/service/tratamientoTop';
+ var serverURL = 'https://dentool.elehin.com/';
+ var pagosURL = 'https://dentool.elehin.com/service/pago/';
+ var authenticationURL = 'https://dentool.elehin.com/service/authentication/';
+ var presupuestoURL = 'https://dentool.elehin.com/service/presupuesto/';
+ var facturaURL = 'https://dentool.elehin.com/service/factura/';
+ var datosComercialesURL =
+ 'https://dentool.elehin.com/service/datosComerciales/';
+ var reportIngresosURL = 'https://dentool.elehin.com/service/ingresosMes/';
+ var citaURL = 'https://dentool.elehin.com/service/cita/';
+ var personalURL = 'https://dentool.elehin.com/service/personal/';
+ var gabineteURL = 'https://dentool.elehin.com/service/gabinete/';
+ var diaURL = 'https://dentool.elehin.com/service/dia/';
+// 
  var uiBlocked, initConnCheck;
 
 $(document).ready(function() {
@@ -136,8 +139,8 @@ function paddingLeft(number, digits) {
 class TzDate extends Date {
 	constructor(){
 		super();
-		this.horasDif = 6;
-		// this.horasDif = 0;
+// this.horasDif = 1;
+		this.horasDif = 0;
 		this.setHours(this.getHours() + this.horasDif);
 	}
 	
@@ -167,25 +170,6 @@ class TzDate extends Date {
 		
 		this.setHours(this.getHours() + this.horasDif);
 	}
-
-	
-// setFecha(fecha){
-// var dia = fecha.substr(0, fecha.indexOf('-'));
-// var mes = fecha.substr(fecha.indexOf('-') + 1,
-// fecha.lastIndexOf('-') - fecha.indexOf('-')
-// - 1);
-// var year = fecha.substr(fecha.lastIndexOf('-') + 1,
-// fecha.length);
-//		
-// var difYears = year - this.getFullYear();
-// this.setFullYear(this.getFullYear() + difYears);
-//
-// var difMeses = mes - (this.getMonth() + 1);
-// this.setMonth(this.getMonth() + difMeses);
-//
-// var difDias = dia - this.getDate();
-// this.setDate(this.getDate() + difDias);
-// }
 }
 
 
@@ -228,27 +212,3 @@ function checkConnectivity(){
 	  
 }
 
-
-// var rootURL = 'https://dentool-elehin.rhcloud.com/service/tratamiento/';
-// var diagnosticoURL =
-// 'https://dentool-elehin.rhcloud.com/service/diagnostico/';
-// var tratamientoURL =
-// 'https://dentool-elehin.rhcloud.com/service/tratamiento/';
-// var tratamientosTopURL =
-// 'https://dentool-elehin.rhcloud.com/service/tratamientoTop';
-// var serverURL = 'https://dentool-elehin.rhcloud.com/';
-// var pacienteURL = 'https://dentool-elehin.rhcloud.com/service/paciente/';
-// var pagosURL = 'https://dentool-elehin.rhcloud.com/service/pago/';
-// var authenticationURL =
-// 'https://dentool-elehin.rhcloud.com/service/authentication/';
-// var presupuestoURL =
-// 'https://dentool-elehin.rhcloud.com/service/presupuesto/';
-// var facturaURL = 'https://dentool-elehin.rhcloud.com/service/factura/';
-// var datosComercialesURL =
-// 'https://dentool-elehin.rhcloud.com/service/datosComerciales/';
-// var reportIngresosURL =
-// 'https://dentool-elehin.rhcloud.com/service/ingresosMes/';
-// var citaURL = 'https://dentool-elehin.rhcloud.com/service/cita/';
-// var personalURL = 'https://dentool-elehin.rhcloud.com/service/personal/';
-// var gabineteURL = 'https://dentool-elehin.rhcloud.com/service/gabinete/';
-// var diaURL = 'https://dentool-elehin.rhcloud.com/service/dia/';

@@ -33,9 +33,11 @@ public class KeyStoreService {
 
 	private String getKey() {
 
-		String path = System.getenv("OPENSHIFT_DATA_DIR");
+		String path = System.getenv("HOME");
 		if (path == null) {
 			path = "c:";
+		} else if (path.equals("/home/wildfly")) {
+			path = "/home/bitnami";
 		}
 
 		String k = "";

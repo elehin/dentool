@@ -17,7 +17,7 @@ public class ParametroService {
 	// private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public Parametro getParametro(String key) {
-		String query = "SELECT p FROM Parametro p where p.key = :key";
+		String query = "SELECT p FROM Parametro p where p.clave = :key";
 		@SuppressWarnings("rawtypes")
 		List l = this.entityManager.createQuery(query).setParameter("key", key).getResultList();
 		Parametro p = null;

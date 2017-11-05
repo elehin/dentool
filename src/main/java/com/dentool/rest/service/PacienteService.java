@@ -40,9 +40,9 @@ public class PacienteService {
 		if (paciente.isPacienteAnteriorADentool()) {
 			Parametro p = this.parametroService.getParametro(Parametro.PACIENTES_ANTERIORES_DENTOOL);
 			if (p != null) {
-				int pacientesAntiguos = Integer.parseInt(p.getValue());
+				int pacientesAntiguos = Integer.parseInt(p.getValor());
 				pacientesAntiguos--;
-				p.setValue(String.valueOf(pacientesAntiguos));
+				p.setValor(String.valueOf(pacientesAntiguos));
 			}
 		}
 

@@ -2,6 +2,7 @@ package com.dentool.model.entities;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -41,7 +42,7 @@ public class Factura {
 	private List<Diagnostico> diagnosticos;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "factura", fetch = FetchType.EAGER)
-	private List<Pago> pagos;
+	private Set<Pago> pagos;
 
 	public long getId() {
 		return id;
@@ -123,11 +124,11 @@ public class Factura {
 		this.nifFactura = nifFactura;
 	}
 
-	public List<Pago> getPagos() {
+	public Set<Pago> getPagos() {
 		return pagos;
 	}
 
-	public void setPagos(List<Pago> pagos) {
+	public void setPagos(Set<Pago> pagos) {
 		this.pagos = pagos;
 	}
 
