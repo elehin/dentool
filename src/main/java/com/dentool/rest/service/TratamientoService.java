@@ -56,4 +56,11 @@ public class TratamientoService {
 			entityManager.remove(t);
 		}
 	}
+
+	public List<Tratamiento> getTratamientos(List<Long> ids) {
+		@SuppressWarnings("unchecked")
+		List<Tratamiento> lista = entityManager.createQuery("SELECT t FROM Tratamiento t WHERE t.id IN :ids")
+				.setParameter("ids", ids).getResultList();
+		return lista;
+	}
 }
