@@ -3,9 +3,12 @@ package com.dentool.rest.service;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -27,6 +30,9 @@ public class DiagnosticoService {
 
 	@PersistenceContext
 	private EntityManager entityManager;
+
+	@Inject
+	private TratamientoService tratamientoService;
 
 	public Diagnostico addDiagnostico(Diagnostico diagnostico) {
 		Paciente p = entityManager.find(Paciente.class, diagnostico.getPaciente().getId());
@@ -325,5 +331,42 @@ public class DiagnosticoService {
 		d.setFechaFin(null);
 		d.setFinalizado(false);
 		return d;
+	}
+
+	public List<Diagnostico> eliminaDescuento(List<Diagnostico> diagnosticos) {
+		long idPaciente = 0L;
+
+		// Recupera los diagnosticos de bbdd
+		List<Long> ids = new ArrayList<Long>();
+		for (Diagnostico d : diagnosticos) {
+			ids.add(d.getId());
+		}
+		diagnosticos = this.getDiagnosticos(ids);
+
+		// Crea una lista de ids para recuperar los tratamientos y poder ver el precio
+		// original de los mismos al eliminar el descuento.
+		List<Long> tratamientosIds = new ArrayList<Long>();
+		for (Diagnostico d : diagnosticos) {
+			tratamientosIds.add(d.getTratamiento().getId());
+			idPaciente = d.getPaciente().getId();
+		}
+		List<Tratamiento> tratamientos = this.tratamientoService.getTratamientos(tratamientosIds);
+
+		// Se insertan en un HashMap los Tramamientos para buscarlos después.
+		Map<Long, Tratamiento> tratamientosMap = new HashMap<Long, Tratamiento>();
+		for (Tratamiento t : tratamientos) {
+			tratamientosMap.put(t.getId(), t);
+		}
+
+		// Para cada diagnostico se quita el descuento, se pone el precio original y se
+		// actualiza
+		for (Diagnostico d : diagnosticos) {
+			d.setDescuento(0f);
+			Tratamiento t = tratamientosMap.get(d.getTratamiento().getId());
+			d.setPrecio(t.getPrecio());
+		}
+
+		// Se devuelven todos los diagnósticos no empezados del paciente
+		return this.getDiagnosticosNotStartedByPaciente(idPaciente);
 	}
 }

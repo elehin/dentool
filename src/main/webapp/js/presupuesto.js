@@ -14,6 +14,11 @@ $(document).ready(
 				return false;
 			});
 
+			$("#btnEliminaDescuentos").click(function() {
+				eliminaDescuentos();
+				return false;
+			});
+
 			if (getUrlParameter("paciente") != '') {
 				pacienteId = getUrlParameter("paciente");
 				findPaciente(pacienteId);
@@ -36,6 +41,7 @@ function findDiagnosticosParaPresupuesto(paciente) {
 		success : function(data) {
 			populateTable(data);
 			updateTotalPanel(data);
+			return false;
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			if (errorThrown == 'Unauthorized') {
@@ -285,6 +291,29 @@ function aplicaDescuento() {
 	});
 }
 
+function eliminaDescuentos() {
+	$.ajax({
+		type : 'POST',
+		contentType : 'application/json',
+		url : diagnosticoURL + "resetDescuentosById",
+		data : formToJSON("eliminaDescuentos"),
+		success : function(data) {
+			redrawTable(data);
+			updateTotalPanel(data);
+			return false;
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
+		}
+	});
+}
+
 function formToJSON(action) {
 	if (action === undefined) {
 
@@ -312,6 +341,16 @@ function formToJSON(action) {
 		return JSON.stringify({
 			"diagnosticos" : diagnosticos,
 			"descuento" : $("#descuentoPorcentual").val()
+		});
+	} else if (action == "eliminaDescuentos") {
+		var diagnosticosIds = new Array();
+
+		$.each(rows_selected, function(i, item) {
+			diagnosticosIds.push(item);
+		});
+
+		return JSON.stringify({
+			diagnosticosIds
 		});
 	}
 }
