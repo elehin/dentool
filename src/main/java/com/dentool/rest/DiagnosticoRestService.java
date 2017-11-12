@@ -1,5 +1,6 @@
 package com.dentool.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJBTransactionRolledbackException;
@@ -18,6 +19,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import com.dentool.filter.Secured;
 import com.dentool.model.Descuento;
+import com.dentool.model.DescuentosAEliminar;
 import com.dentool.model.DiagnosticoSet;
 import com.dentool.model.DiagnosticosNoFacturado;
 import com.dentool.model.entities.Diagnostico;
@@ -213,5 +215,32 @@ public class DiagnosticoRestService {
 			System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 			System.out.println(e.getClass());
 		}
+	}
+
+	@POST
+	@Secured
+	@Path("/resetDescuentos")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response resetDescuentos(List<Diagnostico> diagnosticos) {
+		List<Diagnostico> lista = diagnosticoService.eliminaDescuento(diagnosticos);
+		return Response.ok(lista).build();
+	}
+
+	@POST
+	@Secured
+	@Path("/resetDescuentosById")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response resetDescuentosById(DescuentosAEliminar descuentos) {
+		List<Diagnostico> diagnosticos = new ArrayList<Diagnostico>();
+		for (Long id : descuentos.getDiagnosticosIds()) {
+			Diagnostico d = new Diagnostico();
+			d.setId(id);
+			diagnosticos.add(d);
+		}
+
+		List<Diagnostico> lista = diagnosticoService.eliminaDescuento(diagnosticos);
+		return Response.ok(lista).build();
 	}
 }
