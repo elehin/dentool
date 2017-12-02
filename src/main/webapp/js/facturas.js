@@ -76,7 +76,7 @@ function setCombosValues() {
 						.attr('value', '9/' + (currentDate.getFullYear() - 1)));
 		$("#trimestreDropdown").val('3/' + (currentDate.getFullYear()));
 
-	} else if (currentDate.getMonth() >= 3 && currentDate.getMonth() <= 5) {
+	} else if (currentDate.getMonth() >= 6 && currentDate.getMonth() <= 8) {
 		$("#trimestreDropdown").append(
 				$('<option>').text("Q1").attr('value',
 						'0/' + (currentDate.getFullYear())));
@@ -91,7 +91,7 @@ function setCombosValues() {
 						.attr('value', '9/' + (currentDate.getFullYear() - 1)));
 		$("#trimestreDropdown").val('6/' + (currentDate.getFullYear()));
 
-	} else if (currentDate.getMonth() >= 3 && currentDate.getMonth() <= 5) {
+	} else if (currentDate.getMonth() >= 9 && currentDate.getMonth() <= 11) {
 		$("#trimestreDropdown").append(
 				$('<option>').text("Q1").attr('value',
 						'0/' + (currentDate.getFullYear())));
