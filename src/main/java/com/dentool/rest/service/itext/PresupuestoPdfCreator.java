@@ -170,7 +170,8 @@ public class PresupuestoPdfCreator {
 
 					while (rows > 22 && rows < 28) {
 						rows++;
-						line = " ; ; ; ";
+						line = " ; ; ; ; ; ";
+
 						this.processBody(tableBody, line, false, false);
 					}
 
