@@ -5,9 +5,9 @@ body {
 	/* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
 }
 
-footer {
-	margin: 50px 0;
-}
+/*footer {
+ 	margin: 50px 0;
+}*/
 
 .page-header {
 	padding-bottom: 9px;
@@ -87,6 +87,10 @@ footer {
 	padding: 10px;
 }
 
+.padding-left-30 {
+	padding-left: 30px;
+}
+
 .botonPieza {
 	padding: 2px 17px 2px 3px;
 }
@@ -118,4 +122,42 @@ footer {
 .drop-hover {
 	border: 1px solid #dad55e;
 	background: #fffa90;
+}
+
+footer.pageFooter{
+	margin-top: 20px;
+	padding-top: 20px;
+	color: #fff;
+	text-align: center;
+	bottom: 0;
+}
+
+.footer-copyright{
+	overflow: hidden;
+    height: 50px;
+    line-height: 50px;
+    color: rgba(255, 255, 255, 0.6);
+    background-color: rgba(0, 0, 0, 0.2);
+    text-align: center;
+    font-size: 0.9rem; 
+}
+
+footer.pageFooter .container-fluid {
+    width: auto;
+}
+
+footer.pageFooter a {
+	color: inherit;
+	text-decoration: none;
+	cursor: pointer;
+	-webkit-tap-highlight-color: transparent; 
+}
+
+footer.pageFooter ul{
+	list-style-type: none;
+	padding: 0;
+}
+
+.blue {
+  background-color: #2196F3 !important; 
 }
