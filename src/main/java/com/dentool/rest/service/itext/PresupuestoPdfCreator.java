@@ -67,7 +67,7 @@ public class PresupuestoPdfCreator {
 			diagnosticoService = (DiagnosticoService) context.lookup("java:global/ROOT/DiagnosticoService");
 
 		} catch (NamingException e) {
-			logger.info("----- Ejecución en entorno no OpenShift, se usará \"java:global/dentool/\" ------");
+			logger.info("----- Ejecución en entorno no productivo, se usará \"java:global/dentool/\" ------");
 			try {
 				context = new InitialContext();
 
