@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipOutputStream;
 
 import javax.ejb.Stateless;
@@ -376,7 +377,7 @@ public class FacturaService {
 		List<Factura> facturas = this.getFacturasTrimestre(mes, year);
 
 		String q = String.valueOf((mes + 3) / 3).substring(0, 1);
-		String zipFileName = "zip_Q" + q + "_" + cal.getTimeInMillis() + ".zip";
+		String zipFileName = Utils.getFileStoragePath() + "/tmp/zip_Q" + q + "_" + cal.getTimeInMillis() + ".zip";
 
 		try {
 			fos = new FileOutputStream(zipFileName);
@@ -449,7 +450,7 @@ public class FacturaService {
 		cal.set(Calendar.YEAR, year);
 		List<Factura> facturas = this.getFacturasMes(mes, year);
 
-		String zipFileName = "zip_mes_"
+		String zipFileName = Utils.getFileStoragePath() + "/tmp/zip_mes_"
 				+ cal.getDisplayName(Calendar.MONTH, Calendar.SHORT_FORMAT, new Locale("es", "ES")) + "_"
 				+ cal.getTimeInMillis() + ".zip";
 
@@ -517,7 +518,8 @@ public class FacturaService {
 		cal.set(Calendar.YEAR, year);
 		List<Factura> facturas = this.getFacturasYear(year);
 
-		String zipFileName = "zip_año_" + cal.get(Calendar.YEAR) + "_" + cal.getTimeInMillis() + ".zip";
+		String zipFileName = Utils.getFileStoragePath() + "/tmp/zip_año_" + cal.get(Calendar.YEAR) + "_"
+				+ cal.getTimeInMillis() + ".zip";
 
 		try {
 			fos = new FileOutputStream(zipFileName);
@@ -565,6 +567,8 @@ public class FacturaService {
 			while ((length = fis.read(bytes)) >= 0) {
 				zos.write(bytes, 0, length);
 			}
+		} catch (ZipException e) {
+			// Para evitar el logado de la traza cada vez que se añade un fichero
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 			e.printStackTrace();
