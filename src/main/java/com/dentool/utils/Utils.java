@@ -159,4 +159,14 @@ public class Utils {
 
 		return path;
 	}
+
+	public static final String GDPR = "Responsable: Clínicas OSLO. Finalidad: Prestación de asistencia médica "
+			+ "solicitada. Legitimación: Cumplimiento de una obligación legal. Consentimiento del interesado "
+			+ "y/o su representante legal. Destinatarios: Están previstas cesiones de datos a: Entidades "
+			+ "sanitarias, entidades aseguradoras. Derechos: Tiene derecho a acceder, rectificar y suprimir "
+			+ "los datos, así como otros derechos, indicados en la información adicional, que puede ejercer "
+			+ "enviando un correo electrónico con copia de NIF a nuestra dirección electrónica. informacion@clinicasoslo.es "
+			+ "Procedencia: El propio interesado o su representante legal. "
+			+ "Información adicional: Puede consultar información adicional y detallada sobre Protección de "
+			+ "Datos en nuestra página web: http://clinicasoslo.es/aviso-legal/política-de-privacidad/";
 }

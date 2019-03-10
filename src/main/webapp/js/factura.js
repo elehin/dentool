@@ -420,6 +420,7 @@ function formToJSON(action) {
 				"nombreFactura" : $('#otherName').val(),
 				"nifFactura" : $('#otherDni').val(),
 				"fecha" : $('#otherDate').val(),
+				"comentarios" : $('#comments').val()
 			});
 
 		} else {
@@ -436,6 +437,7 @@ function formToJSON(action) {
 				"nombreFactura" : $('#otherName').val(),
 				"nifFactura" : $('#otherDni').val(),
 				"fecha" : $('#otherDate').val(),
+				"comentarios" : $('#comments').val(),
 				"timezone" : Intl.DateTimeFormat().resolvedOptions().timeZone
 			});
 		}

@@ -102,7 +102,7 @@ public class FacturaPdfCreator {
 		Document document = this.prepareDocument(factura);
 
 		// ------- Datos bajo el encabezado -------
-		this.setDatosBajoHeader(document);
+		this.setDatosBajoHeader(document, factura);
 
 		try {
 			// ------- Tabla datos Factura -------
@@ -240,15 +240,33 @@ public class FacturaPdfCreator {
 	 * @param document
 	 * @throws DocumentException
 	 */
-	private void setDatosBajoHeader(Document document) {
+	private void setDatosBajoHeader(Document document, Factura factura) {
 		// ------- Datos bajo el encabezado -------
 		try {
+
+			PdfPTable tableSubHeader = new PdfPTable(new float[] { 3f, 9f });
+			tableSubHeader.setWidthPercentage(100);
+
+			PdfPCell cell1 = new PdfPCell();
+			cell1.setFixedHeight(60f);
+
 			Font fontSubHeader = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8.0f);
 			fontSubHeader.setColor(BaseColor.GRAY);
 			Paragraph datos = new Paragraph(
 					"CIF: B­85935443\nC/. Oslo 41, local 3\n28922 Alcorcón – MADRID\nTeléfono: 91 689 00 70",
 					fontSubHeader);
-			document.add(datos);
+			cell1.addElement(datos);
+			cell1.setBorder(Rectangle.NO_BORDER);
+			tableSubHeader.addCell(cell1);
+
+			PdfPCell cell2 = new PdfPCell();
+			cell2.setFixedHeight(60f);
+			Paragraph comentarios = new Paragraph(factura.getComentarios());
+			cell2.addElement(comentarios);
+			cell2.setBorder(Rectangle.NO_BORDER);
+			tableSubHeader.addCell(cell2);
+
+			document.add(tableSubHeader);
 
 			Font facturaLineFont = FontFactory.getFont(FontFactory.COURIER_BOLDOBLIQUE, 14.0f);
 			Paragraph facturaLine = new Paragraph("Factura", facturaLineFont);
@@ -379,9 +397,17 @@ public class FacturaPdfCreator {
 	public void processTotalizer(PdfPTable table, String value) {
 		Font font = FontFactory.getFont(FontFactory.COURIER_BOLD, 14.0f);
 
-		PdfPCell cell0 = new PdfPCell();
+		// -------- Información adicional ---------
+		Font fontInfo = FontFactory.getFont(FontFactory.COURIER, 8.0f);
+
+		String phrase = "Factura exenta de I.V.A. según ley 37/92.";
+		String phrase2 = "\nPago en el momento del tratamiento.";
+		Phrase p1 = new Phrase(phrase + phrase2, fontInfo);
+		PdfPCell cell0 = new PdfPCell(p1);
 		cell0.setBorder(Rectangle.NO_BORDER);
+
 		table.addCell(cell0);
+		// -------- ./ Información adicional ---------
 
 		PdfPCell cell1 = new PdfPCell(new Phrase("Total:", font));
 		cell1.setFixedHeight(30f);
@@ -403,21 +429,26 @@ public class FacturaPdfCreator {
 	private void renderDecoration(Document doc) {
 
 		// -------- Información adicional ---------
-		try {
-			Font fontInfo = FontFactory.getFont(FontFactory.COURIER, 12.0f);
-
-			Phrase p1 = new Phrase("Factura exenta de I.V.A. según ley 37/92", fontInfo);
-			Paragraph info = new Paragraph();
-			info.add(p1);
-
-			info.setAlignment(Element.ALIGN_RIGHT);
-			info.setIndentationRight(30f);
-			info.setSpacingBefore(30f);
-
-			doc.add(info);
-		} catch (DocumentException e) {
-			logger.warn(e.getMessage());
-		}
+		// try {
+		// Font fontInfo = FontFactory.getFont(FontFactory.COURIER, 8.0f);
+		//
+		// String phrase = "Factura exenta de I.V.A. según ley 37/92.";
+		// Phrase p1 = new Phrase(phrase, fontInfo);
+		// String phrase2 = "\nEl pago de los importes se realizará en el momento del
+		// tratamiento.";
+		// Phrase p2 = new Phrase(phrase2, fontInfo);
+		// Paragraph info = new Paragraph();
+		// info.add(p1);
+		// info.add(p2);
+		//
+		// info.setAlignment(Element.ALIGN_RIGHT);
+		// info.setIndentationRight(30f);
+		// info.setSpacingBefore(30f);
+		//
+		// doc.add(info);
+		// } catch (DocumentException e) {
+		// logger.warn(e.getMessage());
+		// }
 
 		// -------- ./ Información adicional ---------
 
@@ -459,7 +490,7 @@ public class FacturaPdfCreator {
 	 * -------------------------------
 	 */
 	class FooterNHeaderRenderer extends PdfPageEventHelper {
-		Font ffont = new Font(Font.FontFamily.COURIER, 8);
+		Font ffont = new Font(Font.FontFamily.COURIER, 5);
 		private String path;
 
 		public void setPath(String path) {
@@ -498,25 +529,40 @@ public class FacturaPdfCreator {
 
 			cb.setRGBColorFill(0x00, 0x00, 0x00);
 
-			String pagoString = "El pago de los importes se realizará en el momento de la realización del tratamiento. ";
-			Phrase pago = new Phrase(pagoString, ffont);
+			// String pagoString = "El pago de los importes se realizará en el momento de la
+			// realización del tratamiento.";
+			// Phrase pago = new Phrase(pagoString, ffont);
 
-			Chunk dudas = new Chunk("Para cualquier aclaración no dude en llamar al teléfono ", ffont);
-			Chunk telefono = new Chunk("91 689 00 70 ", ffont);
-			Phrase llamar = new Phrase();
-			llamar.add(dudas);
-			llamar.add(telefono);
+			Chunk gdprInfo = new Chunk(Utils.GDPR, ffont);
+			// Chunk telefono = new Chunk("91 689 00 70 ", ffont);
+			Phrase gdprPhrase = new Phrase();
+			gdprPhrase.add(gdprInfo);
+			// llamar.add(telefono);
 			Paragraph footer = new Paragraph();
-			footer.add(llamar);
+			footer.add(gdprPhrase);
 
-			ColumnText.showTextAligned(cb, Element.ALIGN_JUSTIFIED, pago, document.leftMargin(), document.bottom() - 20,
-					0);
-			ColumnText.showTextAligned(cb, Element.ALIGN_JUSTIFIED, footer, document.leftMargin(),
-					document.bottom() - 40, 0);
+			Rectangle rect = new Rectangle(document.left(), document.bottom(), document.right(),
+					document.bottom() - 40);
+			ColumnText ct = new ColumnText(writer.getDirectContent());
+			ct.setSimpleColumn(rect);
+			ct.addElement(new Paragraph(Utils.GDPR, ffont));
+			try {
+				ct.go();
+			} catch (DocumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			//
+			// ColumnText.showTextAligned(cb, Element.ALIGN_JUSTIFIED, pago,
+			// document.leftMargin(), document.bottom(), 0);
+			//
+			// ColumnText.showTextAligned(cb, Element.ALIGN_JUSTIFIED, footer,
+			// document.leftMargin(),
+			// document.bottom() - 10, 0);
 
-			cb.setColorStroke(BaseColor.BLUE);
-			cb.moveTo(document.leftMargin(), document.bottom() - 30);
-			cb.lineTo(document.right() - document.rightMargin(), document.bottom() - 30);
+			// cb.setColorStroke(BaseColor.BLUE);
+			// cb.moveTo(document.leftMargin(), document.bottom() - 30);
+			// cb.lineTo(document.right() - document.rightMargin(), document.bottom() - 30);
 			cb.closePathStroke();
 		}
 	}

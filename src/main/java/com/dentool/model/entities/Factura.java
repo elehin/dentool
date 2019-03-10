@@ -30,6 +30,7 @@ public class Factura {
 	private float importe;
 	private String nombreFactura;
 	private String nifFactura;
+	private String comentarios;
 	@Transient
 	private String timezone;
 
@@ -138,5 +139,13 @@ public class Factura {
 
 	public void setTimezone(String timezone) {
 		this.timezone = timezone;
+	}
+
+	public String getComentarios() {
+		return comentarios;
+	}
+
+	public void setComentarios(String comentarios) {
+		this.comentarios = comentarios;
 	}
 }
