@@ -401,10 +401,13 @@ public class PresupuestoPdfCreator {
 
 		// -------- Información adicional ---------
 		try {
-			Font fontInfo = FontFactory.getFont(FontFactory.COURIER, 12.0f);
+			Font fontInfo = FontFactory.getFont(FontFactory.COURIER, 8.0f);
 
-			Phrase p1 = new Phrase("Horario de apertura: 10:00 - 13:00\n", fontInfo);
-			Phrase p2 = new Phrase("17:00 - 20:30", fontInfo);
+			String pagoString = "El pago de los importes se realizará en el momento de la realización del tratamiento.\n ";
+			String pagoString2 = "Los importes podrán variar en función de las necesidades del tratamiento.\n";
+
+			Phrase p1 = new Phrase(pagoString, fontInfo);
+			Phrase p2 = new Phrase(pagoString2, fontInfo);
 			Paragraph info = new Paragraph();
 			info.add(p1);
 			info.add(p2);
@@ -458,7 +461,7 @@ public class PresupuestoPdfCreator {
 	 * -------------------------------
 	 */
 	class FooterNHeaderRenderer extends PdfPageEventHelper {
-		Font ffont = new Font(Font.FontFamily.COURIER, 8);
+		Font ffont = new Font(Font.FontFamily.COURIER, 5);
 		private String path;
 
 		public void setPath(String path) {
@@ -494,33 +497,75 @@ public class PresupuestoPdfCreator {
 		}
 
 		private void renderFooter(PdfWriter writer, Document document, PdfContentByte cb) {
-
 			cb.setRGBColorFill(0x00, 0x00, 0x00);
 
-			String pagoString = "El pago de los importes se realizará en el momento de la realización del tratamiento. ";
-			String pagoString2 = "Los importes podrán variar en función de las necesidades del tratamiento.\n";
-			Phrase pago = new Phrase(pagoString, ffont);
-			Phrase pago2 = new Phrase(pagoString2, ffont);
+			// String pagoString = "El pago de los importes se realizará en el momento de la
+			// realización del tratamiento.";
+			// Phrase pago = new Phrase(pagoString, ffont);
 
-			Chunk dudas = new Chunk("Para cualquier aclaración no dude en llamar al teléfono ", ffont);
-			Chunk telefono = new Chunk("91 689 00 70 ", ffont);
-			Phrase llamar = new Phrase();
-			llamar.add(dudas);
-			llamar.add(telefono);
+			Chunk gdprInfo = new Chunk(Utils.GDPR, ffont);
+			// Chunk telefono = new Chunk("91 689 00 70 ", ffont);
+			Phrase gdprPhrase = new Phrase();
+			gdprPhrase.add(gdprInfo);
+			// llamar.add(telefono);
 			Paragraph footer = new Paragraph();
-			footer.add(llamar);
+			footer.add(gdprPhrase);
 
-			ColumnText.showTextAligned(cb, Element.ALIGN_JUSTIFIED, pago, document.leftMargin(), document.bottom() - 10,
-					0);
-			ColumnText.showTextAligned(cb, Element.ALIGN_JUSTIFIED, pago2, document.leftMargin(),
-					document.bottom() - 20, 0);
-			ColumnText.showTextAligned(cb, Element.ALIGN_JUSTIFIED, footer, document.leftMargin(),
-					document.bottom() - 40, 0);
+			Rectangle rect = new Rectangle(document.left(), document.bottom(), document.right(),
+					document.bottom() - 40);
+			ColumnText ct = new ColumnText(writer.getDirectContent());
+			ct.setSimpleColumn(rect);
+			ct.addElement(new Paragraph(Utils.GDPR, ffont));
+			try {
+				ct.go();
+			} catch (DocumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			//
+			// ColumnText.showTextAligned(cb, Element.ALIGN_JUSTIFIED, pago,
+			// document.leftMargin(), document.bottom(), 0);
+			//
+			// ColumnText.showTextAligned(cb, Element.ALIGN_JUSTIFIED, footer,
+			// document.leftMargin(),
+			// document.bottom() - 10, 0);
 
-			cb.setColorStroke(BaseColor.BLUE);
-			cb.moveTo(document.leftMargin(), document.bottom() - 30);
-			cb.lineTo(document.right() - document.rightMargin(), document.bottom() - 30);
+			// cb.setColorStroke(BaseColor.BLUE);
+			// cb.moveTo(document.leftMargin(), document.bottom() - 30);
+			// cb.lineTo(document.right() - document.rightMargin(), document.bottom() - 30);
 			cb.closePathStroke();
+			// cb.setRGBColorFill(0x00, 0x00, 0x00);
+			//
+			// String pagoString = "El pago de los importes se realizará en el momento de la
+			// realización del tratamiento. ";
+			// String pagoString2 = "Los importes podrán variar en función de las
+			// necesidades del tratamiento.\n";
+			// Phrase pago = new Phrase(pagoString, ffont);
+			// Phrase pago2 = new Phrase(pagoString2, ffont);
+			//
+			// Chunk dudas = new Chunk("Para cualquier aclaración no dude en llamar al
+			// teléfono ", ffont);
+			// Chunk telefono = new Chunk("91 689 00 70 ", ffont);
+			// Phrase llamar = new Phrase();
+			// llamar.add(dudas);
+			// llamar.add(telefono);
+			// Paragraph footer = new Paragraph();
+			// footer.add(llamar);
+			//
+			// ColumnText.showTextAligned(cb, Element.ALIGN_JUSTIFIED, pago,
+			// document.leftMargin(), document.bottom() - 10,
+			// 0);
+			// ColumnText.showTextAligned(cb, Element.ALIGN_JUSTIFIED, pago2,
+			// document.leftMargin(),
+			// document.bottom() - 20, 0);
+			// ColumnText.showTextAligned(cb, Element.ALIGN_JUSTIFIED, footer,
+			// document.leftMargin(),
+			// document.bottom() - 40, 0);
+			//
+			// cb.setColorStroke(BaseColor.BLUE);
+			// cb.moveTo(document.leftMargin(), document.bottom() - 30);
+			// cb.lineTo(document.right() - document.rightMargin(), document.bottom() - 30);
+			// cb.closePathStroke();
 		}
 	}
 
