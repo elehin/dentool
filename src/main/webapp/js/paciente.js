@@ -5,6 +5,7 @@ var activeDiagnostico;
 var addDiagDesplegado = false;
 var presupuestos;
 var facturas;
+var ficheros;
 
 var lupa = '<button class="btn btn-info padding-0-4 detalle" role="button"><span class="glyphicon glyphicon-search"></span></button>';
 var descarga = '<button class="btn btn-info padding-0-4 detalle" role="button"><span class="glyphicon glyphicon-download-alt"></span></button>';
@@ -45,6 +46,12 @@ $(document).ready(
 			$("#btnAddDiagnostico").click(function() {
 				// console.log('$("#btnAddDiagnostico").click');
 				addDiagnostico();
+				return false;
+			});
+
+			$("#btnUploadFiles").click(function() {
+				// console.log('$("#btnUploadFiles").click');
+				uploadFile();
 				return false;
 			});
 
@@ -121,10 +128,16 @@ $(document).ready(
 				return false;
 			});
 
+			// $('#btnUploadFile').filestyle({
+			// btnClass : 'btn-info',
+			// text : ' Elegir'
+			// });
+
 			getTratamientosList();
 			getTratamientosTop();
 			getPresupuestos();
 			getFacturas();
+			getFicheros();
 
 			// $("#addSaldoLink").click(function() {
 			// $('html, body').animate({
@@ -164,6 +177,120 @@ function getPresupuestos() {
 					+ $.cookie('restTokenC'));
 		}
 	});
+}
+
+function uploadFile() {
+	var formData = new FormData(document.getElementById("pacienteForm"));
+	formData.append("pacienteId", getUrlParameter("paciente"));
+
+	$.ajax({
+		type : 'PUT',
+		contentType : false,
+		data : formData,
+		url : ficheroURL,
+		processData : false,
+		success : function(data, textStatus, jqXHR) {
+			showFileUploadSuccessMessage();
+			renderFicherosNuevos(data);
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			} else {
+				showFileUploadErrorMessage();
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
+		}
+	});
+}
+
+function renderFicherosNuevos(ficheros) {
+
+	var table = $('#tableFicheros').DataTable({
+		"retrieve" : true
+	});
+
+	$.each(ficheros, function(i, fichero) {
+
+		var fechaUpload = new Date(fichero.uploadedDate);
+
+		table.row.add(
+				[ fichero.id, descarga, fichero.fileName,
+						formatDate(fechaUpload, 'fechaYHora') ]).draw(false);
+
+	});
+
+	setTableButtonsClickListeners();
+}
+
+// function uploadFile() {
+// var formData = new FormData(document.getElementById("pacienteForm"));
+// formData.append("pacienteId", getUrlParameter("paciente"));
+//
+// $.ajax({
+// type : 'PUT',
+// contentType : false,
+// data : formData,
+// url : ficheroURL,
+// processData : false,
+// success : function(data, textStatus, jqXHR) {
+// $.when($.ajax(
+// {
+// type : 'GET',
+// url : ficheroURL + data.id,
+// success : function(data) {
+// fichero = data;
+// },
+// error : function(jqXHR, textStatus, errorThrown) {
+// if (errorThrown == 'Unauthorized') {
+// window.location.replace(serverURL
+// + 'login.html');
+// }
+// },
+// beforeSend : function(xhr, settings) {
+// xhr.setRequestHeader('Authorization', 'Bearer '
+// + $.cookie('restTokenC'));
+// }
+// }).done(
+// function() {
+// showFileUploadSuccessMessage();
+// var fechaUpload = new Date(fichero.uploadedDate);
+// var table = $('#tableFicheros').DataTable({
+// "retrieve" : true
+// });
+// table.row
+// .add(
+// [
+// fichero.id,
+// descarga,
+// fichero.fileName,
+// formatDate(fechaUpload,
+// 'fechaYHora') ]).draw(
+// false);
+//
+// setTableButtonsClickListeners();
+// }))
+// },
+// error : function(jqXHR, textStatus, errorThrown) {
+// if (errorThrown == 'Unauthorized') {
+// window.location.replace(serverURL + 'login.html');
+// } else {
+// showFileUploadErrorMessage();
+// }
+// },
+// beforeSend : function(xhr, settings) {
+// xhr.setRequestHeader('Authorization', 'Bearer '
+// + $.cookie('restTokenC'));
+// }
+// });
+// }
+
+function getFormData() {
+
+	return formData;
 }
 
 function renderTablePresupuestos(presupuestos) {
@@ -317,6 +444,114 @@ function renderTableFacturas(facturas) {
 function descargaFactura(data) {
 	var xhr = new XMLHttpRequest();
 	xhr.open('GET', facturaURL + 'pdf/' + data[0], true);
+	xhr.setRequestHeader('Authorization', 'Bearer ' + $.cookie('restTokenC'));
+	xhr.responseType = 'blob';
+	xhr.onload = function(e) {
+		if (this.status == 200) {
+			var myBlob = this.response;
+			var blob = new Blob([ myBlob ]);
+			var link = document.createElement('a');
+			var fileName = this.getResponseHeader('Content-Disposition');
+			fileName = fileName.substring(fileName.lastIndexOf("=") + 1,
+					fileName.length).trim();
+			link.href = window.URL.createObjectURL(blob);
+			link.download = fileName;
+			link.click();
+		}
+		if (this.status == 401) {
+			window.location.replace(serverURL + 'login.html');
+		}
+	};
+	xhr.send();
+}
+
+function getFicheros() {
+	$.ajax({
+		type : 'GET',
+		url : ficheroURL + "paciente/" + getUrlParameter("paciente"),
+		success : function(data) {
+			ficheros = data;
+			renderTableFicheros(ficheros);
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			if (errorThrown == 'Unauthorized') {
+				window.location.replace(serverURL + 'login.html');
+			}
+		},
+		beforeSend : function(xhr, settings) {
+			xhr.setRequestHeader('Authorization', 'Bearer '
+					+ $.cookie('restTokenC'));
+		}
+	});
+}
+
+function renderTableFicheros(ficheros) {
+	var dataset = [];
+
+	$.each(ficheros, function(i, item) {
+		var fechaFichero = new Date(item.uploadedDate);
+
+		dataset.push([ item.id, descarga, item.fileName,
+				formatDate(fechaFichero, 'fechaYHora') ]);
+	});
+
+	ficherosTable = $('#tableFicheros')
+			.DataTable(
+					{
+						"retrieve" : true,
+						"paging" : false,
+						"searching" : false,
+						"info" : false,
+						"ordering" : true,
+						"data" : dataset,
+						"columns" : [ {
+							"title" : "id"
+						}, {
+							"title" : "&nbsp;"
+						}, {
+							"title" : "Nombre Fichero"
+						}, {
+							"title" : "Fecha"
+						} ],
+						"columnDefs" : [ {
+							"className" : "never",
+							"targets" : [ 0 ],
+							"visible" : false
+						} ],
+						"order" : [ [ 3, "desc" ] ],
+						"language" : {
+							"search" : "Buscar:",
+							"sLengthMenu" : "Mostrar _MENU_ registros",
+							"sZeroRecords" : "No se encontraron resultados",
+							"sEmptyTable" : "No hay ningún fichero almacenado para este paciente",
+							"sInfo" : "Mostrando registros del _START_ al _END_ de un total de _TOTAL_",
+							"sInfoEmpty" : "Mostrando registros del 0 al 0 de un total de 0 registros",
+							"oPaginate" : {
+								"sFirst" : "Primero",
+								"sLast" : "Último",
+								"sNext" : "Siguiente",
+								"sPrevious" : "Anterior"
+							}
+						}
+					});
+
+	$('#tableFicheros tbody tr').off('click');
+	$('#tableFicheros tbody tr').on('click', 'button', function(evt) {
+		evt.stopPropagation();
+		evt.preventDefault();
+
+		row = $(this).parents('tr');
+
+		if ($(this).hasClass("detalle")) {
+			var data = ficherosTable.row($(this).parents('tr')).data();
+			descargaFichero(data);
+		}
+	});
+}
+
+function descargaFichero(data) {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', ficheroURL + 'file/' + data[0], true);
 	xhr.setRequestHeader('Authorization', 'Bearer ' + $.cookie('restTokenC'));
 	xhr.responseType = 'blob';
 	xhr.onload = function(e) {
@@ -1474,6 +1709,16 @@ function showErrorMessage(error) {
 	}, 0);
 }
 
+function showFileUploadErrorMessage(error) {
+	// console.log('showErrorMessage');
+	$("#fileUpload-error-alert").alert();
+	window.setTimeout(function() {
+		$("#fileUpload-error-alert").fadeTo(2000, 500).slideUp(500, function() {
+			$("#fileUpload-error-alert").hide();
+		});
+	}, 0);
+}
+
 function showAlergicoMessage() {
 	// console.log('showAlergicoMessage');
 	if (currentPaciente.alergico == true) {
@@ -1486,6 +1731,17 @@ function showEnfermoGraveMessage() {
 	if (currentPaciente.enfermoGrave == true) {
 		$("#enfermoGrave-alert").show()
 	}
+}
+
+function showFileUploadSuccessMessage() {
+	// console.log('showFileUploadSuccessMessage');
+	$("#fileUpload-success-alert").alert();
+	window.setTimeout(function() {
+		$("#fileUpload-success-alert").fadeTo(2000, 500).slideUp(500,
+				function() {
+					$("#fileUpload-success-alert").hide();
+				});
+	}, 0);
 }
 
 function findPacienteByUrl(url) {

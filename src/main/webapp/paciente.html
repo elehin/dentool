@@ -108,7 +108,7 @@
 			</div>
 			<!-- /.Alertas -->
 
-			<form id="pacienteForm" role="form">
+			<form id="pacienteForm" role="form" enctype="multipart/form-data">
 				<div class="col-md-3">
 					<label class="collapse">Id:</label> <input id="pacienteId"
 						name="id" type="text" class="form-control collapse" disabled /> <label
@@ -189,6 +189,8 @@
 							href="#presupuestosTab">Presupuestos</a></li>
 						<li><a id="linkFacturasTab" data-toggle="tab"
 							href="#facturasTab">Facturas</a></li>
+						<li><a id="linkFicherosTab" data-toggle="tab"
+							href="#ficherosTab">Ficheros</a></li>
 					</ul>
 
 					<div class="tab-content">
@@ -212,6 +214,34 @@
 								class="btn btn-primary btn-block margin-top-5">Emitir
 								factura</a>
 							<table id="tableFacturas" style="width: 100%"
+								class="table table-striped table-hover display responsive">
+							</table>
+						</div>
+						<div id="ficherosTab" class="tab-pane fade">
+							<!--  Mensaje de alerta sobre subida fichero -->
+							<div class="alert alert-success collapse fade margin-top-25 "
+								id="fileUpload-success-alert">
+								<p>
+									<button type="button" class="close" data-dismiss="alert">x</button>
+									<span class="glyphicon glyphicon-ok"></span><strong>
+										OK! </strong> Fichero/s subidos correctamente.
+								</p>
+							</div>
+							<div class="alert alert-danger collapse margin-top-25 "
+								id="fileUpload-error-alert">
+								<strong>Error!</strong> Ha ocurrido algún tipo de error.
+							</div>
+							<!--  Fin mensaje subida fichero -->
+							<div class="form-group">
+								<input id="inputUploadFile" name="inputUploadFile" type="file"
+									class="filestyle" data-btnClass="btn-primary"
+									data-text="Buscar fichero" data-buttonBefore="true"
+									multiple="multiple">
+								<button id="btnUploadFiles"
+									class="btn btn-primary btn-block margin-top-5">Subir
+									ficheros</button>
+							</div>
+							<table id="tableFicheros" style="width: 100%"
 								class="table table-striped table-hover display responsive">
 							</table>
 						</div>
@@ -631,9 +661,13 @@
 				</div>
 				<div class="col-lg-6 margin-bottom-15">
 					<ul>
-						<li><a target="_blank" href="http://clinicasoslo.es">www.clinicasoslo.es <span class="glyphicon glyphicon-new-window"></span></a></li>
-						<li><a target="_blank" href="https://www.1and1.es/login?__lf=Static">Panel
-								de control 1&amp;1 <span class="glyphicon glyphicon-new-window"></a></li>
+						<li><a target="_blank" href="http://clinicasoslo.es">www.clinicasoslo.es
+								<span class="glyphicon glyphicon-new-window"></span>
+						</a></li>
+						<li><a target="_blank"
+							href="https://www.1and1.es/login?__lf=Static">Panel de
+								control 1&amp;1 <span class="glyphicon glyphicon-new-window">
+						</a></li>
 					</ul>
 				</div>
 			</div>
@@ -683,6 +717,9 @@
 
 	<!-- Accounting JavaScript for formatting currency-->
 	<script src="js/accounting.min.js"></script>
+
+	<!-- bootstrap-filestyle.min.js -->
+	<script src="js/bootstrap-filestyle.min.js"></script>
 
 	<!-- blockUI -->
 	<script src="js/jquery.blockUI.js"></script>

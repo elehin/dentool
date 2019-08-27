@@ -1,5 +1,7 @@
 package com.dentool.rest;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -57,6 +59,20 @@ public class CitaRestService {
 			throw new WebApplicationException(Response.Status.NOT_FOUND);
 		}
 		return Response.ok(lista).build();
+	}
+	
+	@GET
+	@Secured
+	@Path("/fechaString/{fecha}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response lookupCitasByStringFecha(@PathParam("fecha") String fecha) {
+		Date d;
+		try {
+			d = new SimpleDateFormat("yyyy-MM-dd").parse(fecha);
+		} catch (ParseException e) {
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}
+		return this.lookupCitasByFecha(d);
 	}
 
 	@GET

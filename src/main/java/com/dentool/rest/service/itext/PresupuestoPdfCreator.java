@@ -519,8 +519,7 @@ public class PresupuestoPdfCreator {
 			try {
 				ct.go();
 			} catch (DocumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 			//
 			// ColumnText.showTextAligned(cb, Element.ALIGN_JUSTIFIED, pago,
