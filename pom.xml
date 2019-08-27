@@ -165,6 +165,16 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- resteasy -->
+		<!-- https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-multipart-provider -->
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-multipart-provider</artifactId>
+			<version>3.0.19.Final</version>
+		</dependency>
+
+
+
 	</dependencies>
 
 	<profiles>
