@@ -214,7 +214,7 @@
 								/Buttons-1.2.1/**,
 								/DataTables-1.10.12/**, /FixedHeader-3.1.2/**,
 								/Responsive-2.1.0/**, /Select-1.2.0/**,
-								/src/test/**
+								/src/test/**, WEB-INF/lib/resteasy-*.jar
 							</packagingExcludes>
 						</configuration>
 					</plugin>
